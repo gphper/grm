@@ -1,0 +1,72 @@
+{
+  "id": "3447471",
+  "name": "go",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "43905",
+      "name": "info",
+      "font_class": "info",
+      "unicode": "e6e5",
+      "unicode_decimal": 59109
+    },
+    {
+      "icon_id": "924548",
+      "name": "terminal",
+      "font_class": "terminal",
+      "unicode": "e958",
+      "unicode_decimal": 59736
+    },
+    {
+      "icon_id": "592861",
+      "name": "close",
+      "font_class": "close",
+      "unicode": "e669",
+      "unicode_decimal": 58985
+    },
+    {
+      "icon_id": "11487973",
+      "name": "add",
+      "font_class": "add",
+      "unicode": "e742",
+      "unicode_decimal": 59202
+    },
+    {
+      "icon_id": "14342023",
+      "name": "server",
+      "font_class": "server",
+      "unicode": "e7c6",
+      "unicode_decimal": 59334
+    },
+    {
+      "icon_id": "448697",
+      "name": "key",
+      "font_class": "key",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "15838481",
+      "name": "folder-close",
+      "font_class": "folder-close",
+      "unicode": "e671",
+      "unicode_decimal": 58993
+    },
+    {
+      "icon_id": "15838487",
+      "name": "file-open",
+      "font_class": "file-open",
+      "unicode": "e670",
+      "unicode_decimal": 58992
+    },
+    {
+      "icon_id": "21513711",
+      "name": "database",
+      "font_class": "database",
+      "unicode": "e6d2",
+      "unicode_decimal": 59090
+    }
+  ]
+}
