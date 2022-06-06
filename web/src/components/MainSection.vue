@@ -14,7 +14,8 @@
                 :label="item.title"
                 :name="item.name"
             >
-               {{ item.content }} 
+               <!-- {{ item.content }}  -->
+               <div id="xterm"></div>
             </el-tab-pane>
             </el-tabs>
         </el-main>

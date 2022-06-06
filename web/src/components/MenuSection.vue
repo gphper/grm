@@ -41,6 +41,7 @@ import { createApp,h, ref } from '@vue/runtime-dom'
 import { ElTree,ElButton } from 'element-plus'
 import TreeSolt from '@/components/TreeSolt.vue'
 import store from '@/store/index.js'
+import {term,fitAddon} from '@/utils/terminal.js'
 
 export default{
     name:"MenuSection",
@@ -107,7 +108,11 @@ export default{
                 console.log("close db")
         };
         const terminalDb = function(){
-                console.log("terminal")
+            term.loadAddon(fitAddon)
+            term.open(document.getElementById("xterm"));
+            fitAddon.fit();
+            term.focus();
+            
         };
         const infoServe = function(){
                 console.log("serve info")
