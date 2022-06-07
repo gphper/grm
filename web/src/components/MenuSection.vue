@@ -19,7 +19,7 @@
 
                 <el-popover trigger="hover" content="打开命令行">
                     <template #reference>
-                        <el-button @click.stop="terminalDb" type="success" circle><i class="iconfont icon-terminal"></i></el-button>
+                        <el-button @click.stop="terminalDb('cmd')" type="success" circle><i class="iconfont icon-terminal"></i></el-button>
                     </template>
                 </el-popover>
 
@@ -107,13 +107,25 @@ export default{
         const closeDb = function(){
                 console.log("close db")
         };
-        const terminalDb = function(){
-            term.loadAddon(fitAddon)
-            term.open(document.getElementById("xterm"));
-            fitAddon.fit();
-            term.focus();
+        const terminalDb = function(name){
+            console.log(name)
+            store.commit("setTagsItem", {
+                title: name,
+                name: name,
+                content: "",
+                xterm:name
+            });
+            store.commit("setCurrentTag", name);
+
+            setTimeout(()=>{
+                term.loadAddon(fitAddon)
+                term.open(document.getElementById(name));
+                fitAddon.fit();
+                term.focus();
+            },500);
             
         };
+
         const infoServe = function(){
                 console.log("serve info")
         };

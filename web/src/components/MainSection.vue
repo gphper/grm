@@ -14,8 +14,8 @@
                 :label="item.title"
                 :name="item.name"
             >
-               <!-- {{ item.content }}  -->
-               <div id="xterm"></div>
+               <span v-if="item.content">{{ item.content }}</span>
+               <span v-if="item.xterm"><div :id="item.xterm"></div></span>
             </el-tab-pane>
             </el-tabs>
         </el-main>
@@ -23,12 +23,12 @@
 </template>
 
 <script>
-import { computed, watch } from "@vue/runtime-core";
+import { computed } from "@vue/runtime-core";
 import { useStore } from "vuex";
 export default{
 
     name:"MainSection",
-    setup(props) {
+    setup() {
 
         const store = useStore()
         const tagData = computed(() => store.state.tagsList);
@@ -41,13 +41,6 @@ export default{
         const removeTag = (index) => {
             store.commit("delTagsItem",index)
         };
-
-        watch(
-        () => props.activeTab,
-        (newValue) => {
-            activeIndex.value = newValue
-        }
-        );
 
         return { handleClick, removeTag, activeIndex,tagData };
     }

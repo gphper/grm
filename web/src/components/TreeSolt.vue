@@ -1,16 +1,17 @@
 <template>
-    <i v-if="data.children && data.children.length > 0" class="iconfont icon-folder-close"></i>
-    <i v-else class="iconfont icon-key"></i>
-    <span>&nbsp;{{ node.label }}</span>
-    <span v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
-        <el-button text @click.stop="append(data)" type="success">添加</el-button>
-        <el-button text @click.stop="remove(node,data)" type="danger">删除</el-button>
-    </span>
-    <span v-else style="margin-left:20%;width: 15px;">
-        <el-button text @click.stop="remove(node,data)" type="danger">删除</el-button>
-        <el-button text @click.stop="detail(node.label)" type="primary">查看</el-button>
-    </span>
-
+    <div>
+        <i v-if="data.children && data.children.length > 0" class="iconfont icon-folder-close"></i>
+        <i v-else class="iconfont icon-key"></i>
+        <span>&nbsp;{{ node.label }}</span>
+        <span v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
+            <el-button text @click.stop="append(data)" type="success">添加</el-button>
+            <el-button text @click.stop="remove(node,data)" type="danger">删除</el-button>
+        </span>
+        <span v-else style="margin-left:20%;width: 15px;">
+            <el-button text @click.stop="remove(node,data)" type="danger">删除</el-button>
+            <el-button text @click.stop="detail(node.label)" type="primary">查看</el-button>
+        </span>
+    </div>
 </template>
 
 <script>
