@@ -113,7 +113,7 @@ export default{
                 title: name,
                 name: name,
                 content: "",
-                xterm:name
+                id:name
             });
             store.commit("setCurrentTag", name);
 

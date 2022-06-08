@@ -15,7 +15,7 @@
                 :name="item.name"
             >
                <span v-if="item.content">{{ item.content }}</span>
-               <span v-if="item.xterm"><div :id="item.xterm"></div></span>
+               <span v-if="item.id"><div :id="item.id"></div></span>
             </el-tab-pane>
             </el-tabs>
         </el-main>
