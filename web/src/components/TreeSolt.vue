@@ -16,7 +16,7 @@
 
 <script>
 import { useStore } from 'vuex'
-
+import { ShowString } from '@/utils/show.js'
 
 
 export default {
@@ -48,13 +48,21 @@ export default {
             children.splice(index, 1)
         }
 
-        const detail = (name)=>{
+        const detail = (key)=>{
             store.commit("setTagsItem", {
-                title: name,
-                name: name,
-                content: name,
+                title: key,
+                name: key,
+                id: "hhhhh",
             });
-            store.commit("setCurrentTag", name);
+            store.commit("setCurrentTag", key);
+
+            //todo 根据key获取类型
+            var types = "string";
+            switch(types){
+                case "string":
+                    ShowString("hello","world","hhhhh")
+                    break;
+            }
         }
 
         return{

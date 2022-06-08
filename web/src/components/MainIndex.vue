@@ -7,7 +7,7 @@
     ⋮
     </div>
     <div class="mid" ref="mid">
-    <MainSection :tagData="tabs" :activeTab="activeTab"></MainSection>
+    <MainSection :tagData="tabs"></MainSection>
     </div>
 </div>
 </template>

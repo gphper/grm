@@ -1,7 +1,7 @@
 <template>
     <el-row :gutter="20">
         <el-col :span="12">
-            <el-input v-model="input1" disabled placeholder="Please input">
+            <el-input  disabled :value="key">
                 <template #prepend>STRING:</template>
             </el-input>
         </el-col>
@@ -15,10 +15,22 @@
 </template>
 
 <script>
+import { ref } from '@vue/reactivity'
 export default {
     name:"StringView",
-    setup() {
-        
+    props:{
+        keys:{
+            type:String
+        },
+        data:{
+            type:String
+        }
+    },
+    setup(props) {
+        const key = ref(props.keys)
+        return {
+            key,
+        }
     },
 }
 </script>
