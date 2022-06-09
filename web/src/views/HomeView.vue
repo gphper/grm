@@ -20,7 +20,7 @@ export default {
       MainIndex
   },
   setup(){
-    
+    document.title = "go redis manager";
   }
 };
 </script>
