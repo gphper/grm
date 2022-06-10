@@ -1,8 +1,9 @@
 import StringView from '@/views/StringView.vue'
-import { ElButton, ElCard, ElCol, ElInput, ElRow } from 'element-plus';
+import { ElButton, ElCard, ElCol, ElInput, ElRow, ElSelect } from 'element-plus';
 import { createApp, h } from 'vue';
+// import OneText from '@/components/OneText.vue'
 
-const ShowString = (key,data,id)=>{
+const ShowString = (key,id)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -21,7 +22,7 @@ const ShowString = (key,data,id)=>{
 
         setTimeout(()=>{
             const parent = document.getElementById(id)
-            vdom.use(ElButton).use(ElInput).use(ElRow).use(ElCol).use(ElCard).mount(parent)
+            vdom.use(ElButton).use(ElInput).use(ElRow).use(ElCol).use(ElCard).use(ElSelect).mount(parent)
         },500);
 }
 

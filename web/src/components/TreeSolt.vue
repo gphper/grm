@@ -60,7 +60,7 @@ export default {
             var types = "string";
             switch(types){
                 case "string":
-                    ShowString("hello","world","hhhhh")
+                    ShowString("hello","hhhhh")
                     break;
             }
         }

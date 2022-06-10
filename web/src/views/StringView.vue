@@ -16,39 +16,94 @@
                     </el-col>
                 </el-row>
             </template>
-            <div class="toolbox">键值：xxxKB</div>
-            <el-input v-model="data" :autosize="{ minRows:10, maxRows:12 }" type="textarea" placeholder="Please input" disabled />
+            
+            <div class="toolbox">
+            
+                <el-row>
+                    <el-col :span="3">
+                        <span class="ml-3 w-35 text-gray-600 inline-flex items-center">键值：{{size}} Byte</span>
+                    </el-col>
+                    
+                    <el-col :span="8" :offset="10">
+                        <span class="ml-3 w-35 text-gray-600 inline-flex items-center">查看：</span>
+                        <el-select v-model="currentView" class="m-2" placeholder="Select">
+                            <el-option
+                            v-for="item in viewOption"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                            />
+                        </el-select>
+                    </el-col>
+                </el-row>
+
+            </div>
+            <component :is="currentView" :data="data"></component>
+            
         </el-card>
     </div>
 </template>
 
 <style scoped>
 .toolbox{
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 20px;
+    padding-bottom: 10px;
     width: 100%;
 }
 </style>
 
 <script>
 import { ref } from '@vue/reactivity'
+import OneText from '@/components/OneText.vue'
+import OneJson from '@/components/OneJson.vue'
+import OneBase64 from '@/components/OneBase64.vue'
+import { computed } from '@vue/runtime-core'
+import { Buffer } from 'buffer'
 
 export default {
-    name:"StringView",
-    props:{
-        xkey:{
-            type:String
+    name: "StringView",
+    components: {
+        OneText,
+        OneJson,
+        OneBase64
+    },
+    props: {
+        xkey: {
+            type: String
         },
     },
     setup(props) {
-
         //TODO 获取data值
-        let data = ref('')
-        data = "world"
+        let data = ref("");
+        data = "world";
+        let viewOption = ref([
+            {
+                value: "OneText",
+                label: "Plain Text",
+            },
+            {
+                value: "OneJson",
+                label: "JSON",
+            },
+            {
+                value: "OneBase64",
+                label: "BASE64",
+            }
+        ]);
+        let currentView = ref("OneText");
+
+        let size = computed({
+            get:()=>Buffer.byteLength(data)
+        })
 
         return {
             props,
-            data
-        }
+            data,
+            viewOption,
+            currentView,
+            size
+        };
     },
 }
 </script>
