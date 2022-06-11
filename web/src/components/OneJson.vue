@@ -20,11 +20,15 @@ export default {
         JsonViewer
     },
     setup(props) {
-        // let currentData = ref(props.data)
 
         let currentData = computed({
             get:()=>{
-               return JSON.parse(props.data);
+                try {
+                    let tmp = JSON.parse(props.data);
+                    return tmp;
+                } catch(error) {
+                    return props.data;
+                }
             },
         });
 
