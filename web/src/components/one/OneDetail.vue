@@ -29,6 +29,7 @@
     padding-left: 10px;
     padding-right: 20px;
     padding-bottom: 10px;
+    padding-top: 10px;
     width: 100%;
 }
 </style>

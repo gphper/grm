@@ -58,11 +58,11 @@ export default{
                     children: [
                     {
                         id: 9,
-                        label: 'Level three 1-1-1',
+                        label: 'string_key',
                     },
                     {
                         id: 10,
-                        label: 'Level three 1-1-2',
+                        label: 'list_key',
                     },
                     ],
                 },

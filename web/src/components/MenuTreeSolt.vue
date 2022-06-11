@@ -16,8 +16,8 @@
 
 <script>
 import { useStore } from 'vuex'
-import { ShowString } from '@/utils/show.js'
-
+import { ShowList, ShowString } from '@/utils/show.js'
+import CryptoJS from "crypto-js";
 
 export default {
     name:"MenuTreeSolt",
@@ -49,19 +49,30 @@ export default {
         }
 
         const detail = (key)=>{
+            let id = CryptoJS.MD5(key).toString();
             store.commit("setTagsItem", {
                 title: key,
                 name: key,
-                id: "hhhhh",
+                id: id
             });
             store.commit("setCurrentTag", key);
 
             //todo 根据key获取类型
-            var types = "string";
+            let types = "";    
+            if(key == "string_key"){
+                types = "string";
+            }else{
+                types = "list";
+            }
+
+
             switch(types){
                 case "string":
-                    ShowString("hello","hhhhh")
+                    ShowString(key,id)
                     break;
+                case "list":
+                    ShowList(key,id)
+                    break;    
             }
         }
 

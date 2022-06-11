@@ -1,7 +1,7 @@
-import StringView from '@/components/show/StringView.vue'
-import { ElButton, ElCard, ElCol, ElInput, ElRow, ElSelect } from 'element-plus';
+import StringView from '@/components/show/StringView.vue';
+import ListView from '@/components/show/ListView.vue'
+import { ElButton, ElCard, ElCol, ElInput, ElRow, ElSelect, ElTable } from 'element-plus';
 import { createApp, h } from 'vue';
-// import OneText from '@/components/OneText.vue'
 
 const ShowString = (key,id)=>{
     const vdom = createApp({    
@@ -26,4 +26,28 @@ const ShowString = (key,id)=>{
         },500);
 }
 
-export {ShowString}
+
+const ShowList = (key,id)=>{
+    const vdom = createApp({    
+        setup() {
+        },
+        render() {
+        
+            return h(
+                ListView,
+                {
+                    xkey:key,
+                },
+                null
+            )
+        }
+        
+        });
+
+        setTimeout(()=>{
+            const parent = document.getElementById(id)
+            vdom.use(ElButton).use(ElInput).use(ElRow).use(ElCol).use(ElCard).use(ElSelect).use(ElTable).mount(parent)
+        },500);
+}
+
+export {ShowString,ShowList}
