@@ -20,7 +20,7 @@ import { ShowString } from '@/utils/show.js'
 
 
 export default {
-    name:"TreeSolt",
+    name:"MenuTreeSolt",
     props:{
         data:{
             type:Object,

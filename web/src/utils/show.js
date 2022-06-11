@@ -1,4 +1,4 @@
-import StringView from '@/views/StringView.vue'
+import StringView from '@/components/show/StringView.vue'
 import { ElButton, ElCard, ElCol, ElInput, ElRow, ElSelect } from 'element-plus';
 import { createApp, h } from 'vue';
 // import OneText from '@/components/OneText.vue'

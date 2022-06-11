@@ -39,7 +39,7 @@
 <script>
 import { createApp,h, ref } from '@vue/runtime-dom'
 import { ElTree,ElButton } from 'element-plus'
-import TreeSolt from '@/components/TreeSolt.vue'
+import MenuTreeSolt from '@/components/MenuTreeSolt.vue'
 import store from '@/store/index.js'
 import {term,fitAddon} from '@/utils/terminal.js'
 
@@ -144,7 +144,7 @@ export default{
                         data:this.data,
                     },
                     {
-                        default: ({node,data})=>h(TreeSolt,
+                        default: ({node,data})=>h(MenuTreeSolt,
                         {
                             node,
                             data
