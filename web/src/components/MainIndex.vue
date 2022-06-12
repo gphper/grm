@@ -1,7 +1,7 @@
 <template>
 <div class="box" ref="box">
     <div class="left" ref="left">
-    <MenuSection></MenuSection>
+    <MenuSection @info="showInfo"></MenuSection>
     </div>
     <div class="resize" ref="resize" @mousedown="resizeMouse($event)" title="收缩侧边栏">
     ⋮
@@ -9,6 +9,13 @@
     <div class="mid" ref="mid">
     <MainSection :tagData="tabs"></MainSection>
     </div>
+
+    <el-drawer
+      v-model="drawer"
+      :title="title"
+      >
+        <span>Hi, there!</span>
+    </el-drawer>
 </div>
 </template>
 
@@ -25,10 +32,12 @@ export default {
     },
     setup() {
 
-    let left = ref(null)
-    let mid = ref(null)
-    let box = ref(null)
-    let resize = ref(null)
+    let left = ref(null);
+    let mid = ref(null);
+    let box = ref(null);
+    let resize = ref(null);
+    let drawer = ref(false);
+    let title = ref("");
 
     let tabs = reactive([
       {
@@ -60,6 +69,10 @@ export default {
       }
     }
 
+    const showInfo = (connec_id)=>{
+      drawer.value = true;
+      title.value = '【' + connec_id + '】服务信息';
+    }
 
     return{
       left,
@@ -67,7 +80,10 @@ export default {
       box,
       resize,
       tabs,
+      drawer,
+      title,
       resizeMouse,
+      showInfo
     }
   },
 }

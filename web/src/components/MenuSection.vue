@@ -25,7 +25,7 @@
 
                 <el-popover trigger="hover" content="服务信息">
                     <template #reference>
-                        <el-button @click.stop="infoServe" type="primary" circle><i class="iconfont icon-info"></i></el-button>
+                        <el-button @click.stop="infoServe('华为云地址连接')" type="primary" circle><i class="iconfont icon-info"></i></el-button>
                     </template>
                 </el-popover>
             </el-row>
@@ -45,7 +45,7 @@ import {term,fitAddon} from '@/utils/terminal.js'
 
 export default{
     name:"MenuSection",
-    setup(){
+    setup(props,context){
 
         let data = ref([
             {
@@ -126,8 +126,8 @@ export default{
             
         };
 
-        const infoServe = function(){
-                console.log("serve info")
+        const infoServe = function(connec_id){
+            context.emit("info",connec_id);
         };
         
         const genNode = function(id,dataS){

@@ -3,16 +3,15 @@
         <el-card class="box-card">
             <template #header>
                 <el-row :gutter="20">
-                    <el-col :span="10">
+                    <el-col :span="16">
                         <el-input  disabled :value="props.xkey">
                             <template #prepend>LIST:</template>
                         </el-input>
                     </el-col>
-                    <el-col :span="10" :offset="2">
+                    <el-col :span="6" :offset="2">
                         <el-button text bg>重命名</el-button>
                         <el-button text bg>TTL</el-button>
                         <el-button type="danger" text bg>删除</el-button>
-                        <el-button type="warning" text bg>重载数据</el-button>
                     </el-col>
                 </el-row>
             </template>
