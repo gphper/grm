@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-input v-model="currentData" :autosize="{ minRows:6, maxRows:12 }" type="textarea" placeholder="Please input" disabled />
+        <el-input v-model="currentData" :autosize="{ minRows:6, maxRows:12 }" type="textarea" placeholder="数据展示区" disabled />
     </div>
 </template>
 
@@ -22,7 +22,6 @@ export default {
                 return tmp;
             }
         })
-        console.log(currentData);
         return {
             currentData
         }

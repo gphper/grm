@@ -18,7 +18,6 @@
                     </el-select>
                 </el-col>
             </el-row>
-
         </div>
         <component :is="currentView" :data="props.data"></component>
     </div>
