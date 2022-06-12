@@ -2,6 +2,7 @@
     <el-menu
         default-active="2"
         class="el-menu-vertical-demo"
+        ref="connMenu"
         @open="handleOpen"
         @close="handleClose"
       >
@@ -9,11 +10,10 @@
           <template #title>
             <el-icon><i class="iconfont icon-server"></i></el-icon>
             <span>华为云地址连接</span>
-            
             <el-row>
                 <el-popover trigger="hover" content="关闭连接">
                     <template #reference>
-                        <el-button @click.stop="closeDb" type="danger" title="关闭连接" circle><i class="iconfont icon-close"></i></el-button>
+                        <el-button @click.stop="closeDb('1')" type="danger" title="关闭连接" circle><i class="iconfont icon-close"></i></el-button>
                     </template>
                 </el-popover>
 
@@ -28,6 +28,10 @@
                         <el-button @click.stop="infoServe('华为云地址连接')" type="primary" circle><i class="iconfont icon-info"></i></el-button>
                     </template>
                 </el-popover>
+            </el-row>
+            <el-row>
+                <i v-if="point == 'top'" class="iconfont icon-xiangshangjiantou"></i>
+                <i v-if="point == 'bottom'" class="iconfont icon-xiangxiajiantou"></i>
             </el-row>
           </template>
           
@@ -46,6 +50,9 @@ import {term,fitAddon} from '@/utils/terminal.js'
 export default{
     name:"MenuSection",
     setup(props,context){
+
+        let connMenu = ref(null);
+        let point = ref('')
 
         let data = ref([
             {
@@ -100,15 +107,19 @@ export default{
         
         const handleOpen = function(index){
                 genNode("tree#"+index,data);
+                point.value = "bottom";
         };
+
         const handleClose = function(){
-                console.log("close")
+                point.value = "top";
         };
-        const closeDb = function(){
-                console.log("close db")
+        
+        const closeDb = function(index){
+            connMenu.value.close(index);
+            point.value = "close";
         };
+        
         const terminalDb = function(name){
-            console.log(name)
             store.commit("setTagsItem", {
                 title: name,
                 name: name,
@@ -166,7 +177,9 @@ export default{
             closeDb,
             terminalDb,
             infoServe,
-            data
+            data,
+            connMenu,
+            point
         }
     }
 
@@ -178,7 +191,7 @@ export default{
 .el-row{
     padding-left: 15%;
 }
-::v-deep .el-sub-menu .el-menu{
+:deep(.el-sub-menu .el-menu){
     padding-left: 30px;
 }
 
@@ -188,7 +201,11 @@ export default{
     transform: rotate(0deg);
 }
 
-::v-deep .el-tree-node__content {
+:deep(.el-tree-node__content){
     height: 38px;
+}
+
+:deep(.el-sub-menu__icon-arrow){
+    display: none;
 }
 </style>
