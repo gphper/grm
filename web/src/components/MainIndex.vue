@@ -10,12 +10,7 @@
     <MainSection :tagData="tabs"></MainSection>
     </div>
 
-    <el-drawer
-      v-model="drawer"
-      :title="title"
-      >
-        <span>Hi, there!</span>
-    </el-drawer>
+    <ConnInfo :drawer="drawer" :title="title" @close="close"></ConnInfo>
 </div>
 </template>
 
@@ -23,12 +18,14 @@
 import { reactive, ref } from '@vue/reactivity'
 import MainSection from '@/components/MainSection.vue'
 import MenuSection from '@/components/MenuSection.vue'
+import ConnInfo from "@/components/index/ConnInfo.vue"
 
 export default {
     name:"MainIndex",
     components:{
         MainSection,
-        MenuSection
+        MenuSection,
+        ConnInfo
     },
     setup() {
 
@@ -74,6 +71,11 @@ export default {
       title.value = '【' + connec_id + '】服务信息';
     }
 
+    const close = ()=>{
+      drawer.value = false;
+      title.value = '';
+    }
+
     return{
       left,
       mid,
@@ -83,7 +85,8 @@ export default {
       drawer,
       title,
       resizeMouse,
-      showInfo
+      showInfo,
+      close
     }
   },
 }
