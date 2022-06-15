@@ -4,10 +4,14 @@ export default createStore({
   state: {
       tagsList: [],
       activeTag: '',
+      showDataForm: false,
   },
   mutations: {
       setCurrentTag(state,tag){
         state.activeTag = tag;
+      },
+      switchDataForm(state){
+        state.showDataForm = !state.showDataForm
       },
       delTagsItem(state,indexx) {
 

@@ -11,6 +11,7 @@
             <el-button text @click.stop="remove(node,data)" type="danger">删除</el-button>
             <el-button text @click.stop="detail(node.label)" type="primary">查看</el-button>
         </span>
+        <DataForm :visible="visible"></DataForm>
     </div>
 </template>
 
@@ -33,12 +34,13 @@ export default {
         
         const store = useStore()
 
-        const append = (data) => {
-            const newChild = { id: 10, label: 'testtest', children: [] }
-            if (!data.children) {
-                data.children = []
-            }
-            data.children.push(newChild)
+        const append = () => {
+            // const newChild = { id: 10, label: 'testtest', children: [] }
+            // if (!data.children) {
+            //     data.children = []
+            // }
+            // data.children.push(newChild)
+            store.commit("switchDataForm");
         }
 
         const remove = (node,data) => {

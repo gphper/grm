@@ -11,6 +11,7 @@
     </div>
 
     <ConnInfo :drawer="drawer" :title="title" @close="close"></ConnInfo>
+    <DataForm></DataForm>
 </div>
 </template>
 
@@ -19,13 +20,15 @@ import { reactive, ref } from '@vue/reactivity'
 import MainSection from '@/components/MainSection.vue'
 import MenuSection from '@/components/MenuSection.vue'
 import ConnInfo from "@/components/index/ConnInfo.vue"
+import DataForm from "@/components/index/DataForm.vue"
 
 export default {
     name:"MainIndex",
     components:{
         MainSection,
         MenuSection,
-        ConnInfo
+        ConnInfo,
+        DataForm
     },
     setup() {
 
