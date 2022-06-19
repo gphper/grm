@@ -6,11 +6,11 @@
         @open="handleOpen"
         @close="handleClose"
     >
-        <el-sub-menu class="db" index="1-1">
+        <el-sub-menu v-for="item,key in props.data" :key="key" class="db" :index="'1-'+key">
             <template #title>
                 <el-icon><i class="iconfont icon-database"></i></el-icon>
-                <span>DB0 (30)</span>
-                <el-row>
+                <span style="width:50px;">DB{{item.db}} ({{item.keys}})</span>
+                <el-row :id="'menu#1-'+key">
                     <el-popover trigger="hover" content="重载">
                         <template #reference>
                             <el-button @click.stop="closeDb('1')" type="success" title="重载" circle><i class="iconfont icon-zhongqi"></i></el-button>
@@ -29,13 +29,10 @@
                         </template>
                     </el-popover>
                 </el-row>
-                <el-row>
-                    <i v-if="point == 'top'" class="iconfont icon-xiangshangjiantou"></i>
-                    <i v-if="point == 'bottom'" class="iconfont icon-xiangxiajiantou"></i>
-                </el-row>
             </template>
-            <div id="tree#1-1"></div>
+            <div :id="'tree#1-'+key"></div>
     </el-sub-menu>
+    <!-- <MenuNode></MenuNode> -->
 </el-menu>
 
 </template>
@@ -54,8 +51,6 @@ export default {
         }
     },
     setup(props) {
-
-        let point = ref('')
 
         let dataS = ref([
             {
@@ -109,12 +104,11 @@ export default {
         ]);
 
         const handleOpen = function(index){
+            document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex")
             genNode("tree#"+index,dataS);
-            point.value = "bottom";
         };
 
         const handleClose = function(){
-            point.value = "top";
         };
 
         const genNode = function(id,dataS){
@@ -148,7 +142,6 @@ export default {
 
         return {
             props,
-            point,
             handleOpen,
             handleClose,
             genNode
@@ -164,5 +157,10 @@ export default {
 
 .el-sub-menu .el-menu {
     padding-left: 0px !important;
+}
+
+
+.el-sub-menu__icon-arrow {
+    display: flex;
 }
 </style>

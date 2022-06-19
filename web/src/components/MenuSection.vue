@@ -10,7 +10,7 @@
           <template #title>
             <el-icon><i class="iconfont icon-server"></i></el-icon>
             <span>华为云地址连接</span>
-            <el-row>
+            <el-row id="menu#1">
                 <el-popover trigger="hover" content="关闭连接">
                     <template #reference>
                         <el-button @click.stop="closeDb('1')" type="danger" title="关闭连接" circle><i class="iconfont icon-close"></i></el-button>
@@ -28,10 +28,6 @@
                         <el-button @click.stop="infoServe('华为云地址连接')" type="primary" circle><i class="iconfont icon-info"></i></el-button>
                     </template>
                 </el-popover>
-            </el-row>
-            <el-row>
-                <i v-if="point == 'top'" class="iconfont icon-xiangshangjiantou"></i>
-                <i v-if="point == 'bottom'" class="iconfont icon-xiangxiajiantou"></i>
             </el-row>
           </template>
           <div id="sub#1"></div>
@@ -53,21 +49,19 @@ export default{
     setup(props,context){
 
         let connMenu = ref(null);
-        let point = ref('')
         
         const handleOpen = function(index){
+            document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex")
             genSubMenu("sub#"+index,subData);
-            //主菜单操作
-            point.value = "bottom";
         };
 
         const handleClose = function(){
-            point.value = "top";
+            
         };
         
         const closeDb = function(index){
             connMenu.value.close(index);
-            point.value = "close";
+            document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:none")
         };
         
         const terminalDb = function(name){
@@ -135,7 +129,6 @@ export default{
             genSubMenu,
             subData,
             connMenu,
-            point
         }
     }
 
@@ -165,8 +158,4 @@ export default{
     display: none;
 }
 
-:deep(.db .el-sub-menu__title){
-    /* padding-left: 10px; */
-    padding-left: 15px !important;
-}
 </style>
