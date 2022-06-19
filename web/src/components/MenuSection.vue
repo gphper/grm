@@ -34,18 +34,19 @@
                 <i v-if="point == 'bottom'" class="iconfont icon-xiangxiajiantou"></i>
             </el-row>
           </template>
-          
-          <div id="tree#1"></div>
+          <div id="sub#1"></div>
         </el-sub-menu>
       </el-menu>
 </template>
 
 <script>
 import { createApp,h, ref } from '@vue/runtime-dom'
-import { ElTree,ElButton } from 'element-plus'
-import MenuTreeSolt from '@/components/MenuTreeSolt.vue'
+import { ElButton,ElMenu, ElRow, ElIcon,ElPopover, ElSubMenu } from 'element-plus'
+
 import store from '@/store/index.js'
 import {term,fitAddon} from '@/utils/terminal.js'
+import SubMenu from "@/components/index/SubMenu.vue"
+// import { ElMenu, ElSubMenu } from 'element-plus/lib/components'
 
 export default{
     name:"MenuSection",
@@ -53,65 +54,15 @@ export default{
 
         let connMenu = ref(null);
         let point = ref('')
-
-        let data = ref([
-            {
-                id: 1,
-                label: 'Level one 1',
-                children: [
-                {
-                    id: 4,
-                    label: 'Level two 1-1',
-                    children: [
-                    {
-                        id: 9,
-                        label: 'string_key',
-                    },
-                    {
-                        id: 10,
-                        label: 'list_key',
-                    },
-                    ],
-                },
-                ],
-            },
-            {
-                id: 2,
-                label: 'Level one 2',
-                children: [
-                {
-                    id: 5,
-                    label: 'Level two 2-1',
-                },
-                {
-                    id: 6,
-                    label: 'Level two 2-2',
-                },
-                ],
-            },
-            {
-                id: 3,
-                label: 'Level one 3',
-                children: [
-                {
-                    id: 7,
-                    label: 'Level two 3-1',
-                },
-                {
-                    id: 8,
-                    label: 'Level two 3-2',
-                },
-                ],
-            },
-            ]);
         
         const handleOpen = function(index){
-                genNode("tree#"+index,data);
-                point.value = "bottom";
+            genSubMenu("sub#"+index,subData);
+            //主菜单操作
+            point.value = "bottom";
         };
 
         const handleClose = function(){
-                point.value = "top";
+            point.value = "top";
         };
         
         const closeDb = function(index){
@@ -141,8 +92,19 @@ export default{
             context.emit("info",connec_id);
         };
         
-        const genNode = function(id,dataS){
-            const vdom = createApp({    
+        let subData = ref([
+            {
+                db:0,
+                keys:10
+            },
+            {
+                db:1,
+                keys:0
+            },
+        ]);
+
+        const genSubMenu = function(id,dataS){
+            const vdomx = createApp({
             setup() {
                 const data = dataS
                 return { data }
@@ -150,26 +112,19 @@ export default{
             render() {
             
                 return h(
-                    ElTree,
+                    SubMenu,
                     {
                         data:this.data,
                     },
-                    {
-                        default: ({node,data})=>h(MenuTreeSolt,
-                        {
-                            node,
-                            data
-                        })
-                    }
+                    {}
                 )
             }
             
             });
             
-            const parent = document.getElementById(id)
-            vdom.use(store).use(ElButton).mount(parent)
+            const parentx = document.getElementById(id)
+            vdomx.use(store).use(ElMenu).use(ElSubMenu).use(ElButton).use(ElIcon).use(ElRow).use(ElPopover).mount(parentx)
         };
-        
 
         return{
             handleOpen,
@@ -177,7 +132,8 @@ export default{
             closeDb,
             terminalDb,
             infoServe,
-            data,
+            genSubMenu,
+            subData,
             connMenu,
             point
         }
@@ -207,5 +163,10 @@ export default{
 
 :deep(.el-sub-menu__icon-arrow){
     display: none;
+}
+
+:deep(.db .el-sub-menu__title){
+    /* padding-left: 10px; */
+    padding-left: 15px !important;
 }
 </style>
