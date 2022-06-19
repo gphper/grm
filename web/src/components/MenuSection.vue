@@ -1,38 +1,40 @@
 <template>
-    <el-menu
-        default-active="2"
-        class="el-menu-vertical-demo"
-        ref="connMenu"
-        @open="handleOpen"
-        @close="handleClose"
-      >
-        <el-sub-menu index="1">
-          <template #title>
-            <el-icon><i class="iconfont icon-server"></i></el-icon>
-            <span>华为云地址连接</span>
-            <el-row id="menu#1">
-                <el-popover trigger="hover" content="关闭连接">
-                    <template #reference>
-                        <el-button @click.stop="closeDb('1')" type="danger" title="关闭连接" circle><i class="iconfont icon-close"></i></el-button>
-                    </template>
-                </el-popover>
+    <el-scrollbar>
+        <el-menu
+                default-active="2"
+                class="el-menu-vertical-demo"
+                ref="connMenu"
+                @open="handleOpen"
+                @close="handleClose"
+            >
+                <el-sub-menu index="1">
+                <template #title>
+                    <el-icon><i class="iconfont icon-server"></i></el-icon>
+                    <span>华为云地址连接</span>
+                    <el-row id="menu#1">
+                        <el-popover trigger="hover" content="关闭连接">
+                            <template #reference>
+                                <el-button @click.stop="closeDb('1')" type="danger" title="关闭连接" circle><i class="iconfont icon-close"></i></el-button>
+                            </template>
+                        </el-popover>
 
-                <el-popover trigger="hover" content="打开命令行">
-                    <template #reference>
-                        <el-button @click.stop="terminalDb('cmd')" type="success" circle><i class="iconfont icon-terminal"></i></el-button>
-                    </template>
-                </el-popover>
+                        <el-popover trigger="hover" content="打开命令行">
+                            <template #reference>
+                                <el-button @click.stop="terminalDb('cmd')" type="success" circle><i class="iconfont icon-terminal"></i></el-button>
+                            </template>
+                        </el-popover>
 
-                <el-popover trigger="hover" content="服务信息">
-                    <template #reference>
-                        <el-button @click.stop="infoServe('华为云地址连接')" type="primary" circle><i class="iconfont icon-info"></i></el-button>
-                    </template>
-                </el-popover>
-            </el-row>
-          </template>
-          <div id="sub#1"></div>
-        </el-sub-menu>
-      </el-menu>
+                        <el-popover trigger="hover" content="服务信息">
+                            <template #reference>
+                                <el-button @click.stop="infoServe('华为云地址连接')" type="primary" circle><i class="iconfont icon-info"></i></el-button>
+                            </template>
+                        </el-popover>
+                    </el-row>
+                </template>
+                <div id="sub#1"></div>
+                </el-sub-menu>
+        </el-menu>
+    </el-scrollbar>
 </template>
 
 <script>
