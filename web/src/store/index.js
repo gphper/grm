@@ -3,6 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
       tagsList: [],
+      connList: [],
       activeTag: '',
       showDataForm: false,
   },
@@ -80,6 +81,9 @@ export default createStore({
       // 侧边栏折叠
       handleCollapse(state, data) {
           state.collapse = data;
+      },
+      addConn(state,data){
+          state.connList.push(data)
       }
   },
   actions: {},

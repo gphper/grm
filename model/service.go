@@ -8,10 +8,10 @@ package model
 type ServiceConfigReq struct {
 	ServiceName string `form:"service_name" label:"连接名称" json:"service_name" binding:"required"`
 	Host        string `form:"host" label:"IP地址" json:"host" binding:"required"`
-	Port        string `form:"port" label:"端口号" json:"port" binding:"required"`
+	Port        int    `form:"port" label:"端口号" json:"port" binding:"required"`
 	Password    string `form:"password" label:"密码" json:"password"`
 	UseSsh      bool   `form:"use_ssh" json:"use_ssh"`
-	SSHConfig   SSHConfig
+	SSHConfig
 }
 
 type ServiceSwitchReq struct {
@@ -42,7 +42,7 @@ type DelKeyReq struct {
 
 type SSHConfig struct {
 	SshHost     string `form:"ssh_host" json:"ssh_host"`
-	SshPort     string `form:"ssh_port" json:"ssh_port"`
+	SshPort     int    `form:"ssh_port" json:"ssh_port"`
 	SshUsername string `form:"ssh_username" json:"ssh_username"`
 	SshPassword string `form:"ssh_password" json:"ssh_password"`
 }

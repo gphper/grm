@@ -24,14 +24,14 @@ func AddServiceConf(conf model.ServiceConfigReq) (err error) {
 	var cli *ssh.Client
 
 	optionConfig := &redis.Options{
-		Addr:     conf.Host + ":" + conf.Port,
+		Addr:     conf.Host + ":" + string(conf.Port),
 		Password: conf.Password,
 		DB:       0,
 	}
 
 	ctx := context.Background()
 	if conf.UseSsh {
-		cli, err = common.GetSSHClient(conf.SSHConfig.SshUsername, conf.SSHConfig.SshPassword, conf.SSHConfig.SshHost+":"+conf.SSHConfig.SshPort)
+		cli, err = common.GetSSHClient(conf.SSHConfig.SshUsername, conf.SSHConfig.SshPassword, conf.SSHConfig.SshHost+":"+string(conf.SSHConfig.SshPort))
 		if nil != err {
 			return
 		}

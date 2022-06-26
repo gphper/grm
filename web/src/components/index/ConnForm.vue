@@ -7,16 +7,16 @@
             label-width="120px"
             status-icon
         >
-            <el-form-item label="连接名称" prop="connec_name">
-                <el-input v-model="ruleForm.connec_name"/>
+            <el-form-item label="连接名称" prop="service_name">
+                <el-input v-model="ruleForm.service_name"/>
             </el-form-item>
 
             <el-form-item label="地址">
                 <el-row :gutter="20">
                 <el-col :span="12">
                     <el-input
-                    v-model="ruleForm.ip"
-                    label="Ip"
+                    v-model="ruleForm.host"
+                    label="Host"
                     placeholder="First Name"
                     />
                 </el-col>
@@ -24,7 +24,7 @@
                     <el-input
                     v-model="ruleForm.port"
                     label="Port"
-                    placeholder="Last Name"
+                    placeholder="Port"
                     />
                 </el-col>
                 </el-row>
@@ -35,14 +35,14 @@
             </el-form-item>
 
             <el-form-item label="启用SSH连接">
-                <el-switch v-model="ruleForm.ssh" />
+                <el-switch v-model="ruleForm.use_ssh" />
             </el-form-item>
 
-            <el-form-item v-if="ruleForm.ssh" label="SSH地址">
+            <el-form-item v-if="ruleForm.use_ssh" label="SSH地址">
                 <el-row :gutter="20">
                 <el-col :span="12">
                     <el-input
-                    v-model="ruleForm.ssh_ip"
+                    v-model="ruleForm.ssh_host"
                     label="SshIp"
                     placeholder="First Name"
                     />
@@ -56,10 +56,10 @@
                 </el-col>
                 </el-row>
             </el-form-item>
-            <el-form-item v-if="ruleForm.ssh" label="SSH用户" prop="ssh_username">
+            <el-form-item v-if="ruleForm.use_ssh" label="SSH用户" prop="ssh_username">
                 <el-input v-model="ruleForm.ssh_username"/>
             </el-form-item>
-            <el-form-item v-if="ruleForm.ssh" label="SSH密码" prop="ssh_password">
+            <el-form-item v-if="ruleForm.use_ssh" label="SSH密码" prop="ssh_password">
                 <el-input type="password" show-password v-model="ruleForm.ssh_password"/>
             </el-form-item>
 
@@ -75,6 +75,8 @@
 <script>
 import { reactive, ref } from "@vue/reactivity"
 import { watch } from '@vue/runtime-core';
+import { addConn } from "@/api/base.js"
+import { useStore } from 'vuex';
 
 export default {
     name:"ConnForm",
@@ -84,15 +86,16 @@ export default {
         }
     },
     setup(props,context) {
+        const store = useStore()
         let dialogFormVisible = ref(false)
         let ruleFormRef = ref(null);
         let ruleForm = reactive({
-            connec_name: '',
-            ip:'127.0.0.1',
+            service_name: '',
+            host:'127.0.0.1',
             port:2379,
             password:'',
-            ssh: false,
-            ssh_ip:'127.0.0.1',
+            use_ssh: false,
+            ssh_host:'127.0.0.1',
             ssh_port:22,
             ssh_username:'',
             ssh_password:''
@@ -114,7 +117,11 @@ export default {
         }
 
         const onSubmit = ()=>{
-            console.log(ruleForm);
+            addConn(ruleForm).then((res) => {
+                store.commit("addConn",res.data)
+            });
+            dialogFormVisible.value = false
+            ruleFormRef.value.resetFields();
         }
 
         const onReset = ()=>{

@@ -1,13 +1,12 @@
 <template>
     <el-scrollbar>
         <el-menu
-                default-active="2"
                 class="el-menu-vertical-demo"
                 ref="connMenu"
                 @open="handleOpen"
                 @close="handleClose"
             >
-                <el-sub-menu :index="key" v-for="item,key in connetions" :key="key">
+                <el-sub-menu :index="key+''" v-for="item,key in connetions" :key="key">
                 
                 <template #title>
                     <el-icon><i class="iconfont icon-server"></i></el-icon>
@@ -15,7 +14,7 @@
                     <el-row :id="'menu#'+key">
                         <el-popover trigger="hover" content="关闭连接">
                             <template #reference>
-                                <el-button @click.stop="closeDb('1')" type="danger" title="关闭连接" circle><i class="iconfont icon-close"></i></el-button>
+                                <el-button @click.stop="closeDb(key)" type="danger" title="关闭连接" circle><i class="iconfont icon-close"></i></el-button>
                             </template>
                         </el-popover>
 
@@ -39,13 +38,12 @@
 </template>
 
 <script>
-import { createApp,h, onMounted, ref } from '@vue/runtime-dom'
+import { computed, createApp,h, onMounted, ref } from '@vue/runtime-dom'
 import { ElButton,ElMenu, ElRow, ElIcon,ElPopover, ElSubMenu } from 'element-plus'
-
-import store from '@/store/index.js'
 import {term,fitAddon} from '@/utils/terminal.js'
 import SubMenu from "@/components/index/SubMenu.vue"
 import {getConnList} from "@/api/base.js"
+import { useStore } from 'vuex'
 
 export default{
     name:"MenuSection",
@@ -53,17 +51,15 @@ export default{
 
         let connMenu = ref(null);
         
-        let connetions = ref([
-            {
-                key:"sdasdas",
-                name:"asdasdasd"
-            }
-        ])
+        const store = useStore()
+
+        const connetions = computed(() => store.state.connList);
 
         const handleOpen = function(index){
-            console.log(index)
-            document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex")
-            genSubMenu("sub#"+index,subData);
+            if(!document.getElementById("menu#"+index).nextElementSibling.getAttribute("style")){
+                document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex")
+                genSubMenu("sub#"+index,subData);
+            }
         };
 
         const handleClose = function(){
@@ -71,8 +67,9 @@ export default{
         };
         
         const closeDb = function(index){
-            connMenu.value.close(index);
-            document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:none")
+            connMenu.value.close(index+'');
+            // document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:none")
+            document.getElementById("menu#"+index).nextElementSibling.removeAttribute("style");
         };
         
         const terminalDb = function(name){
@@ -109,6 +106,7 @@ export default{
         ]);
 
         const genSubMenu = function(id,dataS){
+
             const vdomx = createApp({
             setup() {
                 const data = dataS
@@ -133,7 +131,7 @@ export default{
 
         onMounted(()=>{
             getConnList().then((res) => {
-                connetions.value = res.data
+                store.state.connList = res.data
             });
         })
 

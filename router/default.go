@@ -32,6 +32,7 @@ func Init() *gin.Engine {
 	connRouter := app.Group("/conn")
 	{
 		connRouter.GET("/list", controllers.Cc.List)
+		connRouter.POST("/add", controllers.Cc.Add)
 	}
 
 	return router

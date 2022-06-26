@@ -7,3 +7,11 @@ export const getConnList = query => {
         params: query
     });
 };
+
+export const addConn = data => {
+    return request({
+        url: 'api/conn/add',
+        method: 'post',
+        data
+    });
+};
