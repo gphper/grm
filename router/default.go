@@ -22,7 +22,7 @@ func Init() *gin.Engine {
 	store := cookie.NewStore([]byte("goredismanagerphper"))
 	router.Use(middleware.StaticCache(), gzip.Gzip(gzip.DefaultCompression), sessions.Sessions("goredismanager", store))
 
-	app := router.Group("/")
+	app := router.Group("/api")
 
 	if len(global.Accounts) > 0 {
 		//用户验证

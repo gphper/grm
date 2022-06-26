@@ -6,11 +6,10 @@
 package global
 
 import (
-	"context"
+	"crypto/md5"
+	"encoding/hex"
 	"flag"
-	"grm/common"
 	"grm/model"
-	"net"
 	"path"
 	"strings"
 
@@ -38,6 +37,7 @@ type RedisService struct {
 	Config       *redis.Options
 	UseSsh       bool
 	SSHConfig    model.SSHConfig
+	Client       *redis.Client
 }
 
 func init() {
@@ -83,7 +83,8 @@ func init() {
 		slice_conns := connections.([]interface{})
 
 		for _, v := range slice_conns {
-			vv := v.(map[interface{}]interface{})
+
+			vv := v.(map[string]interface{})
 
 			optionConfig := &redis.Options{
 				Addr:     vv["host"].(string) + ":" + vv["port"].(string),
@@ -91,34 +92,39 @@ func init() {
 				DB:       0,
 			}
 
-			if vv["usessh"] == 1 {
-				sshConfig := vv["sshconfig"].(map[interface{}]interface{})
-				cli, err := common.GetSSHClient(sshConfig["sshusername"].(string), sshConfig["sshpassword"].(string), sshConfig["sshhost"].(string)+":"+sshConfig["sshport"].(string))
-				if nil != err {
-					panic(err)
-				}
-				optionConfig.Dialer = func(ctx context.Context, network, addr string) (net.Conn, error) {
-					return cli.Dial(network, addr)
-				}
-			}
+			// 生成md5 key
+			m := md5.New()
+			m.Write([]byte(vv["servicename"].(string)))
+			key := hex.EncodeToString(m.Sum(nil))
 
-			client := redis.NewClient(optionConfig)
+			// if vv["usessh"].(bool) {
+			// 	sshConfig := vv["sshconfig"].(map[string]interface{})
+			// 	cli, err := common.GetSSHClient(sshConfig["sshusername"].(string), sshConfig["sshpassword"].(string), sshConfig["sshhost"].(string)+":"+sshConfig["sshport"].(string))
+			// 	if nil != err {
+			// 		panic(err)
+			// 	}
+			// 	optionConfig.Dialer = func(ctx context.Context, network, addr string) (net.Conn, error) {
+			// 		return cli.Dial(network, addr)
+			// 	}
+			// }
 
-			client.AddHook(common.RedisLog{
-				Logger: common.NewLogger(vv["servicename"].(string)),
-			})
+			// client := redis.NewClient(optionConfig)
 
-			_, err := client.Ping(context.Background()).Result()
-			if err != nil {
-				panic(vv["servicename"].(string) + "连接失败:" + err.Error())
-			}
+			// client.AddHook(common.RedisLog{
+			// 	Logger: common.NewLogger(vv["servicename"].(string)),
+			// })
+
+			// _, err := client.Ping(context.Background()).Result()
+			// if err != nil {
+			// 	panic(vv["servicename"].(string) + "连接失败:" + err.Error())
+			// }
 
 			RsSlice := RedisService{
 				RedisService: vv["servicename"].(string),
 				Config:       optionConfig,
 			}
 
-			RedisServiceStorage[vv["servicename"].(string)] = RsSlice
+			RedisServiceStorage[key] = RsSlice
 
 		}
 
@@ -128,7 +134,7 @@ func init() {
 	if accounts != nil {
 		slice_account := accounts.([]interface{})
 		for _, account := range slice_account {
-			accountMap := account.(map[interface{}]interface{})
+			accountMap := account.(map[string]interface{})
 			Accounts[accountMap["account"].(string)] = accountMap["password"].(string)
 		}
 	}

@@ -1,8 +1,8 @@
 import request from '@/utils/request';
 
-export const getDBs = query => {
+export const getConnList = query => {
     return request({
-        url: 'api/getdb',
+        url: 'api/conn/list',
         method: 'get',
         params: query
     });

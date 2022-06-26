@@ -21,37 +21,18 @@ const AJAXFAIL int = 0
 type BaseController struct {
 }
 
-func (Base *BaseController) Success(c *gin.Context, url string, message string) {
-	c.JSON(http.StatusOK, gin.H{
-		"status":      true,
-		"msg":         message,
-		"url":         url,
-		"iframe_jump": false,
-	})
-}
-
 func (Base *BaseController) Error(c *gin.Context, message string) {
 	c.JSON(http.StatusOK, gin.H{
-		"status": false,
+		"status": 0,
 		"msg":    message,
 	})
 }
 
-func (Base *BaseController) AjaxReturn(c *gin.Context, code int, obj interface{}) {
-
+func (Base *BaseController) Success(c *gin.Context, code int, obj interface{}) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": code,
 		"data":   obj,
 	})
-}
-
-func (Base BaseController) ErrorHtml(c *gin.Context, err error) {
-
-	c.HTML(http.StatusOK, "toast/error.html", gin.H{
-		"title": "ERROR",
-		"msg":   err.Error(),
-	})
-
 }
 
 func (Base *BaseController) FormBind(c *gin.Context, obj interface{}) error {

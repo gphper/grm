@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { ElMessage } from 'element-plus';
 
 const service = axios.create({
-    baseURL: '',
+    baseURL: '/api',
     timeout: 5000
 });
 
@@ -18,6 +19,12 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     response => {
         if (response.status === 200) {
+            if(!response.data.status){
+                ElMessage({
+                    message: response.data.msg,
+                    type: 'error',
+                })
+            }
             return response.data;
         } else {
             Promise.reject();
