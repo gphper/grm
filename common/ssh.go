@@ -24,12 +24,20 @@ func GetSSHClient(user, pass, addr string) (*ssh.Client, error) {
 		},
 	}
 
-	sshConn, err := ssh.Dial("tcp", addr, config)
+	sshConn, err := net.Dial("tcp", addr)
 	if nil != err {
-		fmt.Println(err)
+		fmt.Println("net dial err: ", err)
 		return nil, err
 	}
 
-	fmt.Println("world")
-	return sshConn, nil
+	clientConn, chans, reqs, err := ssh.NewClientConn(sshConn, addr, config)
+	if nil != err {
+		sshConn.Close()
+		fmt.Println("ssh client conn err: ", err)
+		return nil, err
+	}
+
+	client := ssh.NewClient(clientConn, chans, reqs)
+
+	return client, nil
 }

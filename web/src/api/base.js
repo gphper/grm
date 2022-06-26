@@ -15,3 +15,11 @@ export const addConn = data => {
         data
     });
 };
+
+export const testConn = data => {
+    return request({
+        url: 'api/conn/test',
+        method: 'post',
+        data
+    });
+};

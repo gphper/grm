@@ -25,6 +25,7 @@
                     v-model="ruleForm.port"
                     label="Port"
                     placeholder="Port"
+                    type="number"
                     />
                 </el-col>
                 </el-row>
@@ -64,7 +65,7 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button type="success" @click="testConn">测试连接</el-button>
+                <el-button type="success" @click="testConns">测试连接</el-button>
                 <el-button type="primary" @click="onSubmit ">确定</el-button>
             </el-form-item>
         </el-form>
@@ -75,8 +76,9 @@
 <script>
 import { reactive, ref } from "@vue/reactivity"
 import { watch } from '@vue/runtime-core';
-import { addConn } from "@/api/base.js"
+import { addConn,testConn } from "@/api/base.js"
 import { useStore } from 'vuex';
+import { ElMessage } from 'element-plus';
 
 export default {
     name:"ConnForm",
@@ -92,11 +94,11 @@ export default {
         let ruleForm = reactive({
             service_name: '',
             host:'127.0.0.1',
-            port:2379,
+            port:'6379',
             password:'',
             use_ssh: false,
             ssh_host:'127.0.0.1',
-            ssh_port:22,
+            ssh_port:'22',
             ssh_username:'',
             ssh_password:''
         })
@@ -112,8 +114,16 @@ export default {
             ],
         }
 
-        const testConn = ()=>{
-            console.log(ruleForm);
+        const testConns = ()=>{
+            console.log(ruleForm)
+            testConn(ruleForm).then((res) => {
+                if(res.status){
+                    ElMessage({
+                        message: "连接成功",
+                        type: 'success',
+                    })
+                }
+            });
         }
 
         const onSubmit = ()=>{
@@ -142,7 +152,7 @@ export default {
             rules,
             ruleFormRef,
             ruleForm,
-            testConn,
+            testConns,
             onSubmit,
             onReset
         }

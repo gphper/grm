@@ -1,13 +1,18 @@
 package controllers
 
 import (
+	"context"
 	"crypto/md5"
 	"encoding/hex"
+	"grm/common"
 	"grm/global"
 	"grm/model"
+	"net"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v9"
 )
 
 type connController struct {
@@ -60,4 +65,46 @@ func (con connController) Add(c *gin.Context) {
 		"key":  key,
 		"name": conf.ServiceName,
 	})
+}
+
+// 测试连接
+func (con connController) TestConn(c *gin.Context) {
+	var conf model.ServiceConfigReq
+	err := con.FormBind(c, &conf)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	optionConfig := &redis.Options{
+		Addr:     conf.Host + ":" + conf.Port,
+		Password: conf.Password,
+		DB:       0,
+	}
+
+	if conf.UseSsh {
+		optionConfig.DialTimeout = -1
+		optionConfig.WriteTimeout = -1
+		optionConfig.ReadTimeout = -1
+		cli, err := common.GetSSHClient(conf.SshUsername, conf.SshPassword, conf.SshHost+":"+conf.SshPort)
+		if nil != err {
+			panic(err)
+		}
+		optionConfig.Dialer = func(ctx context.Context, network, addr string) (net.Conn, error) {
+			return cli.Dial(network, addr)
+		}
+	} else {
+		optionConfig.DialTimeout = 5 * time.Second
+	}
+
+	client := redis.NewClient(optionConfig)
+	defer client.Close()
+
+	_, err = client.Ping(context.Background()).Result()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	con.Success(c, http.StatusOK, "")
 }
