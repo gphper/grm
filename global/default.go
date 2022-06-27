@@ -10,6 +10,7 @@ import (
 	"encoding/hex"
 	"flag"
 	"grm/model"
+	"net"
 	"path"
 	"strings"
 
@@ -87,7 +88,7 @@ func init() {
 			vv := v.(map[string]interface{})
 
 			optionConfig := &redis.Options{
-				Addr:     vv["host"].(string) + ":" + vv["port"].(string),
+				Addr:     net.JoinHostPort(vv["host"].(string), vv["port"].(string)),
 				Password: vv["password"].(string),
 				DB:       0,
 			}

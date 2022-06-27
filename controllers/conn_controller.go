@@ -77,7 +77,7 @@ func (con connController) TestConn(c *gin.Context) {
 	}
 
 	optionConfig := &redis.Options{
-		Addr:     conf.Host + ":" + conf.Port,
+		Addr:     net.JoinHostPort(conf.Host, conf.Port),
 		Password: conf.Password,
 		DB:       0,
 	}

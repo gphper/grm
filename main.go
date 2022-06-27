@@ -5,6 +5,7 @@ import (
 	"grm/global"
 	"grm/router"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,7 +17,7 @@ func main() {
 	router := router.Init()
 
 	srv := &http.Server{
-		Addr:    global.HostName + ":" + global.Port,
+		Addr:    net.JoinHostPort(global.HostName, global.Port),
 		Handler: router,
 	}
 
