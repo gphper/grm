@@ -2,7 +2,7 @@
   <img src="https://user-images.githubusercontent.com/18718299/176125402-04261517-be75-43a2-8687-3d5e8f9397e9.png" alt="grm" width="140">
 </p>
 
-![vue3](http://img.shields.io/badge/vue3-element--plus-blue.svg?style=flat-square) ![go](http://img.shields.io/badge/go-gin-blue.svg?style=flat-square)
+![vue3](http://img.shields.io/badge/vue3-element--plus-blue.svg?style=flat-square) ![go](http://img.shields.io/badge/go-gin-blue.svg?style=flat-square) ![visitor](https://visitor-badge.glitch.me/badge?page_id=gphper.grm)
 
 ### 介绍 [Introduction]
 
