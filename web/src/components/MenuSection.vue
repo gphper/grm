@@ -57,16 +57,11 @@ export default{
         const connetions = computed(() => store.state.connList);
 
         const handleOpen = function(index){
-            console.log(index)
             if(!document.getElementById("menu#"+index).nextElementSibling.getAttribute("style")){
-                document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex");
-
                 openDb({"index":index}).then((res) => {
-                    console.log(res)
-                    subData.value = res.data
+                    genSubMenu("sub#"+index,res.data);
+                    document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex");
                 });
-
-                genSubMenu("sub#"+index,subData);
             }
         };
 
@@ -101,18 +96,7 @@ export default{
         const infoServe = function(connec_id){
             context.emit("info",connec_id);
         };
-        
-        let subData = ref([
-            {
-                db:0,
-                keys:10
-            },
-            {
-                db:1,
-                keys:0
-            },
-        ]);
-
+    
         const genSubMenu = function(id,dataS){
 
             const vdomx = createApp({
@@ -150,7 +134,6 @@ export default{
             terminalDb,
             infoServe,
             genSubMenu,
-            subData,
             connMenu,
             connetions
         }
