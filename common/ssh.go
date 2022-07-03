@@ -8,6 +8,7 @@ package common
 import (
 	"fmt"
 	"net"
+	"time"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -22,6 +23,7 @@ func GetSSHClient(user, pass, addr string) (*ssh.Client, error) {
 		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
 			return nil
 		},
+		Timeout: 10 * time.Second,
 	}
 
 	sshConn, err := net.Dial("tcp", addr)

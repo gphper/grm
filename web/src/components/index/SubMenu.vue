@@ -9,7 +9,7 @@
         <el-sub-menu v-for="item,key in props.data" :key="key" class="db" :index="'1-'+key">
             <template #title>
                 <el-icon><i class="iconfont icon-database"></i></el-icon>
-                <span style="width:50px;">DB{{item.db}} ({{item.keys}})</span>
+                <span style="width:50px;">{{item.db}} ({{item.keys}})</span>
                 <el-row :id="'menu#1-'+key">
                     <el-popover trigger="hover" content="重载">
                         <template #reference>

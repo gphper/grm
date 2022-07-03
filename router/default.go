@@ -36,5 +36,10 @@ func Init() *gin.Engine {
 		connRouter.POST("/test", controllers.Cc.TestConn)
 	}
 
+	indexRouter := app.Group("/index")
+	{
+		indexRouter.POST("/open", controllers.Ic.Open)
+	}
+
 	return router
 }

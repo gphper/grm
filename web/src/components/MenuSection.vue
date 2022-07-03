@@ -6,15 +6,15 @@
                 @open="handleOpen"
                 @close="handleClose"
             >
-                <el-sub-menu :index="key+''" v-for="item,key in connetions" :key="key">
+                <el-sub-menu :index="key+'_'+item.key" v-for="item,key in connetions" :key="key">
                 
                 <template #title>
                     <el-icon><i class="iconfont icon-server"></i></el-icon>
                     <span style="width:60px;">{{item.name}}</span>
-                    <el-row :id="'menu#'+key">
+                    <el-row :id="'menu#'+key+'_'+item.key">
                         <el-popover trigger="hover" content="关闭连接">
                             <template #reference>
-                                <el-button @click.stop="closeDb(key)" type="danger" title="关闭连接" circle><i class="iconfont icon-close"></i></el-button>
+                                <el-button @click.stop="closeDb(key+'_'+item.key)" type="danger" title="关闭连接" circle><i class="iconfont icon-close"></i></el-button>
                             </template>
                         </el-popover>
 
@@ -31,7 +31,7 @@
                         </el-popover>
                     </el-row>
                 </template>
-                <div :id="'sub#'+key"></div>
+                <div :id="'sub#'+key+'_'+item.key"></div>
                 </el-sub-menu>
         </el-menu>
     </el-scrollbar>
@@ -43,6 +43,7 @@ import { ElButton,ElMenu, ElRow, ElIcon,ElPopover, ElSubMenu } from 'element-plu
 import {term,fitAddon} from '@/utils/terminal.js'
 import SubMenu from "@/components/index/SubMenu.vue"
 import {getConnList} from "@/api/base.js"
+import {openDb} from "@/api/index.js"
 import { useStore } from 'vuex'
 
 export default{
@@ -56,8 +57,15 @@ export default{
         const connetions = computed(() => store.state.connList);
 
         const handleOpen = function(index){
+            console.log(index)
             if(!document.getElementById("menu#"+index).nextElementSibling.getAttribute("style")){
-                document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex")
+                document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex");
+
+                openDb({"index":index}).then((res) => {
+                    console.log(res)
+                    subData.value = res.data
+                });
+
                 genSubMenu("sub#"+index,subData);
             }
         };

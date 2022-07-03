@@ -9,93 +9,39 @@ import (
 	"context"
 	"grm/common"
 	"grm/global"
-	"grm/model"
 	"net"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v9"
-	"golang.org/x/crypto/ssh"
 )
 
-func AddServiceConf(conf model.ServiceConfigReq) (err error) {
-	var cli *ssh.Client
-
-	optionConfig := &redis.Options{
-		Addr:     net.JoinHostPort(conf.Host, conf.Port),
-		Password: conf.Password,
-		DB:       0,
-	}
+// 生成redis客户端
+func NewRedisClient(conf global.RedisService) (*redis.Client, error) {
 
 	ctx := context.Background()
+	optConf := conf.Config
 	if conf.UseSsh {
-		cli, err = common.GetSSHClient(conf.SSHConfig.SshUsername, conf.SSHConfig.SshPassword, net.JoinHostPort(conf.SSHConfig.SshHost, conf.SSHConfig.SshPort))
+		cli, err := common.GetSSHClient(conf.SSHConfig.SshUsername, conf.SSHConfig.SshPassword, net.JoinHostPort(conf.SSHConfig.SshHost, conf.SSHConfig.SshPort))
 		if nil != err {
-			return
+			return nil, err
 		}
-		optionConfig.Dialer = func(ctx context.Context, network, addr string) (net.Conn, error) {
+		optConf.DialTimeout = -1
+		optConf.WriteTimeout = -1
+		optConf.ReadTimeout = -1
+		optConf.Dialer = func(ctx context.Context, network, addr string) (net.Conn, error) {
 			return cli.Dial(network, addr)
 		}
 	}
 
-	client := redis.NewClient(optionConfig)
+	client := redis.NewClient(optConf)
 
 	client.AddHook(common.RedisLog{
-		Logger: common.NewLogger(conf.ServiceName),
+		Logger: common.NewLogger(conf.RedisService),
 	})
 
-	_, err = client.Ping(ctx).Result()
+	_, err := client.Ping(ctx).Result()
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	RsSlice := global.RedisService{
-		RedisService: conf.ServiceName,
-		Config:       optionConfig,
-		UseSsh:       conf.UseSsh,
-		SSHConfig:    conf.SSHConfig,
-	}
-
-	global.RedisServiceStorage[conf.ServiceName] = RsSlice
-
-	//设置全局参数
-	global.UseClient.ConnectName = conf.ServiceName
-	global.UseClient.Db = 0
-	global.UseClient.Client = client
-
-	return nil
-}
-
-func ServiceSwitch(conf model.ServiceSwitchReq) (err error) {
-	config := global.RedisServiceStorage[conf.Service]
-	config.Config.DB = conf.Db
-
-	client := redis.NewClient(config.Config)
-	_, err = client.Ping(context.Background()).Result()
-	if err != nil {
-		return err
-	}
-
-	global.UseClient.ConnectName = conf.Service
-	global.UseClient.Db = conf.Db
-	global.UseClient.Client = redis.NewClient(config.Config)
-
-	return nil
-}
-
-func SearchKeyType(conf model.RedisKeyReq, c *gin.Context) (keys []string, cursor uint64, err error) {
-
-	val, _ := c.Get("username")
-	ctx := context.WithValue(context.Background(), "username", val)
-
-	if conf.SearchType == 1 {
-		//查询指定值
-		keys = append(keys, conf.SearchKey)
-
-		_, err = global.UseClient.Client.Exists(ctx, conf.SearchKey).Result()
-		return
-	} else {
-		//模糊匹配
-		keys, cursor, err = global.UseClient.Client.Scan(ctx, conf.Course, conf.SearchKey, global.Limit).Result()
-	}
-	return
+	return client, nil
 }
