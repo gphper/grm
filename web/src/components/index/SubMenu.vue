@@ -6,11 +6,11 @@
         @open="handleOpen"
         @close="handleClose"
     >
-        <el-sub-menu v-for="item,key in props.data" :key="key" class="db" :index="'1-'+key">
+        <el-sub-menu v-for="item,key in props.data" :key="key" class="db" :index="key+'-'+item.servicekey">
             <template #title>
                 <el-icon><i class="iconfont icon-database"></i></el-icon>
                 <span style="width:50px;">{{item.db}} ({{item.keys}})</span>
-                <el-row :id="'menu#1-'+key">
+                <el-row :id="'menu#'+key+'-'+item.servicekey">
                     <el-popover trigger="hover" content="重载">
                         <template #reference>
                             <el-button @click.stop="closeDb('1')" type="success" title="重载" circle><i class="iconfont icon-zhongqi"></i></el-button>
@@ -30,7 +30,7 @@
                     </el-popover>
                 </el-row>
             </template>
-            <div :id="'tree#1-'+key"></div>
+            <div :id="'tree#'+key+'-'+item.servicekey"></div>
     </el-sub-menu>
     <!-- <MenuNode></MenuNode> -->
 </el-menu>
@@ -38,9 +38,10 @@
 </template>
 
 <script>
-import { createApp,h, ref } from '@vue/runtime-dom'
+import { createApp,h } from '@vue/runtime-dom'
 import MenuTreeSolt from '@/components/MenuTreeSolt.vue'
 import { ElTree,ElButton } from 'element-plus'
+import {getKeys} from '@/api/index.js'
 import store from '@/store/index.js'
 
 export default {
@@ -52,60 +53,11 @@ export default {
     },
     setup(props) {
 
-        let dataS = ref([
-            {
-                id: 1,
-                label: 'Level one 1',
-                children: [
-                {
-                    id: 4,
-                    label: 'Level two 1-1',
-                    children: [
-                    {
-                        id: 9,
-                        label: 'string_key',
-                    },
-                    {
-                        id: 10,
-                        label: 'list_key',
-                    },
-                    ],
-                },
-                ],
-            },
-            {
-                id: 2,
-                label: 'Level one 2',
-                children: [
-                {
-                    id: 5,
-                    label: 'Level two 2-1',
-                },
-                {
-                    id: 6,
-                    label: 'Level two 2-2',
-                },
-                ],
-            },
-            {
-                id: 3,
-                label: 'Level one 3',
-                children: [
-                {
-                    id: 7,
-                    label: 'Level two 3-1',
-                },
-                {
-                    id: 8,
-                    label: 'Level two 3-2',
-                },
-                ],
-            },
-        ]);
-
         const handleOpen = function(index){
-            document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex")
-            genNode("tree#"+index,dataS);
+            getKeys({"index":index}).then((res) => {
+                document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex")
+                genNode("tree#"+index,res.data);
+            });
         };
 
         const handleClose = function(){

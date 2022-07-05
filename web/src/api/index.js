@@ -7,3 +7,11 @@ export const openDb = data => {
         data
     });
 };
+
+export const getKeys = data => {
+    return request({
+        url: 'api/index/getkeys',
+        method: 'post',
+        data
+    });
+};

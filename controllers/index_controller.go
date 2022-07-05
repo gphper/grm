@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"grm/common"
 	"grm/global"
 	"grm/model"
 	"grm/service"
@@ -24,8 +25,9 @@ var Ic = indexController{}
 func (con indexController) Open(c *gin.Context) {
 
 	type dbInfo struct {
-		DbName string `json:"db"`
-		DbNum  string `json:"keys"`
+		DbName     string `json:"db"`
+		DbNum      string `json:"keys"`
+		ServiceKey string `json:"servicekey"`
 	}
 
 	var req model.OpenDbReq
@@ -44,6 +46,8 @@ func (con indexController) Open(c *gin.Context) {
 		con.Error(c, err.Error())
 		return
 	}
+	redisServer.Client = client
+	global.RedisServiceStorage[keys[1]] = redisServer
 
 	result, err := client.Info(context.Background(), "Keyspace").Result()
 	if err != nil {
@@ -81,10 +85,53 @@ func (con indexController) Open(c *gin.Context) {
 		}
 
 		dbInfos[i] = dbInfo{
-			DbName: key,
-			DbNum:  num,
+			DbName:     key,
+			DbNum:      num,
+			ServiceKey: keys[1],
 		}
 	}
 
 	con.Success(c, http.StatusOK, dbInfos)
+}
+
+// 获取所有keys
+func (con indexController) GetKeys(c *gin.Context) {
+	var req model.GetKeysReq
+
+	err := con.FormBind(c, &req)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	dbInfo := strings.Split(req.Index, "-")
+	index, _ := strconv.Atoi(dbInfo[0])
+	client := global.RedisServiceStorage[dbInfo[1]].Client
+
+	err = client.Do(context.Background(), "select", index).Err()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	keys, _, err := client.Scan(context.Background(), 0, "*", 10000).Result()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	fmt.Println(keys)
+	gen := common.NewTrie()
+
+	for _, v := range keys {
+
+		stringSlice := strings.Split(v, ":")
+
+		gen.Insert(stringSlice, v)
+
+	}
+
+	common.GetOne(gen.Root.Children, "")
+
+	con.Success(c, http.StatusOK, common.GetOne(gen.Root.Children, ""))
 }

@@ -45,8 +45,8 @@ func (trie *Trie) Insert(word []string, types string) {
 }
 
 type Node struct {
-	Title    string `json:"title"`
-	All      string `json:"all"`
+	Title    string `json:"label"`
+	All      string `json:"id"`
 	Children []Node `json:"children"`
 }
 
