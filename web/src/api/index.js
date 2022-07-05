@@ -15,3 +15,11 @@ export const getKeys = data => {
         data
     });
 };
+
+export const getKeyType = data => {
+    return request({
+        url: 'api/index/getkeytype',
+        method: 'post',
+        data
+    });
+};

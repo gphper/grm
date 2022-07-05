@@ -4,20 +4,19 @@ import { ElButton, ElCard, ElCol, ElDivider, ElInput, ElRow, ElSelect, ElTable }
 import { createApp, h } from 'vue';
 
 const ShowString = (key,id)=>{
-    const vdom = createApp({    
-        setup() {
-        },
-        render() {
-        
-            return h(
-                StringView,
-                {
-                    xkey:key,
-                },
-                null
-            )
-        }
-        
+        const vdom = createApp({    
+            setup() {
+            },
+            render() {
+            
+                return h(
+                    StringView,
+                    {
+                        xkey:key,
+                    },
+                    null
+                )
+            }
         });
 
         setTimeout(()=>{

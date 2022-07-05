@@ -9,7 +9,7 @@
         </span>
         <span v-else style="margin-left:20%;width: 15px;">
             <el-button text @click.stop="remove(node,data)" type="danger">删除</el-button>
-            <el-button text @click.stop="detail(node.label)" type="primary">查看</el-button>
+            <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db)" type="primary">查看</el-button>
         </span>
         <DataForm :visible="visible"></DataForm>
     </div>
@@ -18,6 +18,7 @@
 <script>
 import { useStore } from 'vuex'
 import { ShowList, ShowString } from '@/utils/show.js'
+import { getKeyType } from "@/api/index.js"
 import CryptoJS from "crypto-js";
 
 export default {
@@ -50,32 +51,29 @@ export default {
             children.splice(index, 1)
         }
 
-        const detail = (key)=>{
+        const detail = (key,idk,sk,db)=>{
+
             let id = CryptoJS.MD5(key).toString();
             store.commit("setTagsItem", {
                 title: key,
                 name: key,
                 id: id
             });
+
+            getKeyType({"id":idk,"sk":sk,"db":db}).then((res)=>{
+                console.log(res.data.types)
+                switch(res.data.types){
+                    case "string":
+                        ShowString(key,id)
+                        break;
+                    case "list":
+                        ShowList(key,id)
+                        break;    
+                }
+            })
+
+            
             store.commit("setCurrentTag", key);
-
-            //todo 根据key获取类型
-            let types = "";    
-            if(key == "string_key"){
-                types = "string";
-            }else{
-                types = "list";
-            }
-
-
-            switch(types){
-                case "string":
-                    ShowString(key,id)
-                    break;
-                case "list":
-                    ShowList(key,id)
-                    break;    
-            }
         }
 
         return{

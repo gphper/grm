@@ -120,18 +120,40 @@ func (con indexController) GetKeys(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(keys)
 	gen := common.NewTrie()
 
 	for _, v := range keys {
-
 		stringSlice := strings.Split(v, ":")
-
 		gen.Insert(stringSlice, v)
-
 	}
 
-	common.GetOne(gen.Root.Children, "")
+	con.Success(c, http.StatusOK, common.GetOne(gen.Root.Children, "", dbInfo[1], index))
+}
 
-	con.Success(c, http.StatusOK, common.GetOne(gen.Root.Children, ""))
+// 查看key值详情
+func (con indexController) GetKeyType(c *gin.Context) {
+	var req model.ShowKeyReq
+	err := con.FormBind(c, &req)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	client := global.RedisServiceStorage[req.Sk].Client
+
+	err = client.Do(context.Background(), "select", req.Db).Err()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	types, err := client.Type(context.Background(), req.Id).Result()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	con.Success(c, http.StatusOK, gin.H{
+		"types": types,
+	})
 }

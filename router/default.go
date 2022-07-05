@@ -40,6 +40,7 @@ func Init() *gin.Engine {
 	{
 		indexRouter.POST("/open", controllers.Ic.Open)
 		indexRouter.POST("/getkeys", controllers.Ic.GetKeys)
+		indexRouter.POST("/getkeytype", controllers.Ic.GetKeyType)
 	}
 
 	return router

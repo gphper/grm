@@ -45,21 +45,23 @@ func (trie *Trie) Insert(word []string, types string) {
 }
 
 type Node struct {
-	Title    string `json:"label"`
-	All      string `json:"id"`
-	Children []Node `json:"children"`
+	Title      string `json:"label"`
+	All        string `json:"id"`
+	ServiceKey string `json:"sk"`
+	Db         int    `json:"db"`
+	Children   []Node `json:"children"`
 }
 
-func GetOne(children map[string]*TrieNode, pre string) []Node {
+func GetOne(children map[string]*TrieNode, pre string, sk string, db int) []Node {
 	items := make([]Node, 0)
 	for k, v := range children {
 		if v.IsEnd && len(v.Children) != 0 {
-			tmp1 := Node{Title: k, All: pre + k, Children: nil}
+			tmp1 := Node{Title: k, All: pre + k, ServiceKey: sk, Db: db, Children: nil}
 			items = append(items, tmp1)
 		}
-		tmp := Node{Title: k, All: pre + k, Children: nil}
+		tmp := Node{Title: k, All: pre + k, ServiceKey: sk, Db: db, Children: nil}
 		if len(v.Children) != 0 {
-			tmp.Children = GetOne(v.Children, pre+k+":")
+			tmp.Children = GetOne(v.Children, pre+k+":", sk, db)
 		}
 		items = append(items, tmp)
 	}
