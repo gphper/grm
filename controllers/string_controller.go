@@ -18,7 +18,7 @@ var Sc = stringController{}
 // 展示string类型
 func (con stringController) Show(c *gin.Context) {
 
-	var req model.ShowKeyReq
+	var req model.KeyReq
 
 	err := con.FormBind(c, &req)
 	if err != nil {

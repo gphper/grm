@@ -12,7 +12,7 @@
                         <el-button text bg>重命名</el-button>
                         <el-button text bg>TTL</el-button>
                         <el-button type="danger" text bg>删除</el-button>
-                        <el-button type="warning" text bg>重载数据</el-button>
+                        <el-button type="warning" text bg @click="reload">重载数据</el-button>
                     </el-col>
                 </el-row>
             </template>
@@ -48,21 +48,22 @@ export default {
         //TODO 获取data值
         let data = ref('');
         
-        onMounted(()=>{
+        const reload = ()=>{
             showString({
                 id:props.xkey,
                 sk:props.sk,
                 db:props.db,
             }).then((res)=>{
-                console.log(res);
                 data.value = res.data.data
             })
-            
-        })
+        }
+
+        onMounted(reload)
 
         return {
             props,
             data,
+            reload
         };
     },
 }

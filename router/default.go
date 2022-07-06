@@ -41,6 +41,7 @@ func Init() *gin.Engine {
 		indexRouter.POST("/open", controllers.Ic.Open)
 		indexRouter.POST("/getkeys", controllers.Ic.GetKeys)
 		indexRouter.POST("/getkeytype", controllers.Ic.GetKeyType)
+		indexRouter.POST("/delkey", controllers.Ic.DelKey)
 	}
 
 	stringRouter := app.Group("/string")

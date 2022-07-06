@@ -132,7 +132,7 @@ func (con indexController) GetKeys(c *gin.Context) {
 
 // 查看key值详情
 func (con indexController) GetKeyType(c *gin.Context) {
-	var req model.ShowKeyReq
+	var req model.KeyReq
 	err := con.FormBind(c, &req)
 	if err != nil {
 		con.Error(c, err.Error())
@@ -156,4 +156,30 @@ func (con indexController) GetKeyType(c *gin.Context) {
 	con.Success(c, http.StatusOK, gin.H{
 		"types": types,
 	})
+}
+
+// 删除key值
+func (con indexController) DelKey(c *gin.Context) {
+	var req model.KeyReq
+	err := con.FormBind(c, &req)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	client := global.RedisServiceStorage[req.Sk].Client
+
+	err = client.Do(context.Background(), "select", req.Db).Err()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	_, err = client.Del(context.Background(), req.Id).Result()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	con.Success(c, http.StatusOK, gin.H{})
 }
