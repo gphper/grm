@@ -3,8 +3,8 @@ import ListView from '@/components/show/ListView.vue'
 import { ElButton, ElCard, ElCol, ElDivider, ElInput, ElRow, ElSelect, ElTable } from 'element-plus';
 import { createApp, h } from 'vue';
 
-const ShowString = (key,id)=>{
-        const vdom = createApp({    
+const ShowString = (key,id,sk,db)=>{
+        const vdom = createApp({
             setup() {
             },
             render() {
@@ -13,6 +13,8 @@ const ShowString = (key,id)=>{
                     StringView,
                     {
                         xkey:key,
+                        sk:sk,
+                        db:db
                     },
                     null
                 )
@@ -26,7 +28,7 @@ const ShowString = (key,id)=>{
 }
 
 
-const ShowList = (key,id)=>{
+const ShowList = (key,id,sk,db)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -36,6 +38,8 @@ const ShowList = (key,id)=>{
                 ListView,
                 {
                     xkey:key,
+                    sk:sk,
+                    db:db
                 },
                 null
             )

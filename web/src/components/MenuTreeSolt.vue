@@ -64,10 +64,10 @@ export default {
                 console.log(res.data.types)
                 switch(res.data.types){
                     case "string":
-                        ShowString(key,id)
+                        ShowString(idk,id,sk,db)
                         break;
                     case "list":
-                        ShowList(key,id)
+                        ShowList(idk,id,sk,db)
                         break;    
                 }
             })

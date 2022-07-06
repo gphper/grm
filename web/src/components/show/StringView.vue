@@ -25,6 +25,8 @@
 
 <script>
 import OneDetail from "@/components/one/OneDetail.vue"
+import { onMounted, ref } from '@vue/runtime-core';
+import { showString } from "@/api/string.js"
 
 export default {
     name: "StringView",
@@ -32,14 +34,32 @@ export default {
         xkey: {
             type: String
         },
+        sk:{
+            type:String
+        },
+        db:{
+            type:Number
+        }
     },
     components:{
         OneDetail
     },
     setup(props) {
         //TODO 获取data值
-        let data = `{"username":"gphper","nickname":"GPHER"}`;
+        let data = ref('');
         
+        onMounted(()=>{
+            showString({
+                id:props.xkey,
+                sk:props.sk,
+                db:props.db,
+            }).then((res)=>{
+                console.log(res);
+                data.value = res.data.data
+            })
+            
+        })
+
         return {
             props,
             data,
