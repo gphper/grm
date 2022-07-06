@@ -33,4 +33,6 @@
 
 ## 持续更新中。。。
 
+![show1](https://user-images.githubusercontent.com/18718299/177555667-9e60ab58-6483-4d33-915a-b89c1c262a93.gif)
+
 ![show](https://user-images.githubusercontent.com/18718299/176183368-44597b01-977b-44c4-bd1b-b7c987f1e6c4.gif)
