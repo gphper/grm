@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { createApp,h } from '@vue/runtime-dom'
+import { createApp,h, ref } from '@vue/runtime-dom'
 import MenuTreeSolt from '@/components/MenuTreeSolt.vue'
 import { ElTree,ElButton } from 'element-plus'
 import {getKeys} from '@/api/index.js'
@@ -54,9 +54,10 @@ export default {
     setup(props) {
 
         const handleOpen = function(index){
+            
             getKeys({"index":index}).then((res) => {
                 document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex")
-                genNode("tree#"+index,res.data);
+                genNode("tree#"+index,ref(res.data));
             });
         };
 
