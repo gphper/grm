@@ -73,7 +73,13 @@ func (con indexController) Open(c *gin.Context) {
 		}
 	}
 
-	maxDb, _ := strconv.Atoi(dbNum["databases"])
+	databases := dbNum[1].(string)
+
+	maxDb, err := strconv.Atoi(databases)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
 
 	dbInfos := make([]dbInfo, maxDb)
 	for i := 0; i < maxDb; i++ {

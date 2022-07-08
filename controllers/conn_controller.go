@@ -11,7 +11,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis/v9"
+	"github.com/go-redis/redis"
 )
 
 type connController struct {

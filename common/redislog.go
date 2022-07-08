@@ -8,7 +8,7 @@ package common
 import (
 	"context"
 
-	"github.com/go-redis/redis/v9"
+	"github.com/go-redis/redis"
 	"go.uber.org/zap"
 )
 

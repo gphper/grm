@@ -14,7 +14,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/go-redis/redis/v9"
+	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
 )
 

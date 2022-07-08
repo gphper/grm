@@ -11,7 +11,7 @@ import (
 	"grm/global"
 	"net"
 
-	"github.com/go-redis/redis/v9"
+	"github.com/go-redis/redis"
 )
 
 // 生成redis客户端

@@ -9,7 +9,7 @@ require (
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator/v10 v10.11.0
-	github.com/go-redis/redis/v9 v9.0.0-beta.1
+	github.com/go-redis/redis v0.0.0-incompatible
 	github.com/spf13/viper v1.12.0
 	go.uber.org/zap v1.17.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
@@ -51,3 +51,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/go-redis/redis => ./module/redis
