@@ -187,5 +187,7 @@ func (con indexController) DelKey(c *gin.Context) {
 		return
 	}
 
-	con.Success(c, http.StatusOK, gin.H{})
+	con.Success(c, http.StatusOK, gin.H{
+		"status": 1,
+	})
 }

@@ -24,7 +24,7 @@ export const getKeyType = data => {
     });
 };
 
-export const delKey = data => {
+export const delKeys = data => {
     return request({
         url: 'api/index/delkey',
         method: 'post',

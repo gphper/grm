@@ -11,7 +11,7 @@
                     <el-col :span="8" :offset="2">
                         <el-button text bg>重命名</el-button>
                         <el-button text bg>TTL</el-button>
-                        <el-button type="danger" text bg  @click="delKey(props.xkey)">删除</el-button>
+                        <el-button type="danger" text bg  @click="delKey(props.sk+props.db+props.xkey)">删除</el-button>
                         <el-button type="warning" text bg @click="reload">重载数据</el-button>
                     </el-col>
                 </el-row>

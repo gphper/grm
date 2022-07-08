@@ -53,11 +53,11 @@ export default {
 
 
         const detail = (key,idk,sk,db)=>{
-
-            let id = CryptoJS.MD5(idk).toString();
+            let unionid = sk+db+idk
+            let id = CryptoJS.MD5(unionid).toString();
             store.commit("setTagsItem", {
                 title: key,
-                name: idk,
+                name: unionid,
                 id: id
             });
 
@@ -71,7 +71,7 @@ export default {
                         break;    
                 }
             })
-            store.commit("setCurrentTag", idk);
+            store.commit("setCurrentTag", unionid);
         }
 
         return{
