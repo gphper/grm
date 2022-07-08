@@ -5,10 +5,10 @@
         <span>&nbsp;{{ node.label }}</span>
         <span v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
             <el-button text @click.stop="append(data)" type="success">添加</el-button>
-            <el-button text @click.stop="remove(node,data)" type="danger">删除</el-button>
+            <el-button text @click.stop="remove(data.id)" type="danger">删除</el-button>
         </span>
         <span v-else style="margin-left:20%;width: 15px;">
-            <el-button text @click.stop="remove(node,data)" type="danger">删除</el-button>
+            <el-button text @click.stop="remove(data.id)" type="danger">删除</el-button>
             <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db)" type="primary">查看</el-button>
         </span>
         <DataForm :visible="visible"></DataForm>
@@ -31,7 +31,7 @@ export default {
             type:Object
         }
     },
-    setup() {
+    setup(props) {
         
         const store = useStore()
 
@@ -44,36 +44,34 @@ export default {
             store.commit("switchDataForm");
         }
 
-        const remove = (node,data) => {
-            const parent = node.parent
+        const remove = (key) => {
+            const parent = props.node.parent
             const children = parent.data.children || parent.data
-            const index = children.findIndex((d) => d.id === data.id)
+            const index = children.findIndex((d) => d.id === key)
             children.splice(index, 1)
         }
 
+
         const detail = (key,idk,sk,db)=>{
 
-            let id = CryptoJS.MD5(key).toString();
+            let id = CryptoJS.MD5(idk).toString();
             store.commit("setTagsItem", {
                 title: key,
-                name: key,
+                name: idk,
                 id: id
             });
 
             getKeyType({"id":idk,"sk":sk,"db":db}).then((res)=>{
-                console.log(res.data.types)
                 switch(res.data.types){
                     case "string":
-                        ShowString(idk,id,sk,db)
+                        ShowString(idk,id,sk,db,remove)
                         break;
                     case "list":
                         ShowList(idk,id,sk,db)
                         break;    
                 }
             })
-
-            
-            store.commit("setCurrentTag", key);
+            store.commit("setCurrentTag", idk);
         }
 
         return{

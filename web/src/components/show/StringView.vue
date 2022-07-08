@@ -11,7 +11,7 @@
                     <el-col :span="8" :offset="2">
                         <el-button text bg>重命名</el-button>
                         <el-button text bg>TTL</el-button>
-                        <el-button type="danger" text bg>删除</el-button>
+                        <el-button type="danger" text bg  @click="delKey(props.xkey)">删除</el-button>
                         <el-button type="warning" text bg @click="reload">重载数据</el-button>
                     </el-col>
                 </el-row>
@@ -27,6 +27,9 @@
 import OneDetail from "@/components/one/OneDetail.vue"
 import { onMounted, ref } from '@vue/runtime-core';
 import { showString } from "@/api/string.js"
+import { delKeys } from "@/api/index.js"
+import store from '@/store/index.js'
+import { ElMessage } from 'element-plus';
 
 export default {
     name: "StringView",
@@ -44,10 +47,10 @@ export default {
     components:{
         OneDetail
     },
-    setup(props) {
-        //TODO 获取data值
+    setup(props,{emit}) {
+    
         let data = ref('');
-        
+
         const reload = ()=>{
             showString({
                 id:props.xkey,
@@ -58,12 +61,32 @@ export default {
             })
         }
 
+        const delKey = (key)=>{
+            delKeys({
+                id:props.xkey,
+                sk:props.sk,
+                db:props.db,
+            }).then((res)=>{
+                if(res.data.status == 1){
+                    //删除成功
+                    ElMessage({
+                        message: "删除成功",
+                        type: 'success',
+                    })
+                }
+            })
+
+            store.commit("delTagsItem",key)
+            emit("del",key)
+        }
+
         onMounted(reload)
 
         return {
             props,
             data,
-            reload
+            reload,
+            delKey
         };
     },
 }

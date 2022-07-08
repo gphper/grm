@@ -1,9 +1,11 @@
 import StringView from '@/components/show/StringView.vue';
 import ListView from '@/components/show/ListView.vue'
-import { ElButton, ElCard, ElCol, ElDivider, ElInput, ElRow, ElSelect, ElTable } from 'element-plus';
+import { ElButton, ElCard, ElCol, ElDivider, ElInput, ElMessage, ElRow, ElSelect, ElTable } from 'element-plus';
 import { createApp, h } from 'vue';
+import { useStore } from 'vuex';
 
-const ShowString = (key,id,sk,db)=>{
+const ShowString = (key,id,sk,db,func)=>{
+        const store = useStore()
         const vdom = createApp({
             setup() {
             },
@@ -14,7 +16,8 @@ const ShowString = (key,id,sk,db)=>{
                     {
                         xkey:key,
                         sk:sk,
-                        db:db
+                        db:db,
+                        onDel:func
                     },
                     null
                 )
@@ -23,7 +26,7 @@ const ShowString = (key,id,sk,db)=>{
 
         setTimeout(()=>{
             const parent = document.getElementById(id)
-            vdom.use(ElButton).use(ElInput).use(ElRow).use(ElCol).use(ElCard).use(ElSelect).mount(parent)
+            vdom.use(ElButton).use(ElInput).use(ElRow).use(ElCol).use(ElCard).use(ElSelect).use(ElMessage).use(store).mount(parent)
         },500);
 }
 
