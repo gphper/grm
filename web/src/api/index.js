@@ -31,3 +31,11 @@ export const delKeys = data => {
         data
     });
 };
+
+export const ttlKey = data => {
+    return request({
+        url: 'api/index/ttlkey',
+        method: 'post',
+        data
+    });
+};

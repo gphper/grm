@@ -40,7 +40,14 @@ func (con stringController) Show(c *gin.Context) {
 		return
 	}
 
+	ttl, err := client.TTL(context.Background(), req.Id).Result()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
 	con.Success(c, http.StatusOK, gin.H{
 		"data": data,
+		"ttl":  ttl.Seconds(),
 	})
 }

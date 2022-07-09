@@ -13,3 +13,10 @@ type KeyReq struct {
 	Sk string `form:"sk" label:"sk" json:"sk" binding:"required"`
 	Db int    `form:"db" label:"db" json:"db" binding:"required"`
 }
+
+type TtlKeyReq struct {
+	Id  string `form:"id" label:"id" json:"id" binding:"required"`
+	Sk  string `form:"sk" label:"sk" json:"sk" binding:"required"`
+	Db  int    `form:"db" label:"db" json:"db" binding:"required"`
+	Ttl string `form:"ttl" label:"ttl" json:"ttl" binding:"required"`
+}

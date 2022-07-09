@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -189,5 +190,39 @@ func (con indexController) DelKey(c *gin.Context) {
 
 	con.Success(c, http.StatusOK, gin.H{
 		"status": 1,
+	})
+}
+
+// TTL 设置
+func (con indexController) TtlKey(c *gin.Context) {
+	var req model.TtlKeyReq
+
+	err := con.FormBind(c, &req)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	client := global.RedisServiceStorage[req.Sk].Client
+
+	err = client.Do(context.Background(), "select", req.Db).Err()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	ttl, err := strconv.Atoi(req.Ttl)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+	ok, err := client.Expire(context.Background(), req.Id, time.Duration(ttl)*time.Second).Result()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	con.Success(c, http.StatusOK, gin.H{
+		"result": ok,
 	})
 }
