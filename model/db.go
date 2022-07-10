@@ -35,3 +35,26 @@ type ListItemKeyReq struct {
 	Db   int    `form:"db" label:"db" json:"db" binding:"required"`
 	Item string `form:"item" label:"item" json:"item" binding:"required"`
 }
+
+type HashKeyReq struct {
+	Id    string `form:"id" label:"id" json:"id" binding:"required"`
+	Sk    string `form:"sk" label:"sk" json:"sk" binding:"required"`
+	Db    int    `form:"db" label:"db" json:"db" binding:"required"`
+	Page  int    `form:"page" label:"page" json:"page" binding:"required"`
+	Limit int    `form:"limit" label:"limit" json:"limit" binding:"required"`
+}
+
+type HashItemKeyReq struct {
+	Id   string `form:"id" label:"id" json:"id" binding:"required"`
+	Sk   string `form:"sk" label:"sk" json:"sk" binding:"required"`
+	Db   int    `form:"db" label:"db" json:"db" binding:"required"`
+	Item string `form:"item" label:"item" json:"item" binding:"required"`
+}
+
+type AddHashItemKeyReq struct {
+	Id    string `form:"id" label:"id" json:"id" binding:"required"`
+	Sk    string `form:"sk" label:"sk" json:"sk" binding:"required"`
+	Db    int    `form:"db" label:"db" json:"db" binding:"required"`
+	Itemk string `form:"itemk" label:"itemk" json:"itemk" binding:"required"`
+	Itemv string `form:"itemv" label:"itemv" json:"itemv" binding:"required"`
+}
