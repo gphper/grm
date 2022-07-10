@@ -31,7 +31,7 @@ const ShowString = (key,id,sk,db,func)=>{
 }
 
 
-const ShowList = (key,id,sk,db)=>{
+const ShowList = (key,id,sk,db,func)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -42,7 +42,8 @@ const ShowList = (key,id,sk,db)=>{
                 {
                     xkey:key,
                     sk:sk,
-                    db:db
+                    db:db,
+                    onDel:func
                 },
                 null
             )
@@ -52,7 +53,7 @@ const ShowList = (key,id,sk,db)=>{
 
         setTimeout(()=>{
             const parent = document.getElementById(id)
-            vdom.use(ElButton).use(ElInput).use(ElRow).use(ElCol).use(ElCard).use(ElSelect).use(ElTable).use(ElDivider).mount(parent)
+            vdom.use(ElButton).use(ElInput).use(ElRow).use(ElCol).use(ElCard).use(ElSelect).use(ElTable).use(ElDivider).use(ElDialog).use(ElForm).mount(parent)
         },500);
 }
 

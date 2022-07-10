@@ -9,9 +9,18 @@
                         </el-input>
                     </el-col>
                     <el-col :span="6" :offset="2">
-                        <el-button text bg>重命名</el-button>
-                        <el-button text bg>TTL</el-button>
-                        <el-button type="danger" text bg>删除</el-button>
+                       
+                        <el-tooltip
+                            class="box-item"
+                            effect="dark"
+                            :content="ttl"
+                            placement="top-start"
+                        >
+                            <el-button text bg @click="ttlVisible = true">TTL:<span style="width: 22px;overflow: hidden;">{{ttl}}</span></el-button>
+                        </el-tooltip>
+                        &nbsp;&nbsp;
+
+                        <el-button type="danger" text bg @click="delKey(props.sk+props.db+props.xkey)">删除</el-button>
                     </el-col>
                 </el-row>
             </template>
@@ -33,30 +42,51 @@
                     </el-table>
                 </el-col>
                 <el-col :offset="1" :span="2">
-                    <el-row class="data-button"><el-button plain type="primary">插入一行</el-button></el-row>
-                    <el-row class="data-button"><el-button plain type="danger">删除该行</el-button></el-row>
-                    <el-row class="data-button"><el-button plain type="success">重新载入</el-button></el-row>
+                    <el-row class="data-button"><el-button plain type="primary" @click="addItemFormVisible = true">插入一行</el-button></el-row>
+                    <el-row class="data-button"><el-button plain type="danger" @click="delItem">删除该行</el-button></el-row>
+                    <el-row class="data-button"><el-button plain type="success" @click="reload">重新载入</el-button></el-row>
                     <el-row class="data-button">
                         <el-input v-model="search" placeholder="列表搜索" />
                     </el-row>
                     <el-row class="data-button">
                         <div class="page">
-                            页:1 共10
+                            页:{{page}} 共{{total}}
                         </div>
                     </el-row>
                     <el-row class="data-button">
                         <el-col :span="12">
-                            <el-button type="success" size="small" plain circle><i class="iconfont icon-shangyiye"></i></el-button>
+                            <el-button type="success" size="small" plain circle @click="prePage"><i class="iconfont icon-shangyiye"></i></el-button>
                         </el-col>
                         <el-col :span="12">
-                            <el-button type="success" size="small" plain circle><i class="iconfont icon-xiayiye"></i></el-button>
+                            <el-button type="success" size="small" plain circle @click="nextPage"><i class="iconfont icon-xiayiye"></i></el-button>
                         </el-col>
                     </el-row>
                 </el-col>
             </el-row>
 
             <OneDetail :data="data"></OneDetail>
+            <TtlForm @close="close" @reload="reload" :visiable="ttlVisible" :sk="props.sk" :db="props.db" :keyx="props.xkey"></TtlForm>
         </el-card>
+
+        <!-- 新增行 -->
+        <el-dialog v-model="addItemFormVisible" @close="onReset" title="新增一行">
+            <el-form
+                :rules="addItemRules"
+                ref="addItemFormRef"
+                :model="addItemForm"
+                label-width="120px"
+                status-icon
+            >
+                <el-form-item label="值" prop="item">
+                    <el-input type="textarea" v-model="addItemForm.item" placeholder="新增值" />
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type="primary" @click="addItemSubmit ">确定</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        
     </div>
 </template>
 
@@ -81,9 +111,14 @@
 </style>
 
 <script>
-import OneDetail from "@/components/one/OneDetail.vue"
-import { ref } from '@vue/reactivity';
-import { computed } from '@vue/runtime-core';
+import OneDetail from "@/components/one/OneDetail.vue";
+import TtlForm from "@/components/one/TtlForm.vue";
+import { reactive, ref } from '@vue/reactivity';
+import store from '@/store/index.js';
+import { delKeys } from "@/api/index.js";
+import { computed, onMounted } from '@vue/runtime-core';
+import { ElMessage } from 'element-plus';
+import { showList,delList,addList } from "@/api/list.js"
 
 export default {
     name: "ListView",
@@ -91,52 +126,45 @@ export default {
         xkey: {
             type: String
         },
+        sk:{
+            type:String
+        },
+        db:{
+            type:Number
+        }
     },
     components:{
-        OneDetail
+        OneDetail,
+        TtlForm
     },
-    setup(props) {
-        //TODO 获取data值
-        let data = ref('');
+    setup(props,{emit}) {
         
+        let limit = 4;
+        let ttl = ref(0);
+        let page = ref(1);
+        let total = ref(0);
+        let data = ref('');
         let search = ref('');
+        let tableData = ref([]);
+        let ttlVisible = ref(false);
+        
+        //添加item
+        let addItemFormVisible = ref(false);
+        let addItemFormRef = ref(null)
+        let addItemForm = reactive({
+            id:props.xkey,
+            sk:props.sk,
+            db:props.db,
+            item:"",
+        })
+        let addItemRules = {
+            item:[
+                {required:true,message: '请输入新增值', trigger: 'blur' }
+            ],
+        }
+        
 
-        let tableData = [
-            {
-                num: 1,
-                value: 'Tom1133',
-            },
-            {
-                num: 2,
-                value: 'Tom12232',
-            },
-            {
-                num: 3,
-                value: 'Tom13444'
-            },
-            {
-                num: 4,
-                value: 'Tom1'
-            },
-            {
-                num: 5,
-                value: 'Tom21'
-            },
-            {
-                num: 6,
-                value: 'To3m16'
-            },
-            {
-                num: 7,
-                value: 'Tom3eeeeeeeee6'
-            },
-            {
-                num: 8,
-                value: 'Tom46'
-            },
-        ];
-
-        let filterTableData = computed(()=>tableData.filter(
+        let filterTableData = computed(()=>tableData.value.filter(
             (data) =>
             !search.value ||
             data.value.toLowerCase().includes(search.value.toLowerCase())
@@ -149,14 +177,135 @@ export default {
             data.value = row.value;
         }
 
+        const close = ()=>{
+            ttlVisible.value = false
+        }
+
+        const delKey = (key)=>{
+            delKeys({
+                id:props.xkey,
+                sk:props.sk,
+                db:props.db,
+            }).then((res)=>{
+                if(res.data.status == 1){
+                    //删除成功
+                    ElMessage({
+                        message: "删除成功",
+                        type: 'success',
+                    })
+                }
+            })
+
+            store.commit("delTagsItem",key)
+            emit("del",key)
+        }
+
+        const reload = ()=>{
+            showList({
+                id:props.xkey,
+                sk:props.sk,
+                db:props.db,
+                page:page.value,
+                limit:limit
+            }).then((res)=>{
+                tableData.value = res.data.data
+                ttl.value = res.data.ttl
+                page.value = res.data.page
+                total.value = res.data.total
+            })
+        }
+
+        const prePage = ()=>{
+            if (page.value > 1){
+                page.value -= 1
+            }
+            showList({
+                id:props.xkey,
+                sk:props.sk,
+                db:props.db,
+                page:page.value,
+                limit:limit
+            }).then((res)=>{
+                tableData.value = res.data.data
+                ttl.value = res.data.ttl
+                page.value = res.data.page
+                total.value = res.data.total
+            })
+        }
+
+        const nextPage = ()=>{
+            if (page.value < total.value){
+                page.value += 1
+            }
+            showList({
+                id:props.xkey,
+                sk:props.sk,
+                db:props.db,
+                page:page.value,
+                limit:limit
+            }).then((res)=>{
+                tableData.value = res.data.data
+                ttl.value = res.data.ttl
+                page.value = res.data.page
+                total.value = res.data.total
+            })
+        }
+
+        const delItem = ()=>{
+            delList({
+                id:props.xkey,
+                sk:props.sk,
+                db:props.db,
+                item:data.value
+            }).then((res)=>{
+                if(res.data.count > 0){
+                    ElMessage({
+                        message: "删除成功",
+                        type: 'success',
+                    });
+                    reload();
+                }
+            })
+        }
+
+        const addItemSubmit = ()=>{
+            addList(addItemForm).then((res)=>{
+                if(res.data.count > 0){
+                    ElMessage({
+                        message: "添加成功",
+                        type: 'success',
+                    });
+                    addItemFormVisible.value = false;
+                    reload();
+                }
+            })
+        }
+
+        onMounted(reload)
+
         return {
-            props,
+            ttl,
             data,
-            tableData,
+            page,
+            total,
+            props,
             search,
-            filterTableData,
+            tableData,
+            ttlVisible,
             singleTableRef,
-            rowClick
+            filterTableData,
+            addItemFormVisible,
+            addItemFormRef,
+            addItemRules,
+            addItemForm,
+            close,
+            reload,
+            delKey,
+            delItem,
+            prePage,
+            nextPage,
+            rowClick,
+            addItemSubmit
         };
     },
 }

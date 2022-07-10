@@ -9,8 +9,6 @@
                         </el-input>
                     </el-col>
                     <el-col :span="8" :offset="2">
-                        <el-button text bg>重命名</el-button>
-
                         <el-tooltip
                             class="box-item"
                             effect="dark"

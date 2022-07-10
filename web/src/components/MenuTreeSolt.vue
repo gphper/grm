@@ -67,7 +67,7 @@ export default {
                         ShowString(idk,id,sk,db,remove)
                         break;
                     case "list":
-                        ShowList(idk,id,sk,db)
+                        ShowList(idk,id,sk,db,remove)
                         break;    
                 }
             })
