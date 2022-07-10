@@ -17,7 +17,7 @@
 
 <script>
 import { useStore } from 'vuex'
-import { ShowHash, ShowList, ShowString } from '@/utils/show.js'
+import { ShowHash, ShowList, ShowSet, ShowString } from '@/utils/show.js'
 import { getKeyType } from "@/api/index.js"
 import CryptoJS from "crypto-js";
 
@@ -72,6 +72,9 @@ export default {
                     case "hash":
                         ShowHash(idk,id,sk,db,remove)
                         break;
+                    case "set":
+                        ShowSet(idk,id,sk,db,remove)
+                        break;  
                 }
             })
             store.commit("setCurrentTag", unionid);

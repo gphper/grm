@@ -64,5 +64,12 @@ func Init() *gin.Engine {
 		hashRouter.POST("/add", controllers.Hc.AddItem)
 	}
 
+	setRouter := app.Group("/set")
+	{
+		setRouter.POST("/show", controllers.Setc.Show)
+		setRouter.POST("/del", controllers.Setc.Del)
+		setRouter.POST("/add", controllers.Setc.AddItem)
+	}
+
 	return router
 }

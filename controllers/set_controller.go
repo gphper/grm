@@ -10,22 +10,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type hashController struct {
+type setController struct {
 	BaseController
 }
 
-var Hc = hashController{}
+var Setc = setController{}
 
-// 展示hash类型
-func (con hashController) Show(c *gin.Context) {
+// 展示string类型
+func (con setController) Show(c *gin.Context) {
 
-	type HashNode struct {
+	type ListNode struct {
 		Num   int    `json:"num"`
-		Key   string `json:"key"`
 		Value string `json:"value"`
 	}
 
-	var req model.HashKeyReq
+	var req model.SetKeyReq
 	err := con.FormBind(c, &req)
 	if err != nil {
 		con.Error(c, err.Error())
@@ -40,7 +39,7 @@ func (con hashController) Show(c *gin.Context) {
 		return
 	}
 
-	total, err := client.HLen(context.Background(), req.Id).Result()
+	total, err := client.SCard(context.Background(), req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -51,26 +50,18 @@ func (con hashController) Show(c *gin.Context) {
 	if end > int(total-1) {
 		end = int(total - 1)
 	}
-	data := make([]HashNode, 0)
+	data := make([]ListNode, end-start+1)
 
-	hashSlice, _, err := client.HScan(context.Background(), req.Id, uint64(start), "*", int64(end-start+1)).Result()
+	setSlice, _, err := client.SScan(context.Background(), req.Id, uint64(start), "*", int64(end-start+1)).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	len := len(hashSlice)
-	tmp := HashNode{}
-	num := 1
-	for i := 0; i < len; i++ {
-		if i%2 == 0 {
-			tmp.Key = hashSlice[i]
-			tmp.Num = num
-		} else {
-			tmp.Value = hashSlice[i]
-			data = append(data, tmp)
-			tmp = HashNode{}
-			num++
+	for k, v := range setSlice {
+		data[k] = ListNode{
+			Num:   start + k + 1,
+			Value: v,
 		}
 	}
 
@@ -89,8 +80,8 @@ func (con hashController) Show(c *gin.Context) {
 }
 
 // 删除指定数据
-func (con hashController) Del(c *gin.Context) {
-	var req model.HashItemKeyReq
+func (con setController) Del(c *gin.Context) {
+	var req model.SetItemKeyReq
 
 	err := con.FormBind(c, &req)
 	if err != nil {
@@ -106,7 +97,7 @@ func (con hashController) Del(c *gin.Context) {
 		return
 	}
 
-	count, err := client.HDel(context.Background(), req.Id, req.Item).Result()
+	count, err := client.SRem(context.Background(), req.Id, req.Item).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -118,8 +109,8 @@ func (con hashController) Del(c *gin.Context) {
 }
 
 // 添加item
-func (con hashController) AddItem(c *gin.Context) {
-	var req model.AddHashItemKeyReq
+func (con setController) AddItem(c *gin.Context) {
+	var req model.SetItemKeyReq
 
 	err := con.FormBind(c, &req)
 	if err != nil {
@@ -135,7 +126,7 @@ func (con hashController) AddItem(c *gin.Context) {
 		return
 	}
 
-	count, err := client.HSet(context.Background(), req.Id, req.Itemk, req.Itemv).Result()
+	count, err := client.SAdd(context.Background(), req.Id, req.Item).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
