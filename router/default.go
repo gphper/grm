@@ -71,5 +71,12 @@ func Init() *gin.Engine {
 		setRouter.POST("/add", controllers.Setc.AddItem)
 	}
 
+	zsetRouter := app.Group("/zset")
+	{
+		zsetRouter.POST("/show", controllers.Zc.Show)
+		zsetRouter.POST("/del", controllers.Zc.Del)
+		zsetRouter.POST("/add", controllers.Zc.AddItem)
+	}
+
 	return router
 }
