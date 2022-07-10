@@ -276,6 +276,7 @@ export default {
                         type: 'success',
                     });
                     addItemFormVisible.value = false;
+                    addItemFormRef.value.resetFields();
                     reload();
                 }
             })
