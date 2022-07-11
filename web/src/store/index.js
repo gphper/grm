@@ -6,6 +6,7 @@ export default createStore({
       connList: [],
       activeTag: '',
       showDataForm: false,
+      loadReq:false
   },
   mutations: {
       setCurrentTag(state,tag){
@@ -53,6 +54,9 @@ export default createStore({
       },
       closeTagsOther(state, data) {
           state.tagsList = data;
+      },
+      setLoadReq(state,load){
+          state.loadReq = load
       },
       closeCurrentTag(state, data) {
           for (let i = 0, len = state.tagsList.length; i < len; i++) {

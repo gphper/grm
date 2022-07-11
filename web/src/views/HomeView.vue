@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container v-loading="loading" element-loading-background="rgba(0, 0, 0, 0)">
       <el-header>
         <MainHeader></MainHeader>
       </el-header>
@@ -13,6 +13,9 @@
 <script>
 import MainHeader from "@/components/MainHeader.vue";
 import MainIndex from "@/components/MainIndex.vue";
+import { ref } from '@vue/reactivity';
+import { useStore } from "vuex";
+import { watch } from '@vue/runtime-core';
 export default {
   name: "HomeView",
   components: {
@@ -20,7 +23,21 @@ export default {
       MainIndex
   },
   setup(){
+    let loading = ref(false);
+    const store = useStore();
+
     document.title = "go redis manager";
+
+     watch(
+          () => store.state.loadReq,
+          (value) => {
+              loading.value = value
+          }
+      )
+
+    return {
+      loading
+    }
   }
 };
 </script>
