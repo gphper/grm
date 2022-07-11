@@ -100,3 +100,14 @@ type AddZsetItemKeyReq struct {
 	Score string `form:"score" label:"score" json:"score" binding:"required"`
 	Item  string `form:"item" label:"item" json:"item" binding:"required"`
 }
+
+// stream 类型
+type StreamKeyReq struct {
+	Id    string `form:"id" label:"id" json:"id" binding:"required"`
+	Sk    string `form:"sk" label:"sk" json:"sk" binding:"required"`
+	Db    int    `form:"db" label:"db" json:"db"`
+	Item  string `form:"item" label:"item" json:"item" binding:"required"`
+	Type  string `form:"type" label:"type" json:"type" binding:"required"`
+	Page  int    `form:"page" label:"page" json:"page" binding:"required"`
+	Limit int    `form:"limit" label:"limit" json:"limit" binding:"required"`
+}

@@ -78,5 +78,12 @@ func Init() *gin.Engine {
 		zsetRouter.POST("/add", controllers.Zc.AddItem)
 	}
 
+	streamRouter := app.Group("/stream")
+	{
+		streamRouter.POST("/show", controllers.Stc.Show)
+		streamRouter.POST("/del", controllers.Stc.Del)
+		streamRouter.POST("/add", controllers.Stc.AddItem)
+	}
+
 	return router
 }
