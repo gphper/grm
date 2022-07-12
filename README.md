@@ -30,6 +30,13 @@
 
 - [ ] 操作日志
 
+## 编译代码
++ web目录下
+  `npm run build`
++ grm目录下
+  `go build -ldflags "-s -w" .\main.go`
++ 推荐使用upx再次压缩
+  `upx -9 main.exe -o grm.exe`  
 
 ## 持续更新中。。。
 
