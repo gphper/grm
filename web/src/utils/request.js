@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import store from '@/store'
+import baseUrl from '../../baseUrl'
 
 const service = axios.create({
-    baseURL: '/api',
+    baseURL: baseUrl,
     timeout: 10000
 });
 

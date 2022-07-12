@@ -4,6 +4,7 @@ import (
 	"context"
 	"grm/global"
 	"grm/router"
+	"grm/web"
 	"log"
 	"net"
 	"net/http"
@@ -15,6 +16,8 @@ import (
 func main() {
 
 	router := router.Init()
+
+	router.StaticFS("/static", web.StaticsFs)
 
 	srv := &http.Server{
 		Addr:    net.JoinHostPort(global.HostName, global.Port),
