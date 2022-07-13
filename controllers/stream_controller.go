@@ -134,7 +134,7 @@ func (con streamController) Del(c *gin.Context) {
 		return
 	}
 
-	count, err := client.ZRem(context.Background(), req.Id, req.Item).Result()
+	count, err := client.XDel(context.Background(), req.Id, req.Item).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return

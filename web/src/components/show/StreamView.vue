@@ -152,6 +152,7 @@ export default {
         let page = ref(1);
         let total = ref(0);
         let data = ref('');
+        let item = ref('');
         let search = ref('');
         let tableData = ref([]);
         let ttlVisible = ref(false);
@@ -184,6 +185,7 @@ export default {
         const rowClick = (row)=>{
             singleTableRef.value.setCurrentRow(row);
             data.value = row.value;
+            item.value = row.id
         }
 
         const close = ()=>{
@@ -194,7 +196,7 @@ export default {
             delKeys({
                 id:props.xkey,
                 sk:props.sk,
-                db:props.db,
+                db:props.db
             }).then((res)=>{
                 if(res.data.status == 1){
                     //删除成功
@@ -277,7 +279,7 @@ export default {
                 id:props.xkey,
                 sk:props.sk,
                 db:props.db,
-                item:data.value
+                item:item.value
             }).then((res)=>{
                 if(res.data.count > 0){
                     ElMessage({
