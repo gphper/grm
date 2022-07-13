@@ -44,4 +44,6 @@
 
 ![show](https://user-images.githubusercontent.com/18718299/176183368-44597b01-977b-44c4-bd1b-b7c987f1e6c4.gif)
 
-## 开源不易，请留下star鼓励一下 [If the project is helpful to you, please give a star to encourage me]
+## 支持作者
+如果觉得这个项目对你有帮助的话，请留下一颗star ⭐⭐鼓励一下！
+If the project is helpful to you, please give a star to encourage me
