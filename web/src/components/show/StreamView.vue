@@ -80,10 +80,10 @@
             >
 
                 <el-form-item label="Id" prop="id">
-                    <el-input type="number" v-model="addItemForm.id" placeholder="分数" />
+                    <el-input type="text" v-model="addItemForm.idx" placeholder="*" />
                 </el-form-item>
 
-                <el-form-item label="值" prop="item">
+                <el-form-item label="值[JSON]" prop="item">
                     <el-input type="textarea" v-model="addItemForm.item" placeholder="新增值" />
                 </el-form-item>
 
@@ -144,7 +144,6 @@ export default {
         TtlForm
     },
     setup(props,{emit}) {
-        
         let limit = 1000;
         let ttl = ref(0);
         let last = ref("+");
@@ -164,7 +163,7 @@ export default {
             id:props.xkey,
             sk:props.sk,
             db:props.db,
-            Id:"*",
+            idx:"*",
             item:"",
         })
         let addItemRules = {
@@ -293,7 +292,7 @@ export default {
 
         const addItemSubmit = ()=>{
             addStream(addItemForm).then((res)=>{
-                if(res.data.count > 0){
+                if(res.status > 0){
                     ElMessage({
                         message: "添加成功",
                         type: 'success',
@@ -329,7 +328,7 @@ export default {
             prePage,
             nextPage,
             rowClick,
-            addItemSubmit
+            addItemSubmit,
         };
     },
 }

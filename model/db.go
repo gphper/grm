@@ -111,3 +111,11 @@ type StreamKeyReq struct {
 	Page  int    `form:"page" label:"page" json:"page" binding:"required"`
 	Limit int    `form:"limit" label:"limit" json:"limit" binding:"required"`
 }
+
+type AddStreamItemKeyReq struct {
+	Id   string `form:"id" label:"id" json:"id" binding:"required"`
+	Sk   string `form:"sk" label:"sk" json:"sk" binding:"required"`
+	Db   int    `form:"db" label:"db" json:"db"`
+	Idx  string `form:"idx" label:"idx" json:"idx" binding:"required"`
+	Item string `form:"item" label:"item" json:"item" binding:"required"`
+}

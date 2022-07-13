@@ -8,7 +8,6 @@ import (
 	"grm/model"
 	"math"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
@@ -147,7 +146,7 @@ func (con streamController) Del(c *gin.Context) {
 
 // 添加item
 func (con streamController) AddItem(c *gin.Context) {
-	var req model.AddZsetItemKeyReq
+	var req model.AddStreamItemKeyReq
 
 	err := con.FormBind(c, &req)
 	if err != nil {
@@ -163,10 +162,19 @@ func (con streamController) AddItem(c *gin.Context) {
 		return
 	}
 
-	score, _ := strconv.Atoi(req.Score)
-	count, err := client.ZAdd(context.Background(), req.Id, &redis.Z{
-		Score:  float64(score),
-		Member: req.Item,
+	var item map[string]interface{}
+	err = json.Unmarshal([]byte(req.Item), &item)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	result, err := client.XAdd(context.Background(), &redis.XAddArgs{
+		Stream:       req.Id,
+		MaxLen:       0,
+		MaxLenApprox: 0,
+		ID:           req.Idx,
+		Values:       item,
 	}).Result()
 	if err != nil {
 		con.Error(c, err.Error())
@@ -174,6 +182,6 @@ func (con streamController) AddItem(c *gin.Context) {
 	}
 
 	con.Success(c, http.StatusOK, gin.H{
-		"count": count,
+		"data": result,
 	})
 }
