@@ -26,7 +26,7 @@
 
                         <el-popover trigger="hover" content="服务信息">
                             <template #reference>
-                                <el-button @click.stop="infoServe('华为云地址连接')" type="primary" circle><i class="iconfont icon-info"></i></el-button>
+                                <el-button @click.stop="infoServe(item.key)" type="primary" circle><i class="iconfont icon-info"></i></el-button>
                             </template>
                         </el-popover>
                     </el-row>
@@ -43,7 +43,7 @@ import { ElButton,ElMenu, ElRow, ElIcon,ElPopover, ElSubMenu } from 'element-plu
 import {term,fitAddon} from '@/utils/terminal.js'
 import SubMenu from "@/components/index/SubMenu.vue"
 import {getConnList} from "@/api/base.js"
-import {openDb} from "@/api/index.js"
+import {openDb,serInfo} from "@/api/index.js"
 import { useStore } from 'vuex'
 
 export default{
@@ -94,7 +94,10 @@ export default{
         };
 
         const infoServe = function(connec_id){
-            context.emit("info",connec_id);
+            serInfo({key:connec_id}).then((res)=>{
+                context.emit("info",res.data.name,res.data.info);
+            })
+            
         };
     
         const genSubMenu = function(id,dataS){

@@ -10,7 +10,7 @@
     <MainSection :tagData="tabs"></MainSection>
     </div>
 
-    <ConnInfo :drawer="drawer" :title="title" @close="close"></ConnInfo>
+    <ConnInfo :drawer="drawer" :info="infos" :title="title" @close="close"></ConnInfo>
     <DataForm></DataForm>
 </div>
 </template>
@@ -38,6 +38,7 @@ export default {
     let resize = ref(null);
     let drawer = ref(false);
     let title = ref("");
+    let infos = ref("");
 
     let tabs = reactive([
       {
@@ -69,14 +70,17 @@ export default {
       }
     }
 
-    const showInfo = (connec_id)=>{
+    const showInfo = (connec_id,info)=>{
       drawer.value = true;
       title.value = '【' + connec_id + '】服务信息';
+      console.log(info)
+      infos.value = info.replace(/\r\n/gm, "<br/>")
     }
 
     const close = ()=>{
       drawer.value = false;
       title.value = '';
+      infos.value = '';
     }
 
     return{
@@ -87,6 +91,7 @@ export default {
       tabs,
       drawer,
       title,
+      infos,
       resizeMouse,
       showInfo,
       close

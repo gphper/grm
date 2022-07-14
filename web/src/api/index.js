@@ -39,3 +39,11 @@ export const ttlKey = data => {
         data
     });
 };
+
+export const serInfo = data => {
+    return request({
+        url: 'api/index/serinfo',
+        method: 'post',
+        data
+    });
+}

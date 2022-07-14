@@ -4,6 +4,10 @@ type OpenDbReq struct {
 	Index string `form:"index" label:"index" json:"index" binding:"required"`
 }
 
+type InfoReq struct {
+	Key string `form:"key" label:"key" json:"key" binding:"required"`
+}
+
 type GetKeysReq struct {
 	Index string `form:"index" label:"index" json:"index" binding:"required"`
 }

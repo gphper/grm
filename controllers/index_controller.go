@@ -226,3 +226,32 @@ func (con indexController) TtlKey(c *gin.Context) {
 		"result": ok,
 	})
 }
+
+func (con indexController) SerInfo(c *gin.Context) {
+	var req model.InfoReq
+
+	err := con.FormBind(c, &req)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	redisServer := global.RedisServiceStorage[req.Key]
+
+	client, err := service.NewRedisClient(redisServer)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	result, err := client.Info(context.Background()).Result()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	con.Success(c, http.StatusOK, gin.H{
+		"info": result,
+		"name": redisServer.RedisService,
+	})
+}

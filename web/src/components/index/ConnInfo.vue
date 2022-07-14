@@ -4,7 +4,7 @@
       :title="currentTitle"
       @close="closeParent"
       >
-        <span>Hi, there!</span>
+        <span v-html="currentInfo"></span>
     </el-drawer>
 </template>
 
@@ -18,26 +18,33 @@ export default {
         },
         title:{
             type:String
+        },
+        info:{
+            type:String
         }
     },
     setup(props,context) {
         let drawerAble = ref(props.drawer);
         let currentTitle = ref(props.title);
+        let currentInfo = ref(props.info);
 
         const closeParent = ()=>{
             context.emit("close");
         }
         
         watch(
-            ()=>[props.drawer,props.title],
+            ()=>[props.drawer,props.title,props.info],
             (value) => {
+                console.log(value)
                 currentTitle.value = value[1];
                 drawerAble.value = value[0];
+                currentInfo.value = value[2]
             }
         );
 
         return {
             currentTitle,
+            currentInfo,
             drawerAble,
             closeParent
         }
