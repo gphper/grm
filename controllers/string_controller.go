@@ -51,3 +51,32 @@ func (con stringController) Show(c *gin.Context) {
 		"ttl":  ttl.Seconds(),
 	})
 }
+
+// 添加
+func (con stringController) Add(c *gin.Context) {
+	var req model.AddStrReq
+
+	err := con.FormBind(c, &req)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	client := global.RedisServiceStorage[req.Sk].Client
+
+	err = client.Do(context.Background(), "select", req.Db).Err()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	res, err := client.Set(context.Background(), req.Id, req.Value, 0).Result()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	con.Success(c, http.StatusOK, gin.H{
+		"data": res,
+	})
+}

@@ -9,7 +9,7 @@
         <el-sub-menu v-for="item,key in props.data" :key="key" class="db" :index="key+'-'+item.servicekey">
             <template #title>
                 <el-icon><i class="iconfont icon-database"></i></el-icon>
-                <span style="width:50px;">{{item.db}} ({{item.keys}})</span>
+                <span style="width:50px;">{{item.db}} (<span :id="'dbnum#'+key+'-'+item.servicekey">{{item.keys}}</span>)</span>
                 <el-row :id="'menu#'+key+'-'+item.servicekey">
                     <el-popover trigger="hover" content="重载">
                         <template #reference>
@@ -25,24 +25,21 @@
 
                     <el-popover trigger="hover" content="新增键值">
                         <template #reference>
-                            <el-button @click.stop="infoServe('华为云地址连接')" type="primary" circle><i class="iconfont icon-add1"></i></el-button>
+                            <el-button @click.stop="append(item.servicekey,key)" type="primary" circle><i class="iconfont icon-add1"></i></el-button>
                         </template>
-                    </el-popover>
+                    </el-popover> 
                 </el-row>
             </template>
             <div :id="'tree#'+key+'-'+item.servicekey"></div>
     </el-sub-menu>
-    <!-- <MenuNode></MenuNode> -->
 </el-menu>
 
 </template>
 
 <script>
-import { createApp,h, ref } from '@vue/runtime-dom'
-import MenuTreeSolt from '@/components/MenuTreeSolt.vue'
-import { ElTree,ElButton } from 'element-plus'
-import {getKeys} from '@/api/index.js'
+
 import store from '@/store/index.js'
+import {dbKeysList} from "@/utils/tree.js"
 
 export default {
     name:"SubMenu",
@@ -54,50 +51,26 @@ export default {
     setup(props) {
 
         const handleOpen = function(index){
-            
-            getKeys({"index":index}).then((res) => {
-                document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex")
-                genNode("tree#"+index,ref(res.data));
-            });
+            dbKeysList(index)
         };
 
         const handleClose = function(){
         };
 
-        const genNode = function(id,dataS){
-            const vdom = createApp({    
-            setup() {
-                const data = dataS
-                return { data }
-            },
-            render() {
-            
-                return h(
-                    ElTree,
-                    {
-                        data:this.data,
-                    },
-                    {
-                        default: ({node,data})=>h(MenuTreeSolt,
-                        {
-                            node,
-                            data
-                        })
-                    }
-                )
-            }
-            
-            });
-            
-            const parent = document.getElementById(id)
-            vdom.use(store).use(ElTree).use(ElButton).mount(parent)
-        };
+        const append = (sk,db) => {
+            // const newChild = { id: 10, label: 'testtest', children: [] }
+            // if (!data.children) {
+            //     data.children = []
+            // }
+            // data.children.push(newChild)
+            store.commit("switchDataForm",{sk:sk,db:db});
+        }
 
         return {
             props,
             handleOpen,
             handleClose,
-            genNode
+            append
         }
     },
 }

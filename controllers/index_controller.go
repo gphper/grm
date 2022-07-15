@@ -134,7 +134,10 @@ func (con indexController) GetKeys(c *gin.Context) {
 		gen.Insert(stringSlice, v)
 	}
 
-	con.Success(c, http.StatusOK, common.GetOne(gen.Root.Children, "", dbInfo[1], index))
+	con.Success(c, http.StatusOK, gin.H{
+		"data":  common.GetOne(gen.Root.Children, "", dbInfo[1], index),
+		"count": len(keys),
+	})
 }
 
 // 查看key值详情

@@ -25,6 +25,14 @@ type TtlKeyReq struct {
 	Ttl string `form:"ttl" label:"ttl" json:"ttl" binding:"required"`
 }
 
+// string 类型
+type AddStrReq struct {
+	Id    string `form:"id" label:"id" json:"id" binding:"required"`
+	Sk    string `form:"sk" label:"sk" json:"sk" binding:"required"`
+	Db    int    `form:"db" label:"db" json:"db"`
+	Value string `form:"value" label:"value" json:"value" binding:"required"`
+}
+
 // list 类型
 type ListKeyReq struct {
 	Id    string `form:"id" label:"id" json:"id" binding:"required"`

@@ -49,6 +49,7 @@ func Init() *gin.Engine {
 	stringRouter := app.Group("/string")
 	{
 		stringRouter.POST("/show", controllers.Sc.Show)
+		stringRouter.POST("/add", controllers.Sc.Add)
 	}
 
 	listRouter := app.Group("/list")

@@ -30,6 +30,10 @@
                 <el-input v-model="ruleForm.hkey" placeholder="键值" />
             </el-form-item>
 
+            <el-form-item v-if="ruleForm.type=='stream'" label="ID" prop="id">
+                <el-input v-model="ruleForm.id" placeholder="键值" />
+            </el-form-item>
+
             <el-form-item label="键值" prop="value">
                 <el-input
                     v-model="ruleForm.value"
@@ -38,6 +42,9 @@
                     placeholder="输入键值"
                 />
             </el-form-item>
+
+            <el-input v-model="ruleForm.sk" type="hidden"/>
+            <el-input v-model="ruleForm.db" type="hidden"/>
 
             <el-form-item>
                 <el-button type="primary" @click="onSubmit ">确定</el-button>
@@ -49,22 +56,34 @@
 
 <script>
 import { reactive, ref } from '@vue/reactivity';
-import { computed, watch } from '@vue/runtime-core';
+import { computed } from '@vue/runtime-core';
 import { useStore } from 'vuex';
+import {dbKeysList} from "@/utils/tree.js"
+import { addHash } from '@/api/hash.js';
+import { addList } from '@/api/list.js';
+import { addSet } from '@/api/set.js';
+import { addZset } from '@/api/zset.js';
+import { addStream } from '@/api/stream.js';
+import { addString } from '@/api/string.js';
+
 export default {
     name:"DataForm",
-    setup(props) {
-
+    setup() {
         const store = useStore()
         const dialogFormVisible = computed(() => store.state.showDataForm)
+        const sk = computed(() => store.state.sk)
+        const db = computed(() => store.state.db)
 
         let ruleFormRef = ref(null);
         let ruleForm = reactive({
             key: '',
             type: '',
             hkey: '',
+            id:'*',
             score: 0,
-            value: ''
+            value: '',
+            sk:sk,
+            db:db
         })
         let rules = {
             key:[
@@ -77,14 +96,6 @@ export default {
 
        let options = ref([
             {
-                value: 'string',
-                label: 'String',
-            },
-            {
-                value: 'list',
-                label: 'List',
-            },
-            {
                 value: 'set',
                 label: 'Set',
             },
@@ -96,32 +107,92 @@ export default {
                 value: 'hash',
                 label: 'Hash',
             },
+            {
+                value: 'list',
+                label: 'List',
+            },
+            {
+                value: 'string',
+                label: 'String',
+            },
+            {
+                value: 'stream',
+                label: 'Stream',
+            },
         ])
 
+    
         const onSubmit = ()=>{
+
+            let index = ruleForm.db +'-'+ruleForm.sk
+            dbKeysList(index)
+
+            switch(ruleForm.type){
+                case "string":
+                    addString({
+
+                    });
+                    break;
+                case "list":
+                    addList({
+                        id:ruleForm.key,
+                        sk:ruleForm.sk,
+                        db:ruleForm.db,
+                        item:ruleForm.value,
+                    });
+                    break;
+                case "set":
+                    addSet({
+                        id:ruleForm.key,
+                        sk:ruleForm.sk,
+                        db:ruleForm.db,
+                        item:ruleForm.value,
+                    });
+                    break;   
+                case "zset":
+                    addZset({
+                        id:ruleForm.key,
+                        sk:ruleForm.sk,
+                        db:ruleForm.db,
+                        score:ruleForm.score,
+                        item:ruleForm.value,
+                    });
+                    break;    
+                case "hash":
+                    addHash({
+                        id:ruleForm.key,
+                        sk:ruleForm.sk,
+                        db:ruleForm.db,
+                        itemk:ruleForm.hkey,
+                        itemv:ruleForm.value
+                    });
+                    break;    
+                case "stream":
+                    addStream({
+                        id:ruleForm.key,
+                        sk:ruleForm.sk,
+                        db:ruleForm.db,
+                        idx:ruleForm.id,
+                        item:ruleForm.value,
+                    });
+                    break;     
+            }
             console.log(ruleForm);
         }
 
         const onReset = ()=>{
-            store.commit("switchDataForm")
+            store.commit("switchDataForm",{sk:"",db:0})
             ruleFormRef.value.resetFields();
         }
 
-        watch(
-            () => props.visible,
-            (value) => {
-                dialogFormVisible.value = value
-            }
-        )
-
         return{
-            options,
-            dialogFormVisible,
             rules,
-            ruleFormRef,
+            options,
             ruleForm,
+            ruleFormRef,
+            dialogFormVisible,
             onSubmit,
-            onReset
+            onReset,
         }
     },
 }

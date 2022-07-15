@@ -7,3 +7,11 @@ export const showString = data => {
         data
     });
 };
+
+export const addString = data => {
+    return request({
+        url: 'api/string/add',
+        method: 'post',
+        data
+    });
+};

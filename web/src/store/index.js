@@ -6,14 +6,18 @@ export default createStore({
       connList: [],
       activeTag: '',
       showDataForm: false,
-      loadReq:false
+      loadReq:false,
+      sk:'',
+      db:0,
   },
   mutations: {
       setCurrentTag(state,tag){
         state.activeTag = tag;
       },
-      switchDataForm(state){
+      switchDataForm(state,obj){
         state.showDataForm = !state.showDataForm
+        state.sk = obj.sk
+        state.db = obj.db
       },
       delTagsItem(state,indexx) {
 
