@@ -10,21 +10,21 @@
 
 ### 功能清单
 
-- [ ] 管理连接(直连和SSH)、切换DB
+- :white_check_mark: 管理连接(直连和SSH)、切换DB
 
-- [ ] 支持 string/list/set/zset/hash/stream 类型的增删查改
+- :white_check_mark: 支持 string/list/set/zset/hash/stream 类型的增删查改
 
-- [ ] 编译打包成独立的二进制文件
+- :white_check_mark: 编译打包成独立的二进制文件
 
-- [ ] 支持命令行
+- :white_check_mark: 服务信息展示
 
-- [ ] 支持LUA脚本
+- :black_square_button: 支持命令行
 
-- [ ] 服务信息展示
+- :black_square_button: 支持LUA脚本
 
-- [ ] 操作日志
+- :black_square_button: 操作日志
 
-- [ ] 用户鉴权
+- :black_square_button: 用户鉴权
 
 
 ## 编译代码
