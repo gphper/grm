@@ -27,10 +27,10 @@ type TtlKeyReq struct {
 
 // string 类型
 type AddStrReq struct {
-	Id    string `form:"id" label:"id" json:"id" binding:"required"`
-	Sk    string `form:"sk" label:"sk" json:"sk" binding:"required"`
-	Db    int    `form:"db" label:"db" json:"db"`
-	Value string `form:"value" label:"value" json:"value" binding:"required"`
+	Id   string `form:"id" label:"id" json:"id" binding:"required"`
+	Sk   string `form:"sk" label:"sk" json:"sk" binding:"required"`
+	Db   int    `form:"db" label:"db" json:"db"`
+	Item string `form:"item" label:"item" json:"item" binding:"required"`
 }
 
 // list 类型

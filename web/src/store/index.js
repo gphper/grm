@@ -15,7 +15,7 @@ export default createStore({
         state.activeTag = tag;
       },
       switchDataForm(state,obj){
-        state.showDataForm = !state.showDataForm
+        state.showDataForm = obj.show
         state.sk = obj.sk
         state.db = obj.db
       },

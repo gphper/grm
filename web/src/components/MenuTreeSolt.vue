@@ -41,7 +41,7 @@ export default {
             //     data.children = []
             // }
             // data.children.push(newChild)
-            store.commit("switchDataForm");
+            store.commit("switchDataForm",{sk:"",db:0,show:true});
         }
 
         const remove = (key) => {

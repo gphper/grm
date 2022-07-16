@@ -70,7 +70,7 @@ func (con stringController) Add(c *gin.Context) {
 		return
 	}
 
-	res, err := client.Set(context.Background(), req.Id, req.Value, 0).Result()
+	res, err := client.Set(context.Background(), req.Id, req.Item, 0).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return

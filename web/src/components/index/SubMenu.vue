@@ -63,7 +63,7 @@ export default {
             //     data.children = []
             // }
             // data.children.push(newChild)
-            store.commit("switchDataForm",{sk:sk,db:db});
+            store.commit("switchDataForm",{sk:sk,db:db,show:true});
         }
 
         return {

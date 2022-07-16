@@ -125,12 +125,18 @@ export default {
         const onSubmit = ()=>{
 
             let index = ruleForm.db +'-'+ruleForm.sk
-            dbKeysList(index)
+            
 
             switch(ruleForm.type){
                 case "string":
                     addString({
-
+                        id:ruleForm.key,
+                        sk:ruleForm.sk,
+                        db:ruleForm.db,
+                        item:ruleForm.value,
+                    }).then(()=>{
+                        dbKeysList(index)
+                        onReset()
                     });
                     break;
                 case "list":
@@ -139,6 +145,9 @@ export default {
                         sk:ruleForm.sk,
                         db:ruleForm.db,
                         item:ruleForm.value,
+                    }).then(()=>{
+                        dbKeysList(index)
+                        onReset()
                     });
                     break;
                 case "set":
@@ -147,6 +156,9 @@ export default {
                         sk:ruleForm.sk,
                         db:ruleForm.db,
                         item:ruleForm.value,
+                    }).then(()=>{
+                        dbKeysList(index)
+                        onReset()
                     });
                     break;   
                 case "zset":
@@ -156,6 +168,9 @@ export default {
                         db:ruleForm.db,
                         score:ruleForm.score,
                         item:ruleForm.value,
+                    }).then(()=>{
+                        dbKeysList(index)
+                        onReset()
                     });
                     break;    
                 case "hash":
@@ -165,6 +180,9 @@ export default {
                         db:ruleForm.db,
                         itemk:ruleForm.hkey,
                         itemv:ruleForm.value
+                    }).then(()=>{
+                        dbKeysList(index)
+                        onReset()
                     });
                     break;    
                 case "stream":
@@ -174,6 +192,9 @@ export default {
                         db:ruleForm.db,
                         idx:ruleForm.id,
                         item:ruleForm.value,
+                    }).then(()=>{
+                        dbKeysList(index)
+                        onReset()
                     });
                     break;     
             }
@@ -181,7 +202,7 @@ export default {
         }
 
         const onReset = ()=>{
-            store.commit("switchDataForm",{sk:"",db:0})
+            store.commit("switchDataForm",{sk:"",db:0,show:false})
             ruleFormRef.value.resetFields();
         }
 
