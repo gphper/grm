@@ -1,5 +1,6 @@
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
+import { Buffer } from 'buffer'
 import 'xterm/css/xterm.css'
 
 
@@ -34,7 +35,7 @@ const NewShell = (id,sk,db,name)=>{
                 if(curr_line.length > 0){
                     curr_line = curr_line.slice(0, -1);
                     term.write('\x1b[2K\r');
-                    term.write('\x1b[32m'+name+':0> \x1b[0m'+curr_line);
+                    term.write('\x1b[32m'+name+':'+db+'> \x1b[0m'+curr_line);
                 }else{
                     term.write("\x07");
                 }
@@ -49,16 +50,21 @@ const NewShell = (id,sk,db,name)=>{
                     current = last+1;
                 }
 
-                console.log(curr_line)
-                socket.send(
-                    JSON.stringify({
-                        sk:sk,
-                        db:db,
-                        cmd:curr_line
-                    })
-                )
-
-                term.write('\r\n');
+                if(curr_line == ""){
+                    term.write('\r\n\x1b[35m command not empty \x1b[0m');
+                    // term.write('command not empty');
+                    term.write('\r\n\x1b[32m'+name+':'+db+'> \x1b[0m');
+                }else{
+                    socket.send(
+                        JSON.stringify({
+                            sk:sk,
+                            db:db,
+                            cmd:curr_line
+                        })
+                    )
+                    term.write('\r\n');
+                }
+                
                 curr_line = ""
                 break;
             case 27: //方向键
@@ -68,7 +74,7 @@ const NewShell = (id,sk,db,name)=>{
                         //当前行有数据的时候进行删除掉在进行渲染上存储的历史数据
                         if(curr_line.length > 0){
                             term.write('\x1b[2K\r');
-                            term.write('\x1b[32m'+name+':0> \x1b[0m');
+                            term.write('\x1b[32m'+name+':'+db+'> \x1b[0m');
                         }
 
                         let text = history_lines[current]
@@ -78,13 +84,13 @@ const NewShell = (id,sk,db,name)=>{
                     }else{
                         term.write("\x07");
                     }
-                    // console.log('curent'+current);
+                    
                 }else if(data === '\u001b[B'){//down
                     if (last >= 0 && current < last) {
                         current++
                         if(curr_line.length > 0){
                             term.write('\x1b[2K\r');
-                            term.write('\x1b[32m'+name+':0> \x1b[0m');
+                            term.write('\x1b[32m'+name+':'+db+'> \x1b[0m');
                         }
 
                         let text = history_lines[current]
@@ -93,7 +99,7 @@ const NewShell = (id,sk,db,name)=>{
                     }else{
                         term.write("\x07"); 
                     }
-                    // console.log('curent'+current);
+                    
                 }else{
                     term.write("\x07");
                 }
@@ -103,10 +109,6 @@ const NewShell = (id,sk,db,name)=>{
                 term.write(data);
                 break;
         }
-
-        // if(curr_line != ""){
-        //     console.log(curr_line)
-        // }
         
     });
 
@@ -118,13 +120,21 @@ const NewShell = (id,sk,db,name)=>{
         fitAddon.fit();
         term.focus();
         term.writeln("\x1b[38:5:29m连接中...\x1b[0m");
-        term.write('\x1b[32m'+name+':0> \x1b[0m');
+        term.write('\x1b[32m'+name+':'+db+'> \x1b[0m');
     }
     socket.onmessage = (event) => {
         // 接收推送的消息
-        console.log(event.data.toString())
-        term.writeln(event.data.toString());
-        term.write('\x1b[32m'+name+':0> \x1b[0m');
+        let data = Buffer.from(event.data)
+        if(data[0] == 1){
+            //成功
+            db = data[1];
+            term.writeln(data.slice(2,data.length).toString());
+        }else{
+            //错误输出
+            term.writeln('\x1b[35m'+data.slice(2,data.length).toString()+'\x1b[0m');
+        }
+
+        term.write('\x1b[32m'+name+':'+db+'> \x1b[0m');
     }
     socket.onclose = () => {
         console.log('close socket')

@@ -29,6 +29,10 @@ var upgrader = websocket.Upgrader{
 	},
 } // use default options
 
+func ReturnResp(data string, tag uint8, db uint8) []byte {
+	return append([]byte{tag, db}, []byte(data)...)
+}
+
 func (con wsController) Ws(c *gin.Context) {
 
 	type Cmd struct {
@@ -48,7 +52,7 @@ func (con wsController) Ws(c *gin.Context) {
 		mt, message, err := ws.ReadMessage()
 		fmt.Println(message)
 		if err != nil {
-			err = ws.WriteMessage(mt, []byte(err.Error()))
+			err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, 0))
 			if err != nil {
 				log.Println("write:", err)
 				break
@@ -60,7 +64,7 @@ func (con wsController) Ws(c *gin.Context) {
 		json := json.NewDecoder(bytes.NewBuffer(message))
 		err = json.Decode(&cmd)
 		if err != nil {
-			err = ws.WriteMessage(mt, []byte(err.Error()))
+			err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, uint8(cmd.Db)))
 			if err != nil {
 				log.Println("write:", err)
 				break
@@ -75,7 +79,7 @@ func (con wsController) Ws(c *gin.Context) {
 			redisServer := global.RedisServiceStorage[cmd.Sk]
 			client, err = service.NewRedisClient(redisServer)
 			if err != nil {
-				err = ws.WriteMessage(mt, []byte(err.Error()))
+				err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, uint8(cmd.Db)))
 				if err != nil {
 					log.Println("write:", err)
 					break
@@ -87,7 +91,7 @@ func (con wsController) Ws(c *gin.Context) {
 		}
 		err = client.Do(context.Background(), "select", cmd.Db).Err()
 		if err != nil {
-			err = ws.WriteMessage(mt, []byte(err.Error()))
+			err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, uint8(cmd.Db)))
 			if err != nil {
 				log.Println("write:", err)
 				break
@@ -98,12 +102,20 @@ func (con wsController) Ws(c *gin.Context) {
 		cmds := strings.Split(cmd.Cmd, " ")
 		cmdL := make([]interface{}, len(cmds))
 		for k, v := range cmds {
+
+			if k == 0 && v == "select" {
+				db, _ := strconv.Atoi(cmds[1])
+				if cmd.Db != db {
+					cmd.Db = db
+				}
+			}
+
 			cmdL[k] = v
 		}
 
 		result, err := client.Do(context.Background(), cmdL...).Result()
 		if err != nil {
-			err = ws.WriteMessage(mt, []byte(err.Error()))
+			err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, uint8(cmd.Db)))
 			if err != nil {
 				log.Println("write:", err)
 				break
@@ -123,7 +135,7 @@ func (con wsController) Ws(c *gin.Context) {
 			}
 		}
 
-		err = ws.WriteMessage(mt, []byte(resultPut))
+		err = ws.WriteMessage(mt, ReturnResp(resultPut, 1, uint8(cmd.Db)))
 		if err != nil {
 			log.Println("write:", err)
 			break
