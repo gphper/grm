@@ -20,7 +20,7 @@
 
                         <el-popover trigger="hover" content="打开命令行">
                             <template #reference>
-                                <el-button @click.stop="terminalDb('cmd')" type="success" circle><i class="iconfont icon-terminal"></i></el-button>
+                                <el-button @click.stop="terminalDb('cmd',item.key,0,item.name)" type="success" circle><i class="iconfont icon-terminal"></i></el-button>
                             </template>
                         </el-popover>
 
@@ -40,7 +40,7 @@
 <script>
 import { computed, createApp,h, onMounted, ref } from '@vue/runtime-dom'
 import { ElButton,ElMenu, ElRow, ElIcon,ElPopover, ElSubMenu } from 'element-plus'
-import {term,fitAddon} from '@/utils/terminal.js'
+import {NewShell} from '@/utils/terminal.js'
 import SubMenu from "@/components/index/SubMenu.vue"
 import {getConnList} from "@/api/base.js"
 import {openDb,serInfo} from "@/api/index.js"
@@ -75,7 +75,7 @@ export default{
             document.getElementById("menu#"+index).nextElementSibling.removeAttribute("style");
         };
         
-        const terminalDb = function(name){
+        const terminalDb = function(name,sk,db,sname){
             store.commit("setTagsItem", {
                 title: name,
                 name: name,
@@ -85,10 +85,7 @@ export default{
             store.commit("setCurrentTag", name);
 
             setTimeout(()=>{
-                term.loadAddon(fitAddon)
-                term.open(document.getElementById(name));
-                fitAddon.fit();
-                term.focus();
+                NewShell(name,sk,db,sname)
             },500);
             
         };

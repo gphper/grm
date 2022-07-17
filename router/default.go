@@ -87,5 +87,10 @@ func Init() *gin.Engine {
 		streamRouter.POST("/add", controllers.Stc.AddItem)
 	}
 
+	wsapp := router.Group("/ws")
+	{
+		wsapp.GET("/cmd", controllers.Wsc.Ws)
+	}
+
 	return router
 }

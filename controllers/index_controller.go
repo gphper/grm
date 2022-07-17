@@ -41,7 +41,6 @@ func (con indexController) Open(c *gin.Context) {
 
 	keys := strings.Split(req.Index, "_")
 	redisServer := global.RedisServiceStorage[keys[1]]
-
 	client, err := service.NewRedisClient(redisServer)
 	if err != nil {
 		con.Error(c, err.Error())
