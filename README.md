@@ -36,10 +36,14 @@
   `upx -9 main.exe -o grm.exe`  
 
 ## 持续更新中。。。
-
-![show1](https://user-images.githubusercontent.com/18718299/177555667-9e60ab58-6483-4d33-915a-b89c1c262a93.gif)
-
-![show](https://user-images.githubusercontent.com/18718299/176183368-44597b01-977b-44c4-bd1b-b7c987f1e6c4.gif)
+### 服务管理
+![conn](https://user-images.githubusercontent.com/18718299/179389039-d626c654-2874-40e0-951b-27a759d66192.gif)
+### 数据展示
+![show](https://user-images.githubusercontent.com/18718299/179389052-2229d782-3551-4e07-81e1-6ed8e58d8776.gif)
+### Terminal
+![cmd](https://user-images.githubusercontent.com/18718299/179389058-039fd95d-3f59-49e2-8141-c994964aa7b0.gif)
+### 添加数据
+![add](https://user-images.githubusercontent.com/18718299/179389065-98829c30-6098-44de-8471-5ba24be6aab1.gif)
 
 ## 支持作者
 如果觉得这个项目对你有帮助的话，请留下一颗star ⭐⭐鼓励一下！
