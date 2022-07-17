@@ -77,7 +77,7 @@ export default{
         
         const terminalDb = function(name,sk,db,sname){
             store.commit("setTagsItem", {
-                title: name,
+                title: sname+':'+db,
                 name: name,
                 content: "",
                 id:name
