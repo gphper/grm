@@ -9,6 +9,8 @@ export default createStore({
       loadReq:false,
       sk:'',
       db:0,
+      root:false,
+      pre:''
   },
   mutations: {
       setCurrentTag(state,tag){
@@ -18,6 +20,8 @@ export default createStore({
         state.showDataForm = obj.show
         state.sk = obj.sk
         state.db = obj.db
+        state.root = obj.root
+        state.pre = obj.pre
       },
       delTagsItem(state,indexx) {
 

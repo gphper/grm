@@ -8,7 +8,11 @@
             status-icon
         >
             <el-form-item label="键名" prop="key">
-                <el-input v-model="ruleForm.key"/>
+                <el-input v-if="root == true" v-model="ruleForm.key" placeholder="键名"/>
+
+                <el-input v-if="root == false" v-model="ruleForm.key" placeholder="键名">
+                    <template #prepend>{{pre}}:</template>
+                </el-input>
             </el-form-item>
 
             <el-form-item label="类型" prop="type">
@@ -73,6 +77,8 @@ export default {
         const dialogFormVisible = computed(() => store.state.showDataForm)
         const sk = computed(() => store.state.sk)
         const db = computed(() => store.state.db)
+        const root = computed(()=>store.state.root)
+        const pre = computed(()=>store.state.pre)
 
         let ruleFormRef = ref(null);
         let ruleForm = reactive({
@@ -125,8 +131,10 @@ export default {
         const onSubmit = ()=>{
 
             let index = ruleForm.db +'-'+ruleForm.sk
+            if(root.value == false){
+                ruleForm.key = pre.value+':'+ruleForm.key
+            }
             
-
             switch(ruleForm.type){
                 case "string":
                     addString({
@@ -198,7 +206,7 @@ export default {
                     });
                     break;     
             }
-            console.log(ruleForm);
+            
         }
 
         const onReset = ()=>{
@@ -207,6 +215,8 @@ export default {
         }
 
         return{
+            pre,
+            root,
             rules,
             options,
             ruleForm,

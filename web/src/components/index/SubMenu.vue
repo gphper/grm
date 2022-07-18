@@ -17,15 +17,15 @@
                         </template>
                     </el-popover>
 
-                    <el-popover trigger="hover" content="打开命令行">
+                    <!-- <el-popover trigger="hover" content="打开命令行">
                         <template #reference>
                             <el-button @click.stop="terminalDb('cmd')" type="success" circle><i class="iconfont icon-terminal"></i></el-button>
                         </template>
-                    </el-popover>
+                    </el-popover> -->
 
                     <el-popover trigger="hover" content="新增键值">
                         <template #reference>
-                            <el-button @click.stop="append(item.servicekey,key)" type="primary" circle><i class="iconfont icon-add1"></i></el-button>
+                            <el-button @click.stop="append(item.servicekey,key,true)" type="primary" circle><i class="iconfont icon-add1"></i></el-button>
                         </template>
                     </el-popover> 
                 </el-row>
@@ -57,13 +57,13 @@ export default {
         const handleClose = function(){
         };
 
-        const append = (sk,db) => {
+        const append = (sk,db,root) => {
             // const newChild = { id: 10, label: 'testtest', children: [] }
             // if (!data.children) {
             //     data.children = []
             // }
             // data.children.push(newChild)
-            store.commit("switchDataForm",{sk:sk,db:db,show:true});
+            store.commit("switchDataForm",{sk:sk,db:db,show:true,root:root,pre:''});
         }
 
         return {

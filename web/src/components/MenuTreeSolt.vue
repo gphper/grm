@@ -4,7 +4,7 @@
         <i v-else class="iconfont icon-key"></i>
         <span>&nbsp;{{ node.label }}</span>
         <span v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
-            <el-button text @click.stop="append(data)" type="success">添加</el-button>
+            <el-button text @click.stop="append(data.sk,data.db,false,data.id)" type="success">添加</el-button>
             <el-button text @click.stop="remove(data.id)" type="danger">删除</el-button>
         </span>
         <span v-else style="margin-left:20%;width: 15px;">
@@ -35,13 +35,14 @@ export default {
         
         const store = useStore()
 
-        const append = () => {
+        const append = (sk,db,root,pre) => {
             // const newChild = { id: 10, label: 'testtest', children: [] }
             // if (!data.children) {
             //     data.children = []
             // }
             // data.children.push(newChild)
-            store.commit("switchDataForm",{sk:"",db:0,show:true});
+            // store.commit("switchDataForm",{sk:"",db:0,show:true});
+            store.commit("switchDataForm",{sk:sk,db:db,show:true,root:root,pre:pre});
         }
 
         const remove = (key) => {
