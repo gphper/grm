@@ -2,7 +2,6 @@ package web
 
 import (
 	"embed"
-	"fmt"
 	"io/fs"
 	"net/http"
 )
@@ -17,8 +16,6 @@ func init() {
 	if err != nil {
 		panic(err.Error())
 	}
-
-	fmt.Println(static)
 
 	StaticsFs = http.FS(static)
 }

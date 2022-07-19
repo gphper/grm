@@ -1,51 +1,16 @@
 package main
 
 import (
-	"context"
-	"grm/global"
-	"grm/router"
-	"grm/web"
-	"log"
-	"net"
-	"net/http"
-	"os"
-	"os/signal"
-	"time"
+	"grm/cmd/run"
+	"grm/cmd/user"
+
+	"github.com/spf13/cobra"
 )
 
 func main() {
 
-	router := router.Init()
-
-	router.StaticFS("/static", web.StaticsFs)
-
-	srv := &http.Server{
-		Addr:    net.JoinHostPort(global.HostName, global.Port),
-		Handler: router,
-	}
-
-	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
-		}
-
-	}()
-
-	quit := make(chan os.Signal)
-
-	signal.Notify(quit, os.Interrupt)
-
-	<-quit
-
-	log.Println("Shutdown Server ...")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-
-	defer cancel()
-
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server Shutdown:", err)
-	}
-
-	log.Println("Server exiting")
+	var rootCmd = &cobra.Command{Use: "grm"}
+	rootCmd.AddCommand(run.CmdRun, user.CmdUser)
+	// rootCmd.AddCommand(user.CmdUser)
+	rootCmd.Execute()
 }
