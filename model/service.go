@@ -46,3 +46,9 @@ type SSHConfig struct {
 	SshUsername string `form:"ssh_username" json:"ssh_username"`
 	SshPassword string `form:"ssh_password" json:"ssh_password"`
 }
+
+type RedisConfig struct {
+	Addr     string `form:"addr" json:"addr"`
+	Password string `form:"password" json:"password"`
+	Db       int    `form:"db" json:"db"`
+}

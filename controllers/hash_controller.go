@@ -32,7 +32,7 @@ func (con hashController) Show(c *gin.Context) {
 		return
 	}
 
-	client := global.RedisServiceStorage[req.Sk].Client
+	client := global.GlobalClients[req.Sk]
 
 	err = client.Do(context.Background(), "select", req.Db).Err()
 	if err != nil {
@@ -98,7 +98,7 @@ func (con hashController) Del(c *gin.Context) {
 		return
 	}
 
-	client := global.RedisServiceStorage[req.Sk].Client
+	client := global.GlobalClients[req.Sk]
 
 	err = client.Do(context.Background(), "select", req.Db).Err()
 	if err != nil {
@@ -127,7 +127,7 @@ func (con hashController) AddItem(c *gin.Context) {
 		return
 	}
 
-	client := global.RedisServiceStorage[req.Sk].Client
+	client := global.GlobalClients[req.Sk]
 
 	err = client.Do(context.Background(), "select", req.Db).Err()
 	if err != nil {

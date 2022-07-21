@@ -1,9 +1,13 @@
 package controllers
 
 import (
+	"bytes"
 	"context"
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"grm/common"
 	"grm/global"
 	"grm/model"
 	"grm/service"
@@ -11,7 +15,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis"
 )
 
 type connController struct {
@@ -27,7 +30,8 @@ func (con connController) List(c *gin.Context) {
 		Name string `json:"name"`
 	}
 	conns := make([]ConnItem, 0)
-	for k, v := range global.RedisServiceStorage {
+
+	for k, v := range global.GlobalConf.RedisServices {
 		conns = append(conns, ConnItem{
 			Key:  k,
 			Name: v.RedisService,
@@ -49,12 +53,14 @@ func (con connController) Add(c *gin.Context) {
 	m.Write([]byte(conf.ServiceName))
 	key := hex.EncodeToString(m.Sum(nil))
 
-	global.RedisServiceStorage[key] = global.RedisService{
+	fmt.Println(global.GlobalConf)
+
+	global.GlobalConf.RedisServices[key] = global.RedisService{
 		RedisService: conf.ServiceName,
-		Config: &redis.Options{
+		Config: model.RedisConfig{
 			Addr:     net.JoinHostPort(conf.Host, conf.Port),
 			Password: conf.Password,
-			DB:       0,
+			Db:       0,
 		},
 		UseSsh: conf.UseSsh,
 		SSHConfig: model.SSHConfig{
@@ -64,6 +70,17 @@ func (con connController) Add(c *gin.Context) {
 			SshPassword: conf.SshPassword,
 		},
 	}
+
+	//存储
+	buffer := &bytes.Buffer{}
+	encoder := json.NewEncoder(buffer)
+	err = encoder.Encode(global.GlobalConf)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	common.WriteData(buffer.Bytes())
 
 	con.Success(c, http.StatusOK, gin.H{
 		"key":  key,
@@ -80,35 +97,12 @@ func (con connController) TestConn(c *gin.Context) {
 		return
 	}
 
-	// optionConfig := &redis.Options{
-	// 	Addr:     net.JoinHostPort(conf.Host, conf.Port),
-	// 	Password: conf.Password,
-	// 	DB:       0,
-	// }
-
-	// if conf.UseSsh {
-	// 	optionConfig.DialTimeout = -1
-	// 	optionConfig.WriteTimeout = -1
-	// 	optionConfig.ReadTimeout = -1
-	// 	cli, err := common.GetSSHClient(conf.SshUsername, conf.SshPassword, conf.SshHost+":"+conf.SshPort)
-	// 	if nil != err {
-	// 		panic(err)
-	// 	}
-	// 	optionConfig.Dialer = func(ctx context.Context, network, addr string) (net.Conn, error) {
-	// 		return cli.Dial(network, addr)
-	// 	}
-	// } else {
-	// 	optionConfig.DialTimeout = 5 * time.Second
-	// }
-
-	// client := redis.NewClient(optionConfig)
-
 	client, err := service.NewRedisClient(global.RedisService{
 		RedisService: req.ServiceName,
-		Config: &redis.Options{
+		Config: model.RedisConfig{
 			Addr:     net.JoinHostPort(req.Host, req.Port),
 			Password: req.Password,
-			DB:       0,
+			Db:       0,
 		},
 		UseSsh: req.UseSsh,
 		SSHConfig: model.SSHConfig{

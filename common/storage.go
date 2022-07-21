@@ -4,11 +4,12 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/gob"
+	"fmt"
 	"os"
 )
 
-const iv = "12345678abcdefgh"
-const key = "1234abdd12345678"
+const iv = "tEJYVxe29tHP1fhk"
+const key = "ltiBtmBqgU8LcCcw"
 
 //aes加密 分组模式ctr
 func aesEncrypt(plaintext []byte) []byte {
@@ -37,10 +38,11 @@ func aesDecrypt(cipherText []byte) []byte {
 }
 
 func WriteData(data []byte) error {
-	file, err := os.OpenFile("stream.grm", os.O_CREATE|os.O_RDWR, 0644)
+	file, err := os.OpenFile("storage.grm", os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	encoder := gob.NewEncoder(file)
 	encrypt := aesEncrypt(data)
@@ -53,14 +55,19 @@ func WriteData(data []byte) error {
 
 func ReadData() ([]byte, error) {
 
-	file, err := os.OpenFile("stream.grm", os.O_CREATE|os.O_RDWR, 0644)
+	file, err := os.OpenFile("storage.grm", os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
+	defer file.Close()
+
 	var info []byte
 	decoder := gob.NewDecoder(file)
 	err = decoder.Decode(&info)
+
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	data := aesDecrypt([]byte(info))

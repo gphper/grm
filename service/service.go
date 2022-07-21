@@ -18,7 +18,7 @@ import (
 func NewRedisClient(conf global.RedisService) (*redis.Client, error) {
 
 	ctx := context.Background()
-	optConf := conf.Config
+	optConf := &redis.Options{}
 	if conf.UseSsh {
 		cli, err := common.GetSSHClient(conf.SSHConfig.SshUsername, conf.SSHConfig.SshPassword, net.JoinHostPort(conf.SSHConfig.SshHost, conf.SSHConfig.SshPort))
 		if nil != err {

@@ -31,6 +31,7 @@ func init() {
 }
 
 func runFunction(cmd *cobra.Command, args []string) {
+
 	router := router.Init()
 
 	router.StaticFS("/static", web.StaticsFs)

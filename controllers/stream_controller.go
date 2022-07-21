@@ -38,7 +38,7 @@ func (con streamController) Show(c *gin.Context) {
 		return
 	}
 
-	client := global.RedisServiceStorage[req.Sk].Client
+	client := global.GlobalClients[req.Sk]
 
 	err = client.Do(context.Background(), "select", req.Db).Err()
 	if err != nil {
@@ -125,7 +125,7 @@ func (con streamController) Del(c *gin.Context) {
 		return
 	}
 
-	client := global.RedisServiceStorage[req.Sk].Client
+	client := global.GlobalClients[req.Sk]
 
 	err = client.Do(context.Background(), "select", req.Db).Err()
 	if err != nil {
@@ -154,7 +154,7 @@ func (con streamController) AddItem(c *gin.Context) {
 		return
 	}
 
-	client := global.RedisServiceStorage[req.Sk].Client
+	client := global.GlobalClients[req.Sk]
 
 	err = client.Do(context.Background(), "select", req.Db).Err()
 	if err != nil {

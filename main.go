@@ -11,6 +11,5 @@ func main() {
 
 	var rootCmd = &cobra.Command{Use: "grm"}
 	rootCmd.AddCommand(run.CmdRun, user.CmdUser)
-	// rootCmd.AddCommand(user.CmdUser)
 	rootCmd.Execute()
 }

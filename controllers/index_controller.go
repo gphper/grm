@@ -40,14 +40,14 @@ func (con indexController) Open(c *gin.Context) {
 	}
 
 	keys := strings.Split(req.Index, "_")
-	redisServer := global.RedisServiceStorage[keys[1]]
+	redisServer := global.GlobalConf.RedisServices[keys[1]]
 	client, err := service.NewRedisClient(redisServer)
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
-	redisServer.Client = client
-	global.RedisServiceStorage[keys[1]] = redisServer
+	global.GlobalClients[keys[1]] = client
+	global.GlobalConf.RedisServices[keys[1]] = redisServer
 
 	result, err := client.Info(context.Background(), "Keyspace").Result()
 	if err != nil {
@@ -112,7 +112,7 @@ func (con indexController) GetKeys(c *gin.Context) {
 
 	dbInfo := strings.Split(req.Index, "-")
 	index, _ := strconv.Atoi(dbInfo[0])
-	client := global.RedisServiceStorage[dbInfo[1]].Client
+	client := global.GlobalClients[dbInfo[1]]
 
 	err = client.Do(context.Background(), "select", index).Err()
 	if err != nil {
@@ -148,7 +148,7 @@ func (con indexController) GetKeyType(c *gin.Context) {
 		return
 	}
 
-	client := global.RedisServiceStorage[req.Sk].Client
+	client := global.GlobalClients[req.Sk]
 
 	err = client.Do(context.Background(), "select", req.Db).Err()
 	if err != nil {
@@ -176,7 +176,7 @@ func (con indexController) DelKey(c *gin.Context) {
 		return
 	}
 
-	client := global.RedisServiceStorage[req.Sk].Client
+	client := global.GlobalClients[req.Sk]
 
 	err = client.Do(context.Background(), "select", req.Db).Err()
 	if err != nil {
@@ -205,7 +205,7 @@ func (con indexController) TtlKey(c *gin.Context) {
 		return
 	}
 
-	client := global.RedisServiceStorage[req.Sk].Client
+	client := global.GlobalClients[req.Sk]
 
 	err = client.Do(context.Background(), "select", req.Db).Err()
 	if err != nil {
@@ -238,7 +238,7 @@ func (con indexController) SerInfo(c *gin.Context) {
 		return
 	}
 
-	redisServer := global.RedisServiceStorage[req.Key]
+	redisServer := global.GlobalConf.RedisServices[req.Key]
 
 	client, err := service.NewRedisClient(redisServer)
 	if err != nil {

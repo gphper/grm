@@ -7,7 +7,6 @@ package router
 
 import (
 	"grm/controllers"
-	"grm/global"
 	"grm/middleware"
 
 	"github.com/gin-contrib/gzip"
@@ -24,10 +23,10 @@ func Init() *gin.Engine {
 
 	app := router.Group("/api")
 
-	if len(global.Accounts) > 0 {
-		//用户验证
-		app.Use(middleware.UserAuth())
-	}
+	// if len(global.Accounts) > 0 {
+	// 	//用户验证
+	// 	app.Use(middleware.UserAuth())
+	// }
 
 	connRouter := app.Group("/conn")
 	{
