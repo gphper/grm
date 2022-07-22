@@ -27,8 +27,13 @@ func Init() *gin.Engine {
 	// 	//用户验证
 	// 	app.Use(middleware.UserAuth())
 	// }
+	userRouter := app.Group("/user")
+	{
+		userRouter.POST("/login", controllers.Loginc.Login)
+	}
 
 	connRouter := app.Group("/conn")
+	connRouter.Use(middleware.UserAuth())
 	{
 		connRouter.GET("/list", controllers.Cc.List)
 		connRouter.POST("/add", controllers.Cc.Add)

@@ -6,27 +6,51 @@
 package middleware
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func UserAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// session := sessions.Default(c)
-		// userInfoJson := session.Get("userInfo")
-		// if userInfoJson == nil {
-		// 	// 取不到就是没有登录
-		// 	c.Header("Content-Type", "text/html; charset=utf-8")
-		// 	c.String(200, `<script type="text/javascript">top.location.href="/login"</script>`)
-		// 	return
-		// }
 
-		// info := make(map[string]string)
-		// json.Unmarshal([]byte(userInfoJson.(string)), &info)
+		auth := c.Request.Header.Get("Authorization")
+		info, err := jwt.ParseWithClaims(auth, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
+			return []byte("TyPbWNRjho"), nil
+		})
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "Auth Error",
+			})
+			c.Abort()
+			return
+		}
 
-		// for k, v := range info {
-		// 	c.Set(k, v)
-		// }
+		uInfo := info.Claims.(jwt.MapClaims)
 
+		expire, err := time.ParseInLocation("2006-01-02 15:04:05", uInfo["expire"].(string), time.Local)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "Auth Error",
+			})
+			c.Abort()
+			return
+		}
+
+		if time.Until(expire).Seconds() < 0 {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "Jwt Token Expired",
+			})
+			c.Abort()
+			return
+		}
+
+		c.Set("username", uInfo["user"].(string))
 		c.Next()
 	}
 }
