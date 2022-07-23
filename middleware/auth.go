@@ -23,7 +23,7 @@ func UserAuth() gin.HandlerFunc {
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 0,
-				"data":   "Auth Error",
+				"msg":    "Auth Error",
 			})
 			c.Abort()
 			return
@@ -35,7 +35,7 @@ func UserAuth() gin.HandlerFunc {
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 0,
-				"data":   "Auth Error",
+				"msg":    "Auth Error",
 			})
 			c.Abort()
 			return
@@ -44,7 +44,7 @@ func UserAuth() gin.HandlerFunc {
 		if time.Until(expire).Seconds() < 0 {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 0,
-				"data":   "Jwt Token Expired",
+				"msg":    "Jwt Token Expired",
 			})
 			c.Abort()
 			return
