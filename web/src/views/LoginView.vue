@@ -57,6 +57,8 @@
 <script>
 import { reactive, ref } from '@vue/reactivity'
 import { onMounted } from '@vue/runtime-core'
+import { login } from "@/api/user.js"
+import { useRouter } from 'vue-router'
 
 export default {
   name:"LoginView",
@@ -66,6 +68,8 @@ export default {
       username:"",
       password:""
     })
+
+    const router = useRouter()
 
     const top = ref(0)
 
@@ -85,7 +89,10 @@ export default {
     }
 
     function onSubmit(){
-       console.log(form)
+      login(form).then((res)=>{
+        sessionStorage.setItem('auth',res.data.jwt)
+        router.push('/')
+      })
     }
 
     function onReset(){
