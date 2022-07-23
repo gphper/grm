@@ -18,13 +18,13 @@
 
 - :white_check_mark: 服务信息展示
 
-- :black_square_button: 支持命令行
+- :white_check_mark: 支持命令行
+
+- :white_check_mark: 用户鉴权
 
 - :black_square_button: 支持LUA脚本
 
 - :black_square_button: 操作日志
-
-- :black_square_button: 用户鉴权
 
 
 ## 编译代码
@@ -36,6 +36,8 @@
   `upx -9 main.exe -o grm.exe`  
 
 ## 持续更新中。。。
+### 登录
+![login](https://user-images.githubusercontent.com/18718299/180608188-9d7a3d97-3c4c-40ea-bcfe-444ed0fc2900.gif)
 ### 服务管理
 ![conn](https://user-images.githubusercontent.com/18718299/179389039-d626c654-2874-40e0-951b-27a759d66192.gif)
 ### 数据展示
