@@ -13,9 +13,10 @@ const service = axios.create({
 service.interceptors.request.use(
     config => {
         store.commit("setLoadReq",true)
-        let token = sessionStorage.getItem('auth')
-        if (token != null) {  
-            config.headers.Authorization = token;
+        let auth = sessionStorage.getItem('auth')
+        if (auth != null) { 
+            let obj = JSON.parse(auth) 
+            config.headers.Authorization = obj.jwt;
         }
         return config;
     },

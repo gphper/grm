@@ -49,6 +49,7 @@ func (con loginController) Login(c *gin.Context) {
 	}
 
 	con.Success(c, http.StatusOK, gin.H{
-		"jwt": signingString,
+		"jwt":      signingString,
+		"username": loginReq.Username,
 	})
 }
