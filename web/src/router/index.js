@@ -18,4 +18,13 @@ const router = createRouter({
   routes
 })
 
+
+router.beforeEach((to, from, next) => {
+  if (to.name !== 'login' && sessionStorage.getItem("auth") == null){
+    next({ name: 'login' })
+  }else{
+    next()
+  }
+})
+
 export default router
