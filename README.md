@@ -22,9 +22,11 @@
 
 - :white_check_mark: 用户鉴权
 
+- :white_check_mark: 操作日志
+
 - :black_square_button: 支持LUA脚本
 
-- :black_square_button: 操作日志
+
 
 
 ## 编译代码
