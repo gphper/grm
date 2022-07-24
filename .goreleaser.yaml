@@ -16,6 +16,10 @@ builds:
       - darwin
     ldflags:
       - "-s -w"
+    hooks:
+      post:
+       - upx "{{ .Path }}"
+
 archives:
   - replacements:
       darwin: Darwin
