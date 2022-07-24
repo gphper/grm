@@ -28,7 +28,7 @@ func userAddFunc(cmd *cobra.Command, args []string) {
 	fmt.Println("Please input password:")
 	fmt.Scan(&password)
 
-	fmt.Printf("%s %s", username, password)
+	fmt.Println("success!")
 
 	user := global.GlobalConf.Accounts
 	user[username] = password

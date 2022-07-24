@@ -4,6 +4,7 @@ import (
 	"context"
 	"grm/router"
 	"grm/web"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
 
@@ -31,6 +33,9 @@ func init() {
 }
 
 func runFunction(cmd *cobra.Command, args []string) {
+
+	gin.SetMode(gin.ReleaseMode)
+	gin.DefaultWriter = ioutil.Discard
 
 	router := router.Init()
 
