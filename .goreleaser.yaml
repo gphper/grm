@@ -1,5 +1,7 @@
 # This is an example .goreleaser.yml file with some sensible defaults.
 # Make sure to check the documentation at https://goreleaser.com
+env_files:
+  github_token: ./token
 before:
   hooks:
     - web.bat
@@ -33,9 +35,4 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
-      - '^logs:'
       - '.gitignore'
-      - 'go.mod'
-      - '.goreleaser.yaml'
-      - 'storage.grm'
-      - 'web.bat'
