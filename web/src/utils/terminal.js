@@ -2,6 +2,7 @@ import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { Buffer } from 'buffer'
 import 'xterm/css/xterm.css'
+import router from "@/router";
 
 
 
@@ -44,24 +45,29 @@ const NewShell = (id,sk,db,name)=>{
                 if (curr_line === 'clear') {
                     term.clear()
                 }
-                if(curr_line != ""){
-                    history_lines.push(curr_line);
-                    last = history_lines.length - 1;
-                    current = last+1;
-                }
 
                 if(curr_line == ""){
                     term.write('\r\n\x1b[35m command not empty \x1b[0m');
-                    // term.write('command not empty');
                     term.write('\r\n\x1b[32m'+name+':'+db+'> \x1b[0m');
                 }else{
+
+                    let auth = sessionStorage.getItem('auth')
+                    if (auth == null) { 
+                        router.push('/login')
+                    }
+                    let obj = JSON.parse(auth)
+
                     socket.send(
                         JSON.stringify({
                             sk:sk,
                             db:db,
-                            cmd:curr_line
+                            cmd:curr_line,
+                            jwt:obj.jwt,
                         })
                     )
+                    history_lines.push(curr_line);
+                    last = history_lines.length - 1;
+                    current = last+1;
                     term.write('\r\n');
                 }
                 

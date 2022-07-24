@@ -11,9 +11,11 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
+	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/websocket"
 )
 
@@ -39,6 +41,7 @@ func (con wsController) Ws(c *gin.Context) {
 		Sk  string
 		Db  int
 		Cmd string
+		Jwt string
 	}
 
 	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
@@ -50,7 +53,6 @@ func (con wsController) Ws(c *gin.Context) {
 	for {
 	LOOP:
 		mt, message, err := ws.ReadMessage()
-		fmt.Println(message)
 		if err != nil {
 			err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, 0))
 			if err != nil {
@@ -72,6 +74,42 @@ func (con wsController) Ws(c *gin.Context) {
 			goto LOOP
 		}
 
+		//验证用户
+		info, err := jwt.ParseWithClaims(cmd.Jwt, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
+			return []byte("TyPbWNRjho"), nil
+		})
+		if err != nil {
+			err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, uint8(cmd.Db)))
+			if err != nil {
+				log.Println("write:", err)
+				break
+			}
+			goto LOOP
+		}
+
+		uInfo := info.Claims.(jwt.MapClaims)
+		expire, err := time.ParseInLocation("2006-01-02 15:04:05", uInfo["expire"].(string), time.Local)
+		if err != nil {
+			err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, uint8(cmd.Db)))
+			if err != nil {
+				log.Println("write:", err)
+				break
+			}
+			goto LOOP
+		}
+
+		if time.Until(expire).Seconds() < 0 {
+			err = ws.WriteMessage(mt, ReturnResp("Jwt Token Expired", 0, uint8(cmd.Db)))
+			if err != nil {
+				log.Println("write:", err)
+				break
+			}
+			goto LOOP
+		}
+
+		var username string = uInfo["user"].(string)
+		ctx := context.WithValue(context.Background(), "username", username)
+
 		var client *redis.Client
 
 		client = global.GlobalClients[cmd.Sk]
@@ -89,7 +127,7 @@ func (con wsController) Ws(c *gin.Context) {
 			global.GlobalClients[cmd.Sk] = client
 			global.GlobalConf.RedisServices[cmd.Sk] = redisServer
 		}
-		err = client.Do(context.Background(), "select", cmd.Db).Err()
+		err = client.Do(ctx, "select", cmd.Db).Err()
 		if err != nil {
 			err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, uint8(cmd.Db)))
 			if err != nil {
@@ -113,7 +151,7 @@ func (con wsController) Ws(c *gin.Context) {
 			cmdL[k] = v
 		}
 
-		result, err := client.Do(context.Background(), cmdL...).Result()
+		result, err := client.Do(ctx, cmdL...).Result()
 		if err != nil {
 			err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, uint8(cmd.Db)))
 			if err != nil {
