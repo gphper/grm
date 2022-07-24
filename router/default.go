@@ -23,10 +23,6 @@ func Init() *gin.Engine {
 
 	app := router.Group("/api")
 
-	// if len(global.Accounts) > 0 {
-	// 	//用户验证
-	// 	app.Use(middleware.UserAuth())
-	// }
 	userRouter := app.Group("/user")
 	{
 		userRouter.POST("/login", controllers.Loginc.Login)
@@ -41,6 +37,7 @@ func Init() *gin.Engine {
 	}
 
 	indexRouter := app.Group("/index")
+	indexRouter.Use(middleware.UserAuth())
 	{
 		indexRouter.POST("/open", controllers.Ic.Open)
 		indexRouter.POST("/getkeys", controllers.Ic.GetKeys)
@@ -51,12 +48,14 @@ func Init() *gin.Engine {
 	}
 
 	stringRouter := app.Group("/string")
+	stringRouter.Use(middleware.UserAuth())
 	{
 		stringRouter.POST("/show", controllers.Sc.Show)
 		stringRouter.POST("/add", controllers.Sc.Add)
 	}
 
 	listRouter := app.Group("/list")
+	listRouter.Use(middleware.UserAuth())
 	{
 		listRouter.POST("/show", controllers.Lc.Show)
 		listRouter.POST("/del", controllers.Lc.Del)
@@ -64,6 +63,7 @@ func Init() *gin.Engine {
 	}
 
 	hashRouter := app.Group("/hash")
+	hashRouter.Use(middleware.UserAuth())
 	{
 		hashRouter.POST("/show", controllers.Hc.Show)
 		hashRouter.POST("/del", controllers.Hc.Del)
@@ -71,6 +71,7 @@ func Init() *gin.Engine {
 	}
 
 	setRouter := app.Group("/set")
+	setRouter.Use(middleware.UserAuth())
 	{
 		setRouter.POST("/show", controllers.Setc.Show)
 		setRouter.POST("/del", controllers.Setc.Del)
@@ -78,6 +79,7 @@ func Init() *gin.Engine {
 	}
 
 	zsetRouter := app.Group("/zset")
+	zsetRouter.Use(middleware.UserAuth())
 	{
 		zsetRouter.POST("/show", controllers.Zc.Show)
 		zsetRouter.POST("/del", controllers.Zc.Del)
@@ -85,6 +87,7 @@ func Init() *gin.Engine {
 	}
 
 	streamRouter := app.Group("/stream")
+	streamRouter.Use(middleware.UserAuth())
 	{
 		streamRouter.POST("/show", controllers.Stc.Show)
 		streamRouter.POST("/del", controllers.Stc.Del)

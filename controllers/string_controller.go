@@ -28,19 +28,22 @@ func (con stringController) Show(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	data, err := client.Get(context.Background(), req.Id).Result()
+	data, err := client.Get(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	ttl, err := client.TTL(context.Background(), req.Id).Result()
+	ttl, err := client.TTL(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -64,13 +67,16 @@ func (con stringController) Add(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	res, err := client.Set(context.Background(), req.Id, req.Item, 0).Result()
+	res, err := client.Set(ctx, req.Id, req.Item, 0).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return

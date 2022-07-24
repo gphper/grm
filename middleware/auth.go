@@ -49,7 +49,6 @@ func UserAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
 		c.Set("username", uInfo["user"].(string))
 		c.Next()
 	}

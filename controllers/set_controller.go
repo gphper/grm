@@ -33,13 +33,16 @@ func (con setController) Show(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	total, err := client.SCard(context.Background(), req.Id).Result()
+	total, err := client.SCard(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -52,7 +55,7 @@ func (con setController) Show(c *gin.Context) {
 	}
 	data := make([]ListNode, end-start+1)
 
-	setSlice, _, err := client.SScan(context.Background(), req.Id, uint64(start), "*", int64(end-start+1)).Result()
+	setSlice, _, err := client.SScan(ctx, req.Id, uint64(start), "*", int64(end-start+1)).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -65,7 +68,7 @@ func (con setController) Show(c *gin.Context) {
 		}
 	}
 
-	ttl, err := client.TTL(context.Background(), req.Id).Result()
+	ttl, err := client.TTL(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -91,13 +94,16 @@ func (con setController) Del(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	count, err := client.SRem(context.Background(), req.Id, req.Item).Result()
+	count, err := client.SRem(ctx, req.Id, req.Item).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -120,13 +126,16 @@ func (con setController) AddItem(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	count, err := client.SAdd(context.Background(), req.Id, req.Item).Result()
+	count, err := client.SAdd(ctx, req.Id, req.Item).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return

@@ -34,13 +34,16 @@ func (con hashController) Show(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	total, err := client.HLen(context.Background(), req.Id).Result()
+	total, err := client.HLen(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -53,7 +56,7 @@ func (con hashController) Show(c *gin.Context) {
 	}
 	data := make([]HashNode, 0)
 
-	hashSlice, _, err := client.HScan(context.Background(), req.Id, uint64(start), "*", int64(end-start+1)).Result()
+	hashSlice, _, err := client.HScan(ctx, req.Id, uint64(start), "*", int64(end-start+1)).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -74,7 +77,7 @@ func (con hashController) Show(c *gin.Context) {
 		}
 	}
 
-	ttl, err := client.TTL(context.Background(), req.Id).Result()
+	ttl, err := client.TTL(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -100,13 +103,16 @@ func (con hashController) Del(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	count, err := client.HDel(context.Background(), req.Id, req.Item).Result()
+	count, err := client.HDel(ctx, req.Id, req.Item).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -129,13 +135,16 @@ func (con hashController) AddItem(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	count, err := client.HSet(context.Background(), req.Id, req.Itemk, req.Itemv).Result()
+	count, err := client.HSet(ctx, req.Id, req.Itemk, req.Itemv).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return

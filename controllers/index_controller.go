@@ -49,13 +49,16 @@ func (con indexController) Open(c *gin.Context) {
 	global.GlobalClients[keys[1]] = client
 	global.GlobalConf.RedisServices[keys[1]] = redisServer
 
-	result, err := client.Info(context.Background(), "Keyspace").Result()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	result, err := client.Info(ctx, "Keyspace").Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	dbNum, err := client.ConfigGet(context.Background(), "databases").Result()
+	dbNum, err := client.ConfigGet(ctx, "databases").Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -114,13 +117,16 @@ func (con indexController) GetKeys(c *gin.Context) {
 	index, _ := strconv.Atoi(dbInfo[0])
 	client := global.GlobalClients[dbInfo[1]]
 
-	err = client.Do(context.Background(), "select", index).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", index).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	keys, _, err := client.Scan(context.Background(), 0, "*", 10000).Result()
+	keys, _, err := client.Scan(ctx, 0, "*", 10000).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -150,13 +156,16 @@ func (con indexController) GetKeyType(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	types, err := client.Type(context.Background(), req.Id).Result()
+	types, err := client.Type(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -178,13 +187,16 @@ func (con indexController) DelKey(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	_, err = client.Del(context.Background(), req.Id).Result()
+	_, err = client.Del(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -207,7 +219,10 @@ func (con indexController) TtlKey(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -218,7 +233,7 @@ func (con indexController) TtlKey(c *gin.Context) {
 		con.Error(c, err.Error())
 		return
 	}
-	ok, err := client.Expire(context.Background(), req.Id, time.Duration(ttl)*time.Second).Result()
+	ok, err := client.Expire(ctx, req.Id, time.Duration(ttl)*time.Second).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -246,7 +261,10 @@ func (con indexController) SerInfo(c *gin.Context) {
 		return
 	}
 
-	result, err := client.Info(context.Background()).Result()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	result, err := client.Info(ctx).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return

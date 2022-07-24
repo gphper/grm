@@ -36,13 +36,16 @@ func (con zsetController) Show(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	total, err := client.ZCard(context.Background(), req.Id).Result()
+	total, err := client.ZCard(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -54,7 +57,7 @@ func (con zsetController) Show(c *gin.Context) {
 		end = int(total - 1)
 	}
 
-	zsetSlice, err := client.ZRangeWithScores(context.Background(), req.Id, int64(start), int64(end)).Result()
+	zsetSlice, err := client.ZRangeWithScores(ctx, req.Id, int64(start), int64(end)).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -69,7 +72,7 @@ func (con zsetController) Show(c *gin.Context) {
 		}
 	}
 
-	ttl, err := client.TTL(context.Background(), req.Id).Result()
+	ttl, err := client.TTL(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -95,13 +98,16 @@ func (con zsetController) Del(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	count, err := client.ZRem(context.Background(), req.Id, req.Item).Result()
+	count, err := client.ZRem(ctx, req.Id, req.Item).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -124,14 +130,17 @@ func (con zsetController) AddItem(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
 	score, _ := strconv.Atoi(req.Score)
-	count, err := client.ZAdd(context.Background(), req.Id, &redis.Z{
+	count, err := client.ZAdd(ctx, req.Id, &redis.Z{
 		Score:  float64(score),
 		Member: req.Item,
 	}).Result()

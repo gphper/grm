@@ -26,7 +26,6 @@ func (rl RedisLog) AfterProcess(ctx context.Context, cmd redis.Cmder) error {
 	if ok {
 		rl.Logger.Info(cmd.String(), zap.String("username", value))
 	}
-
 	return nil
 }
 

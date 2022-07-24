@@ -3,7 +3,6 @@ package controllers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"grm/global"
 	"grm/model"
 	"math"
@@ -40,13 +39,16 @@ func (con streamController) Show(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	total, err := client.XLen(context.Background(), req.Id).Result()
+	total, err := client.XLen(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -61,7 +63,7 @@ func (con streamController) Show(c *gin.Context) {
 
 	limit := req.Limit + 1
 	if req.Type == "next" {
-		xSlice, err = client.XRangeN(context.Background(), req.Id, req.Item, "+", int64(limit)).Result()
+		xSlice, err = client.XRangeN(ctx, req.Id, req.Item, "+", int64(limit)).Result()
 		if err != nil {
 			con.Error(c, err.Error())
 			return
@@ -75,13 +77,11 @@ func (con streamController) Show(c *gin.Context) {
 		}
 
 	} else {
-		xSlice, err = client.XRevRangeN(context.Background(), req.Id, req.Item, "-", int64(limit)).Result()
+		xSlice, err = client.XRevRangeN(ctx, req.Id, req.Item, "-", int64(limit)).Result()
 		if err != nil {
 			con.Error(c, err.Error())
 			return
 		}
-		fmt.Println(req.Item)
-		fmt.Println(xSlice)
 		tmp := xSlice[len(xSlice)-1]
 		first = tmp.ID
 		last = req.Item
@@ -99,7 +99,7 @@ func (con streamController) Show(c *gin.Context) {
 		}
 	}
 
-	ttl, err := client.TTL(context.Background(), req.Id).Result()
+	ttl, err := client.TTL(ctx, req.Id).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -127,13 +127,16 @@ func (con streamController) Del(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
-	count, err := client.XDel(context.Background(), req.Id, req.Item).Result()
+	count, err := client.XDel(ctx, req.Id, req.Item).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -156,7 +159,10 @@ func (con streamController) AddItem(c *gin.Context) {
 
 	client := global.GlobalClients[req.Sk]
 
-	err = client.Do(context.Background(), "select", req.Db).Err()
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -169,7 +175,7 @@ func (con streamController) AddItem(c *gin.Context) {
 		return
 	}
 
-	result, err := client.XAdd(context.Background(), &redis.XAddArgs{
+	result, err := client.XAdd(ctx, &redis.XAddArgs{
 		Stream:       req.Id,
 		MaxLen:       0,
 		MaxLenApprox: 0,
