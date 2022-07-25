@@ -90,8 +90,11 @@ export default {
 
     function onSubmit(){
       login(form).then((res)=>{
-        sessionStorage.setItem('auth',JSON.stringify(res.data))
-        router.push('/')
+        if(res.status){
+          console.log("aaaaaaaaaaaa")
+          sessionStorage.setItem('auth',JSON.stringify(res.data))
+          router.push('/')
+        }
       })
     }
 
