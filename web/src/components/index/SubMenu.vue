@@ -40,7 +40,7 @@
         </el-menu>
 
 
-        <el-dialog v-model="searchVisiable" @close="onReset" title="搜索">
+        <el-dialog v-model="searchVisiable" title="搜索">
             <el-form
                 :rules="rules"
                 ref="ruleFormRef"
