@@ -73,7 +73,6 @@ export default {
     const showInfo = (connec_id,info)=>{
       drawer.value = true;
       title.value = '【' + connec_id + '】服务信息';
-      console.log(info)
       infos.value = info.replace(/\r\n/gm, "<br/>")
     }
 

@@ -24,7 +24,6 @@ export default {
     setup(props) {
 
         const nextPage = (index,match,course)=>{
-            console.log(course)
             dbKeysList(index,match,course)
         }
 

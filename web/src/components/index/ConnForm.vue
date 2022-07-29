@@ -115,7 +115,6 @@ export default {
         }
 
         const testConns = ()=>{
-            console.log(ruleForm)
             testConn(ruleForm).then((res) => {
                 if(res.status){
                     ElMessage({

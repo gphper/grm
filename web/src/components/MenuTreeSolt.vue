@@ -11,18 +11,22 @@
             <el-button text @click.stop="remove(data.id)" type="danger">删除</el-button>
             <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db)" type="primary">查看</el-button>
         </span>
-        <DataForm :visible="visible"></DataForm>
+        <DataForm></DataForm>
     </div>
 </template>
 
 <script>
 import { useStore } from 'vuex'
+import DataForm from '@/components/index/DataForm.vue'
 import { ShowHash, ShowList, ShowSet, ShowString,ShowZset,ShowStream } from '@/utils/show.js'
 import { getKeyType } from "@/api/index.js"
 import CryptoJS from "crypto-js";
 
 export default {
     name:"MenuTreeSolt",
+    components:{
+        DataForm
+    },
     props:{
         data:{
             type:Object,
@@ -36,12 +40,6 @@ export default {
         const store = useStore()
 
         const append = (sk,db,root,pre) => {
-            // const newChild = { id: 10, label: 'testtest', children: [] }
-            // if (!data.children) {
-            //     data.children = []
-            // }
-            // data.children.push(newChild)
-            // store.commit("switchDataForm",{sk:"",db:0,show:true});
             store.commit("switchDataForm",{sk:sk,db:db,show:true,root:root,pre:pre});
         }
 

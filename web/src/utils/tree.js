@@ -1,7 +1,7 @@
 import { createApp,h, ref } from '@vue/runtime-dom'
 import MenuTreeSolt from '@/components/MenuTreeSolt.vue'
 import MenuTreePage from '@/components/MenuTreePage.vue'
-import { ElTree,ElButton,ElRow,ElCol } from 'element-plus'
+import { ElTree,ElButton,ElRow,ElCol, ElDialog,ElInput,ElSelect,ElForm,ElOption } from 'element-plus'
 import {getKeys} from '@/api/index.js'
 import store from '@/store/index.js'
 
@@ -32,7 +32,7 @@ const genNode = function(id,dataS){
     });
     
     const parent = document.getElementById(id)
-    vdom.use(store).use(ElTree).use(ElButton).mount(parent)
+    vdom.use(store).use(ElTree).use(ElButton).use(ElDialog).use(ElInput).use(ElOption).use(ElForm).use(ElSelect).mount(parent)
 };
 
 
@@ -66,7 +66,6 @@ const dbKeysList = (index,match,cursor)=>{
     getKeys({"index":index,"match":match,"cursor":cursor}).then((res) => {
         document.getElementById("menu#"+index).nextElementSibling.setAttribute("style","display:flex")
         genNode("tree#"+index,ref(res.data.data));
-        console.log(res.data.cursor)
         if(res.data.cursor != 0){
             document.getElementById("page#"+index).style.display="block"
             genPage(index,match,res.data.cursor)

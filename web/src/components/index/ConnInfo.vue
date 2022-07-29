@@ -35,7 +35,6 @@ export default {
         watch(
             ()=>[props.drawer,props.title,props.info],
             (value) => {
-                console.log(value)
                 currentTitle.value = value[1];
                 drawerAble.value = value[0];
                 currentInfo.value = value[2]

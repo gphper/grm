@@ -91,7 +91,6 @@ export default {
     function onSubmit(){
       login(form).then((res)=>{
         if(res.status){
-          console.log("aaaaaaaaaaaa")
           sessionStorage.setItem('auth',JSON.stringify(res.data))
           router.push('/')
         }
