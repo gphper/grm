@@ -9,7 +9,9 @@ type InfoReq struct {
 }
 
 type GetKeysReq struct {
-	Index string `form:"index" label:"index" json:"index" binding:"required"`
+	Index  string `form:"index" label:"index" json:"index" binding:"required"`
+	Match  string `form:"match" label:"match" json:"match" default:"*"`
+	Cursor int    `form:"cursor" label:"cursor" json:"cursor" default:0`
 }
 
 type KeyReq struct {

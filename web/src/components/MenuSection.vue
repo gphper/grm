@@ -39,7 +39,7 @@
 
 <script>
 import { computed, createApp,h, onMounted, ref } from '@vue/runtime-dom'
-import { ElButton,ElMenu, ElRow, ElIcon,ElPopover, ElSubMenu } from 'element-plus'
+import { ElButton,ElMenu, ElRow, ElIcon,ElPopover, ElSubMenu,ElDialog,ElInput,ElForm,ElFormItem,ElCol } from 'element-plus'
 import {NewShell} from '@/utils/terminal.js'
 import SubMenu from "@/components/index/SubMenu.vue"
 import {getConnList} from "@/api/base.js"
@@ -118,7 +118,7 @@ export default{
             });
             
             const parentx = document.getElementById(id)
-            vdomx.use(store).use(ElMenu).use(ElSubMenu).use(ElButton).use(ElIcon).use(ElRow).use(ElPopover).mount(parentx)
+            vdomx.use(store).use(ElMenu).use(ElSubMenu).use(ElButton).use(ElIcon).use(ElRow).use(ElPopover).use(ElDialog).use(ElInput).use(ElForm).use(ElFormItem).use(ElCol).mount(parentx)
         };
 
         onMounted(()=>{

@@ -126,7 +126,7 @@ func (con indexController) GetKeys(c *gin.Context) {
 		return
 	}
 
-	keys, _, err := client.Scan(ctx, 0, "*", 10000).Result()
+	keys, cursor, err := client.Scan(ctx, uint64(req.Cursor), req.Match, 1000).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -140,8 +140,9 @@ func (con indexController) GetKeys(c *gin.Context) {
 	}
 
 	con.Success(c, http.StatusOK, gin.H{
-		"data":  common.GetOne(gen.Root.Children, "", dbInfo[1], index),
-		"count": len(keys),
+		"data":   common.GetOne(gen.Root.Children, "", dbInfo[1], index),
+		"count":  len(keys),
+		"cursor": cursor,
 	})
 }
 
