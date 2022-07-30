@@ -50,16 +50,13 @@
                         <el-input v-model="search" placeholder="列表搜索" />
                     </el-row>
                     <el-row class="data-button">
-                        <div class="page">
-                            页:{{page}} 共{{total}}
-                        </div>
+                        <el-col  :span="24" class="page">
+                            共{{total}}个值
+                        </el-col>
                     </el-row>
                     <el-row class="data-button">
-                        <el-col :span="12">
-                            <el-button type="success" size="small" plain circle @click="prePage"><i class="iconfont icon-shangyiye"></i></el-button>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-button type="success" size="small" plain circle @click="nextPage"><i class="iconfont icon-xiayiye"></i></el-button>
+                        <el-col :span="24">
+                            <el-button v-if="cursor > 0" style="width:100%;" type="info" size="small" @click="nextPage">下一页</el-button>
                         </el-col>
                     </el-row>
                 </el-col>
@@ -112,6 +109,7 @@
     background-color: #C0C4CC;
     padding: 8px;
     border-radius: 5px;
+    text-align: center;
 }
 </style>
 
@@ -144,9 +142,8 @@ export default {
     },
     setup(props,{emit}) {
         
-        let limit = 1000;
         let ttl = ref(0);
-        let page = ref(1);
+        let cursor = ref(0);
         let total = ref(0);
         let data = ref('');
         let itemKey = ref('');
@@ -213,48 +210,25 @@ export default {
                 id:props.xkey,
                 sk:props.sk,
                 db:props.db,
-                page:page.value,
-                limit:limit
+                cursor:0,
             }).then((res)=>{
                 tableData.value = res.data.data
                 ttl.value = res.data.ttl
-                page.value = res.data.page
-                total.value = res.data.total
-            })
-        }
-
-        const prePage = ()=>{
-            if (page.value > 1){
-                page.value -= 1
-            }
-            showHash({
-                id:props.xkey,
-                sk:props.sk,
-                db:props.db,
-                page:page.value,
-                limit:limit
-            }).then((res)=>{
-                tableData.value = res.data.data
-                ttl.value = res.data.ttl
-                page.value = res.data.page
+                cursor.value = res.data.cursor
                 total.value = res.data.total
             })
         }
 
         const nextPage = ()=>{
-            if (page.value < total.value){
-                page.value += 1
-            }
             showHash({
                 id:props.xkey,
                 sk:props.sk,
                 db:props.db,
-                page:page.value,
-                limit:limit
+                cursor:cursor.value,
             }).then((res)=>{
                 tableData.value = res.data.data
                 ttl.value = res.data.ttl
-                page.value = res.data.page
+                cursor.value = res.data.cursor
                 total.value = res.data.total
             })
         }
@@ -295,7 +269,6 @@ export default {
         return {
             ttl,
             data,
-            page,
             total,
             props,
             search,
@@ -311,7 +284,6 @@ export default {
             reload,
             delKey,
             delItem,
-            prePage,
             nextPage,
             rowClick,
             addItemSubmit

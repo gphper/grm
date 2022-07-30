@@ -4,7 +4,6 @@ import (
 	"context"
 	"grm/global"
 	"grm/model"
-	"math"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -49,19 +48,12 @@ func (con hashController) Show(c *gin.Context) {
 		return
 	}
 
-	start := (req.Page - 1) * req.Limit
-	end := start + req.Limit - 1
-	if end > int(total-1) {
-		end = int(total - 1)
-	}
-	data := make([]HashNode, 0)
-
-	hashSlice, _, err := client.HScan(ctx, req.Id, uint64(start), "*", int64(end-start+1)).Result()
+	hashSlice, cursor, err := client.HScan(ctx, req.Id, uint64(req.Cursor), "*", 100).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
-
+	data := make([]HashNode, 0)
 	len := len(hashSlice)
 	tmp := HashNode{}
 	num := 1
@@ -84,10 +76,10 @@ func (con hashController) Show(c *gin.Context) {
 	}
 
 	con.Success(c, http.StatusOK, gin.H{
-		"data":  data,
-		"page":  req.Page,
-		"total": math.Ceil(float64(total) / float64(req.Limit)),
-		"ttl":   ttl.Seconds(),
+		"data":   data,
+		"total":  total,
+		"ttl":    ttl.Seconds(),
+		"cursor": cursor,
 	})
 }
 

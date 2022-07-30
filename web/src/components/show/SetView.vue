@@ -206,6 +206,7 @@ export default {
                 tableData.value = res.data.data
                 ttl.value = res.data.ttl
                 total.value = res.data.total
+                cursor.value = res.data.cursor
             })
         }
 
