@@ -32,7 +32,7 @@ service.interceptors.response.use(
         if (response.status === 200) {
             if(!response.data.status){
                 let auth = sessionStorage.getItem('auth')
-                if (auth == null) {
+                if (auth == null ||response.data.msg == "Jwt Token Expired") {
                     router.push('/login')
                 } 
                 ElMessage({

@@ -4,7 +4,6 @@ import (
 	"context"
 	"grm/global"
 	"grm/model"
-	"math"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -48,22 +47,17 @@ func (con setController) Show(c *gin.Context) {
 		return
 	}
 
-	start := (req.Page - 1) * req.Limit
-	end := start + req.Limit - 1
-	if end > int(total-1) {
-		end = int(total - 1)
-	}
-	data := make([]ListNode, end-start+1)
-
-	setSlice, _, err := client.SScan(ctx, req.Id, uint64(start), "*", int64(end-start+1)).Result()
+	setSlice, cursor, err := client.SScan(ctx, req.Id, uint64(req.Cursor), "*", 100).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 
+	data := make([]ListNode, len(setSlice))
+
 	for k, v := range setSlice {
 		data[k] = ListNode{
-			Num:   start + k + 1,
+			Num:   k + 1,
 			Value: v,
 		}
 	}
@@ -75,10 +69,10 @@ func (con setController) Show(c *gin.Context) {
 	}
 
 	con.Success(c, http.StatusOK, gin.H{
-		"data":  data,
-		"page":  req.Page,
-		"total": math.Ceil(float64(total) / float64(req.Limit)),
-		"ttl":   ttl.Seconds(),
+		"data":   data,
+		"cursor": cursor,
+		"total":  total,
+		"ttl":    ttl.Seconds(),
 	})
 }
 

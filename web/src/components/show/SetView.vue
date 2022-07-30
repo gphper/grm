@@ -13,7 +13,7 @@
                         <el-tooltip
                             class="box-item"
                             effect="dark"
-                            :content="ttl"
+                            :content="ttl+''"
                             placement="top-start"
                         >
                             <el-button text bg @click="ttlVisible = true">TTL:<span style="width: 22px;overflow: hidden;">{{ttl}}</span></el-button>
@@ -49,16 +49,13 @@
                         <el-input v-model="search" placeholder="列表搜索" />
                     </el-row>
                     <el-row class="data-button">
-                        <div class="page">
-                            页:{{page}} 共{{total}}
-                        </div>
+                        <el-col  :span="24" class="page">
+                            共{{total}}个值
+                        </el-col>
                     </el-row>
                     <el-row class="data-button">
-                        <el-col :span="12">
-                            <el-button type="success" size="small" plain circle @click="prePage"><i class="iconfont icon-shangyiye"></i></el-button>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-button type="success" size="small" plain circle @click="nextPage"><i class="iconfont icon-xiayiye"></i></el-button>
+                        <el-col :span="24">
+                            <el-button v-if="cursor > 0" style="width:100%;" type="info" size="small" @click="nextPage">下一页</el-button>
                         </el-col>
                     </el-row>
                 </el-col>
@@ -69,7 +66,7 @@
         </el-card>
 
         <!-- 新增行 -->
-        <el-dialog v-model="addItemFormVisible" @close="onReset" title="新增一行">
+        <el-dialog v-model="addItemFormVisible" title="新增一行">
             <el-form
                 :rules="addItemRules"
                 ref="addItemFormRef"
@@ -107,6 +104,7 @@
     background-color: #C0C4CC;
     padding: 8px;
     border-radius: 5px;
+    text-align: center;
 }
 </style>
 
@@ -116,7 +114,7 @@ import TtlForm from "@/components/one/TtlForm.vue";
 import { reactive, ref } from '@vue/reactivity';
 import store from '@/store/index.js';
 import { delKeys } from "@/api/index.js";
-import { computed, onMounted } from '@vue/runtime-core';
+import { onMounted, computed } from '@vue/runtime-core';
 import { ElMessage } from 'element-plus';
 import { showSet,delSet,addSet } from "@/api/set.js"
 
@@ -139,10 +137,9 @@ export default {
     },
     setup(props,{emit}) {
         
-        let limit = 1000;
         let ttl = ref(0);
-        let page = ref(1);
         let total = ref(0);
+        let cursor = ref(0);
         let data = ref('');
         let search = ref('');
         let tableData = ref([]);
@@ -163,13 +160,12 @@ export default {
             ],
         }
         
-
         let filterTableData = computed(()=>tableData.value.filter(
             (data) =>
             !search.value ||
             data.value.toLowerCase().includes(search.value.toLowerCase())
         ));
-
+        
         let singleTableRef = ref(null)
 
         const rowClick = (row)=>{
@@ -205,49 +201,25 @@ export default {
                 id:props.xkey,
                 sk:props.sk,
                 db:props.db,
-                page:page.value,
-                limit:limit
+                cursor:0
             }).then((res)=>{
                 tableData.value = res.data.data
                 ttl.value = res.data.ttl
-                page.value = res.data.page
-                total.value = res.data.total
-            })
-        }
-
-        const prePage = ()=>{
-            if (page.value > 1){
-                page.value -= 1
-            }
-            showSet({
-                id:props.xkey,
-                sk:props.sk,
-                db:props.db,
-                page:page.value,
-                limit:limit
-            }).then((res)=>{
-                tableData.value = res.data.data
-                ttl.value = res.data.ttl
-                page.value = res.data.page
                 total.value = res.data.total
             })
         }
 
         const nextPage = ()=>{
-            if (page.value < total.value){
-                page.value += 1
-            }
             showSet({
                 id:props.xkey,
                 sk:props.sk,
                 db:props.db,
-                page:page.value,
-                limit:limit
+                cursor:cursor.value
             }).then((res)=>{
                 tableData.value = res.data.data
                 ttl.value = res.data.ttl
-                page.value = res.data.page
                 total.value = res.data.total
+                cursor.value = res.data.cursor
             })
         }
 
@@ -287,8 +259,8 @@ export default {
         return {
             ttl,
             data,
-            page,
             total,
+            cursor,
             props,
             search,
             tableData,
@@ -303,7 +275,6 @@ export default {
             reload,
             delKey,
             delItem,
-            prePage,
             nextPage,
             rowClick,
             addItemSubmit

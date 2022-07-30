@@ -40,6 +40,9 @@ export default {
             type:Number
         }
     },
+    emits:{
+        'reload':null
+    },
     setup(props,{emit}) {
 
         let ttlFormRef = ref(null);
