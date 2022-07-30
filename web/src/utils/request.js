@@ -7,7 +7,7 @@ const router = Vrouter
 
 const service = axios.create({
     baseURL: baseUrl,
-    timeout: 10000
+    timeout: 100000
 });
 
 service.interceptors.request.use(
@@ -31,7 +31,10 @@ service.interceptors.response.use(
         store.commit("setLoadReq",false)
         if (response.status === 200) {
             if(!response.data.status){
-                router.push('/login')
+                let auth = sessionStorage.getItem('auth')
+                if (auth == null) {
+                    router.push('/login')
+                } 
                 ElMessage({
                     message: response.data.msg,
                     type: 'error',

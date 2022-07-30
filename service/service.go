@@ -10,6 +10,7 @@ import (
 	"grm/common"
 	"grm/global"
 	"net"
+	"time"
 
 	"github.com/go-redis/redis"
 )
@@ -18,7 +19,11 @@ import (
 func NewRedisClient(conf global.RedisService) (*redis.Client, error) {
 
 	ctx := context.Background()
-	optConf := &redis.Options{}
+	optConf := &redis.Options{
+		Addr:        conf.Config.Addr,
+		Password:    conf.Config.Password,
+		DialTimeout: 5 * time.Second,
+	}
 	if conf.UseSsh {
 		cli, err := common.GetSSHClient(conf.SSHConfig.SshUsername, conf.SSHConfig.SshPassword, net.JoinHostPort(conf.SSHConfig.SshHost, conf.SSHConfig.SshPort))
 		if nil != err {

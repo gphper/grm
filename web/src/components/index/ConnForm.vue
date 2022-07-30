@@ -1,11 +1,13 @@
 <template>
-    <el-dialog v-model="dialogFormVisible" @close="onReset" title="新建Redis连接">
+<div>
+<el-dialog v-model="dialogFormVisible" @close="onReset" title="新建Redis连接">
         <el-form
             :rules="rules"
             ref="ruleFormRef"
             :model="ruleForm"
             label-width="120px"
             status-icon
+             v-loading="loading" element-loading-background="rgba(0, 0, 0, 0)"
         >
             <el-form-item label="连接名称" prop="service_name">
                 <el-input v-model="ruleForm.service_name"/>
@@ -71,6 +73,8 @@
         </el-form>
 
     </el-dialog>
+</div>
+    
 </template>
 
 <script>
@@ -91,6 +95,7 @@ export default {
         const store = useStore()
         let dialogFormVisible = ref(false)
         let ruleFormRef = ref(null);
+        let loading = ref(false)
         let ruleForm = reactive({
             service_name: '',
             host:'127.0.0.1',
@@ -138,17 +143,18 @@ export default {
             ruleFormRef.value.resetFields();
         }
 
-
         watch(
-            () => props.visible,
+            ()=>[store.state.loadReq,props.visible],
             (value) => {
-                dialogFormVisible.value = value
+                loading.value = value[0]
+                dialogFormVisible.value = value[1]
             }
-        )
+        );
 
         return{
             dialogFormVisible,
             rules,
+            loading,
             ruleFormRef,
             ruleForm,
             testConns,
