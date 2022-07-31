@@ -1,5 +1,6 @@
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
+import { wsUrl } from '../../baseUrl'
 import { Buffer } from 'buffer'
 import 'xterm/css/xterm.css'
 import router from "@/router";
@@ -118,7 +119,7 @@ const NewShell = (id,sk,db,name)=>{
         
     });
 
-    let socket = new WebSocket("ws://localhost:8088/ws/cmd")
+    let socket = new WebSocket('ws://'+wsUrl+"/ws/cmd")
     socket.onopen = () => {
         // 连接成功后
         term.loadAddon(fitAddon)

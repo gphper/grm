@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import store from '@/store'
-import baseUrl from '../../baseUrl'
+import {baseUrl} from '../../baseUrl'
 import Vrouter from "@/router"
 const router = Vrouter
 
