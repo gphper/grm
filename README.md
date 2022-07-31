@@ -33,9 +33,11 @@
   `go build -ldflags "-s -w" .\main.go`
 + 推荐使用upx再次压缩
   `upx -9 main.exe -o grm.exe`  
-
-## 添加用户
-  `grm user add`  
+  
+## 运行项目
+  * 先添加用户 `grm user add`
+  * 执行 `grm run -H ip地址 -p ip端口`  
+  * 访问地址 http://ip地址:ip端口//static/#/
 
 ## 持续更新中。。。
 ### 登录
