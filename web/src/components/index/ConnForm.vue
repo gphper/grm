@@ -134,7 +134,7 @@ export default {
             addConn(ruleForm).then((res) => {
                 store.commit("addConn",res.data)
             });
-            dialogFormVisible.value = false
+            context.emit("close");
             ruleFormRef.value.resetFields();
         }
 
@@ -151,12 +151,12 @@ export default {
             }
         );
 
-        return{
-            dialogFormVisible,
+        return{ 
             rules,
             loading,
-            ruleFormRef,
             ruleForm,
+            ruleFormRef,
+            dialogFormVisible,
             testConns,
             onSubmit,
             onReset
