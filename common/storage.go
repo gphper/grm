@@ -4,7 +4,6 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/gob"
-	"fmt"
 	"os"
 )
 
@@ -57,7 +56,6 @@ func ReadData() ([]byte, error) {
 
 	file, err := os.OpenFile("storage.grm", os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	defer file.Close()
@@ -67,7 +65,6 @@ func ReadData() ([]byte, error) {
 	err = decoder.Decode(&info)
 
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	data := aesDecrypt([]byte(info))
