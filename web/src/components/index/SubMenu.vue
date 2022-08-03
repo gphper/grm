@@ -19,6 +19,12 @@
                                 </template>
                             </el-popover>
 
+                            <el-popover trigger="hover" content="Lua Script">
+                                <template #reference>
+                                    <el-button @click.stop="lua(item.servicekey,key)" type="primary" circle><i class="iconfont icon-lua"></i></el-button>
+                                </template>
+                            </el-popover>
+
                             <el-popover trigger="hover" content="搜索">
                                 <template #reference>
                                     <el-button @click.stop="search(item.servicekey,key)" type="success" circle><i class="iconfont icon-chaxun"></i></el-button>
@@ -75,6 +81,8 @@
 import store from '@/store/index.js'
 import {dbKeysList} from "@/utils/tree.js"
 import { reactive, ref } from '@vue/reactivity'
+import {showLua} from '@/utils/lua.js'
+import CryptoJS from "crypto-js";
 
 export default {
     name:"SubMenu",
@@ -125,11 +133,24 @@ export default {
             dbKeysList(db+'-'+index,"*",0)
         }
 
+        const lua = (sk,db)=>{
+            let unionid = sk+db
+            let id = CryptoJS.MD5(unionid).toString();
+            store.commit("setTagsItem", {
+                title: "Lua Script",
+                name: unionid,
+                id: id
+            });
+            store.commit("setCurrentTag", unionid);
+            showLua(id,sk,db)
+        }
+
         return {
             rules,
             props,
             searchForm,
             searchVisiable,
+            lua,
             reload,
             search,
             onSubmit,
