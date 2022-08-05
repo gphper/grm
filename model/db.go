@@ -131,3 +131,11 @@ type AddStreamItemKeyReq struct {
 	Idx  string `form:"idx" label:"idx" json:"idx" binding:"required"`
 	Item string `form:"item" label:"item" json:"item" binding:"required"`
 }
+
+type LuaRunReq struct {
+	Sk     string   `form:"sk" label:"sk" json:"sk" binding:"required"`
+	Db     int      `form:"db" label:"db" json:"db"`
+	Script string   `form:"script" label:"script" json:"script" binding:"required"`
+	Keys   []string `form:"keys" label:"keys" json:"keys" binding:"required"`
+	Argv   []string `form:"argv" label:"argv" json:"argv" binding:"required"`
+}

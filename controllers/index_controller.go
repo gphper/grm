@@ -276,3 +276,57 @@ func (con indexController) SerInfo(c *gin.Context) {
 		"name": redisServer.RedisService,
 	})
 }
+
+func (con indexController) LuaRun(c *gin.Context) {
+	var req model.LuaRunReq
+
+	err := con.FormBind(c, &req)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	client := global.GlobalClients[req.Sk]
+
+	val, _ := c.Get("username")
+	ctx := context.WithValue(context.Background(), "username", val)
+
+	err = client.Do(ctx, "select", req.Db).Err()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	args := make([]interface{}, len(req.Argv))
+	for k, v := range req.Argv {
+		args[k] = v
+	}
+
+	res, err := client.Eval(ctx, req.Script, req.Keys, args...).Result()
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	var resultPut string
+	switch val := res.(type) {
+	case string:
+		resultPut = val
+	case int:
+		resultPut = strconv.Itoa(val)
+	case []interface{}:
+		for _, v := range val {
+			resultPut += fmt.Sprintf("%s \r\n", v.(string))
+		}
+	case bool:
+		if val {
+			resultPut = "True"
+		} else {
+			resultPut = "False"
+		}
+	}
+
+	con.Success(c, http.StatusOK, gin.H{
+		"data": resultPut,
+	})
+}

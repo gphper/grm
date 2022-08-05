@@ -47,3 +47,11 @@ export const serInfo = data => {
         data
     });
 }
+
+export const luaRun = data => {
+    return request({
+        url: 'api/index/luarun',
+        method: 'post',
+        data
+    });
+}

@@ -5,12 +5,17 @@
             <div ref="editor" id="codeEditBox"></div>
         </el-col>
         <el-col :offset="1" :span="8">
-            <el-input v-model="input1" placeholder="Please input">
-                <template #prepend>KEYS[1]</template>
-            </el-input>
-            <el-input v-model="input1" placeholder="Please input">
-                <template #prepend>ARGV[1]</template>
-            </el-input>
+            
+            
+                <el-col v-for="(item,key) in items" :key="key" :span="24" class="form-item">
+                    <el-input v-model="luaForm.keys[key]" placeholder="Please input">
+                        <template #prepend>KEYS[{{key+1}}]</template>
+                    </el-input>
+                    <el-input v-model="luaForm.argv[key]" placeholder="Please input">
+                        <template #prepend>ARGV[{{key+1}}]</template>
+                    </el-input>
+                </el-col>
+            
         </el-col>
     </el-row>
     <el-row class="run">
@@ -20,7 +25,7 @@
     </el-row>
     <el-row>
         <el-col>
-            <el-input disabled type="textarea" />
+            <el-input :rows="6" v-model="result" disabled type="textarea" />
         </el-col>
     </el-row>
 </div>    
@@ -29,35 +34,54 @@
 <script>
 import * as monaco from 'monaco-editor'
 import { language as luaLanguage } from 'monaco-editor/esm/vs/basic-languages/lua/lua.js';
-import { ref, toRaw } from '@vue/reactivity'
+import { reactive, ref, toRaw } from '@vue/reactivity'
 import { onMounted } from '@vue/runtime-core'
+import { luaRun } from '@/api/index.js'
+
 export default {
     name:"LuaView",
-    setup() {
+    props: {
+        sk:{
+            type:String
+        },
+        db:{
+            type:Number
+        }
+    },
+    setup(props) {
+
+        let luaForm = reactive({
+            sk:props.sk,
+            db:props.db,
+            keys:[],
+            argv:[],
+            script:""
+        })
+
+        let result = ref("")
+
+        let items = [1,1,1,1,1];
+
         const content = ref("")
         const editor = ref(null)
         const initEditor = () => {
         // 初始化编辑器，确保dom已经渲染
         editor.value = monaco.editor.create(document.getElementById('codeEditBox'), {
-            value: 'please write lua script', //编辑器初始显示文字
-            language: 'lua', //此处使用的python，其他语言支持自行查阅demo
-            theme: 'vs-dark', //官方自带三种主题vs, hc-black, or vs-dark
-            selectOnLineNumbers: true,//显示行号
+            value: 'return redis.call("GET",KEYS[1])',
+            language: 'lua',
+            theme: 'vs-dark',
+            selectOnLineNumbers: true,
             roundedSelection: false,
-            readOnly: false, // 只读
-            cursorStyle: 'line', //光标样式
-            automaticLayout: true, //自动布局
-            glyphMargin: true, //字形边缘
+            readOnly: false,
+            cursorStyle: 'line',
+            automaticLayout: true,
+            glyphMargin: true,
             useTabStops: false,
-            fontSize: 15, //字体大小
-            autoIndent: true, //自动布局
-            quickSuggestionsDelay: 10, //代码提示延时
+            fontSize: 15,
+            autoIndent: true,
+            quickSuggestionsDelay: 10,
         });
-        // 监听值的变化
-        // editor.value.onDidChangeModelContent((val) => {
-        //     console.log(val.changes[0].text)
-        // })
-
+        
         monaco.languages.registerCompletionItemProvider('lua', {
                     provideCompletionItems: function () {
                         let suggestions = [];
@@ -79,7 +103,10 @@ export default {
         
         const runLua = ()=>{
             content.value = toRaw(editor.value).getValue()
-            console.log(content.value)
+            luaForm.script = content.value
+            luaRun(luaForm).then(res=>{
+                result.value = res.data.data
+            })
         }
 
         onMounted(() => {
@@ -87,6 +114,9 @@ export default {
         })
 
         return {
+            items,
+            result,
+            luaForm,
             editor,
             runLua
         }
@@ -101,6 +131,10 @@ export default {
 
   .run{
     margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .form-item{
     margin-bottom: 10px;
   }
 </style>

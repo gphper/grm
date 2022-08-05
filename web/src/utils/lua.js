@@ -15,7 +15,8 @@ const showLua = (id,sk,db)=>{
             return h(
                 LuaView,
                 {
-                    
+                   sk:sk,
+                   db:db, 
                 },
                 null
             )
