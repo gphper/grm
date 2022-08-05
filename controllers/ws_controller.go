@@ -171,6 +171,12 @@ func (con wsController) Ws(c *gin.Context) {
 			for _, v := range val {
 				resultPut += fmt.Sprintf("%s \r\n", v.(string))
 			}
+		case bool:
+			if val {
+				resultPut = "True"
+			} else {
+				resultPut = "False"
+			}
 		}
 
 		err = ws.WriteMessage(mt, ReturnResp(resultPut, 1, uint8(cmd.Db)))
