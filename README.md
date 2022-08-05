@@ -24,7 +24,7 @@
 
 - :white_check_mark: 操作日志
 
-- :black_square_button: 支持LUA脚本
+- :white_check_mark: 支持LUA脚本
 
 ## 编译代码
 + web目录下
@@ -50,6 +50,8 @@
 ![cmd](https://user-images.githubusercontent.com/18718299/179389058-039fd95d-3f59-49e2-8141-c994964aa7b0.gif)
 ### 添加数据
 ![add](https://user-images.githubusercontent.com/18718299/179389065-98829c30-6098-44de-8471-5ba24be6aab1.gif)
+### LUA脚本
+![lua](https://user-images.githubusercontent.com/18718299/183094603-533e7f6f-8f20-4f3d-9f0d-27508936f8fe.gif)
 
 ## 支持作者
 如果觉得这个项目对你有帮助的话，请留下一颗star ⭐⭐鼓励一下！
