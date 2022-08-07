@@ -2,7 +2,7 @@
 <div>
     <el-row>
         <el-col :span="15">
-            <div ref="editor" id="codeEditBox"></div>
+            <div ref="editor" :id="id" class="editor"></div>
         </el-col>
         <el-col :offset="1" :span="8">
             
@@ -59,6 +59,7 @@ export default {
         })
 
         let result = ref("")
+        let id = ref(props.sk+props.db+'lua')
 
         let items = [1,1,1,1,1];
 
@@ -66,7 +67,7 @@ export default {
         const editor = ref(null)
         const initEditor = () => {
         // 初始化编辑器，确保dom已经渲染
-        editor.value = monaco.editor.create(document.getElementById('codeEditBox'), {
+        editor.value = monaco.editor.create(document.getElementById(id.value), {
             value: 'return redis.call("GET",KEYS[1])',
             language: 'lua',
             theme: 'vs-dark',
@@ -114,6 +115,7 @@ export default {
         })
 
         return {
+            id,
             items,
             result,
             luaForm,
@@ -124,7 +126,7 @@ export default {
 }
 </script>
 <style scoped>
-  #codeEditBox {
+  .editor {
     width:100%;
     height:400px;
   }

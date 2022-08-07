@@ -5,8 +5,6 @@ import { ElButton, ElCol, ElInput, ElRow } from 'element-plus';
 
 
 const showLua = (id,sk,db)=>{
-    console.log(sk)
-    console.log(db)
     const store = useStore()
     const vdom = createApp({
         setup() {
@@ -16,7 +14,7 @@ const showLua = (id,sk,db)=>{
                 LuaView,
                 {
                    sk:sk,
-                   db:db, 
+                   db:db,
                 },
                 null
             )
