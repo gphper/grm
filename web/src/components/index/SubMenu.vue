@@ -134,7 +134,7 @@ export default {
         }
 
         const lua = (sk,db)=>{
-            let unionid = sk+db
+            let unionid = sk+db+'lua'
             let id = CryptoJS.MD5(unionid).toString();
             store.commit("setTagsItem", {
                 title: "Lua Script",
