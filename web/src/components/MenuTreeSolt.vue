@@ -52,7 +52,7 @@ export default {
 
 
         const detail = (key,idk,sk,db)=>{
-            let unionid = sk+db+idk
+            let unionid = sk+db
             let id = CryptoJS.MD5(unionid).toString();
             store.commit("setTagsItem", {
                 title: key,

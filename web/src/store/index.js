@@ -50,6 +50,7 @@ export default createStore({
             if (one.name == data.name) {
               //定位到指定值
               exit = true;
+              one.title = data.title;
             }
           });
     
