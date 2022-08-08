@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1471900",
+      "name": "头像",
+      "font_class": "touxiang",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "11372694",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e8b7",
+      "unicode_decimal": 59575
+    },
+    {
       "icon_id": "12600772",
       "name": "lua",
       "font_class": "lua",

@@ -4,7 +4,21 @@
             <el-col :span="4"><span class="logo">Go Redis Manager</span></el-col>
             <el-col :span="15"></el-col>
             <el-col :span="3"><el-button type="primary" plain @click="dialogFormVisible = true"><i class="iconfont icon-add" style="font-size:20px;">&nbsp;</i>创建Redis连接</el-button></el-col>
-            <el-col :span="2"><el-button type="danger" plain @click="logout"><i class="iconfont icon-close" style="font-size:20px;">&nbsp;</i>{{username}}</el-button></el-col>
+            
+            <el-col :span="2" style="margin-top: 12px;">
+            
+                <el-dropdown @command="handleCommand" style="align-items: center">
+                    <el-button type="primary" plain>
+                        <i class="iconfont icon-touxiang" style="font-size:20px;">&nbsp;</i>{{username}}
+                    </el-button>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                        <el-dropdown-item command="setting"><i class="iconfont icon-shezhi" style="font-size:20px;">&nbsp;</i>设置</el-dropdown-item>
+                        <el-dropdown-item command="logout"><i class="iconfont icon-close" style="font-size:20px;">&nbsp;</i>退出</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
+            </el-col>
         </el-row>
         <ConnForm :visible="dialogFormVisible" @close="close"></ConnForm>
     </div>
@@ -42,10 +56,20 @@ export default({
             router.push('/login')
         }
 
+        const handleCommand = (command)=>{
+            console.log(command)
+            switch(command){
+                case "logout":
+                    logout();
+                    break;
+            }
+            
+        }
+
         return{
             close,
-            logout,
             username,
+            handleCommand,
             dialogFormVisible,
         }
     },
