@@ -11,22 +11,17 @@
             <el-button text @click.stop="remove(data.id)" type="danger">删除</el-button>
             <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db)" type="primary">查看</el-button>
         </span>
-        <DataForm></DataForm>
     </div>
 </template>
 
 <script>
 import { useStore } from 'vuex'
-import DataForm from '@/components/index/DataForm.vue'
 import { ShowHash, ShowList, ShowSet, ShowString,ShowZset,ShowStream } from '@/utils/show.js'
 import { getKeyType } from "@/api/index.js"
 import CryptoJS from "crypto-js";
 
 export default {
     name:"MenuTreeSolt",
-    components:{
-        DataForm
-    },
     props:{
         data:{
             type:Object,

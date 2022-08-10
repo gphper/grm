@@ -6,6 +6,7 @@
             :model="ruleForm"
             label-width="120px"
             status-icon
+            destroy-on-close
         >
             <el-form-item label="键名" prop="key">
                 <el-input v-if="root == true" v-model="ruleForm.key" placeholder="键名"/>
