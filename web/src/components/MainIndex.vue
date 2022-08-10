@@ -12,6 +12,7 @@
 
     <ConnInfo :drawer="drawer" :info="infos" :title="title" @close="close"></ConnInfo>
     <DataForm></DataForm>
+    <SettingFrom></SettingFrom>
 </div>
 </template>
 
@@ -21,6 +22,7 @@ import MainSection from '@/components/MainSection.vue'
 import MenuSection from '@/components/MenuSection.vue'
 import ConnInfo from "@/components/index/ConnInfo.vue"
 import DataForm from "@/components/index/DataForm.vue"
+import SettingFrom from "@/components/index/SettingForm.vue"
 
 export default {
     name:"MainIndex",
@@ -28,7 +30,8 @@ export default {
         MainSection,
         MenuSection,
         ConnInfo,
-        DataForm
+        DataForm,
+        SettingFrom
     },
     setup() {
 

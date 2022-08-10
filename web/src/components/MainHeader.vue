@@ -29,6 +29,7 @@ import { ref } from "@vue/reactivity"
 import ConnForm from "@/components/index/ConnForm.vue"
 import { useRouter } from "vue-router";
 import { onMounted } from "@vue/runtime-core";
+import { useStore } from "vuex";
 
 export default({
     name:"MainHeader",
@@ -39,6 +40,7 @@ export default({
         let dialogFormVisible = ref(false);
         let username = ref("")
 
+        const store = useStore()
         const router = useRouter()
 
         const close = ()=>{
@@ -56,12 +58,19 @@ export default({
             router.push('/login')
         }
 
+        const setting = () => {
+            store.commit("switchSettingForm");
+        }
+
         const handleCommand = (command)=>{
             console.log(command)
             switch(command){
                 case "logout":
                     logout();
                     break;
+                case "setting":
+                    setting();
+                    break;    
             }
             
         }

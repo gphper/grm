@@ -6,6 +6,7 @@ export default createStore({
       connList: [],
       activeTag: '',
       showDataForm: false,
+      showSettingForm: false,
       loadReq:false,
       sk:'',
       db:0,
@@ -22,6 +23,9 @@ export default createStore({
         state.db = obj.db
         state.root = obj.root
         state.pre = obj.pre
+      },
+      switchSettingForm(state){
+        state.showSettingForm = !state.showSettingForm
       },
       delTagsItem(state,indexx) {
 
