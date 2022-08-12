@@ -7,6 +7,7 @@ package common
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/go-redis/redis"
 	"go.uber.org/zap"
@@ -22,9 +23,9 @@ func (rl RedisLog) BeforeProcess(ctx context.Context, cmd redis.Cmder) (context.
 
 func (rl RedisLog) AfterProcess(ctx context.Context, cmd redis.Cmder) error {
 	value, ok := ctx.Value("username").(string)
-
 	if ok {
-		rl.Logger.Info(cmd.String(), zap.String("username", value))
+		byteLog, _ := json.Marshal(cmd.Args())
+		rl.Logger.Info(string(byteLog), zap.String("username", value))
 	}
 	return nil
 }
