@@ -1,7 +1,7 @@
 import { createApp,h, ref } from '@vue/runtime-dom'
 import MenuTreeSolt from '@/components/MenuTreeSolt.vue'
 import MenuTreePage from '@/components/MenuTreePage.vue'
-import { ElTree,ElButton,ElRow,ElCol, ElDialog,ElInput,ElSelect,ElForm,ElOption } from 'element-plus'
+import { ElTree,ElButton,ElRow,ElCol, ElDialog,ElInput,ElSelect,ElForm,ElOption, ElTreeV2 } from 'element-plus'
 import {getKeys} from '@/api/index.js'
 import store from '@/store/index.js'
 
@@ -15,9 +15,10 @@ const genNode = function(id,dataS){
     render() {
     
         return h(
-            ElTree,
+            ElTreeV2,
             {
                 data:this.data,
+                height:360,
             },
             {
                 default: ({node,data})=>h(MenuTreeSolt,
@@ -31,13 +32,17 @@ const genNode = function(id,dataS){
     
     });
     
+    if(store.state.globalTree[id]){
+        store.state.globalTree[id].unmount();
+    }
+    store.commit("setGlobalTree",{key:id,vm:vdom})
     const parent = document.getElementById(id)
     vdom.use(store).use(ElTree).use(ElButton).use(ElDialog).use(ElInput).use(ElOption).use(ElForm).use(ElSelect).mount(parent)
 };
 
 
 const genPage = function(id,match,next){
-    const vdom = createApp({    
+    const vdom = createApp({
     setup() {
         let nextCursor = next
         return { nextCursor }
@@ -56,7 +61,11 @@ const genPage = function(id,match,next){
     }
     
     });
-    
+
+    if(store.state.globalTree["page#"+id]){
+        store.state.globalTree["page#"+id].unmount();
+    }
+    store.commit("setGlobalTree",{key:"page#"+id,vm:vdom})
     const parent = document.getElementById("page#"+id)
     vdom.use(store).use(ElRow).use(ElCol).use(ElButton).mount(parent)
 };

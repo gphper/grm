@@ -5,6 +5,7 @@ export default createStore({
       tagsList: [],
       connList: [],
       activeTag: '',
+      globalTree:{},
       showDataForm: false,
       showSettingForm: false,
       loadReq:false,
@@ -16,6 +17,9 @@ export default createStore({
   mutations: {
       setCurrentTag(state,tag){
         state.activeTag = tag;
+      },
+      setGlobalTree(state,obj){
+        state.globalTree[obj.key] = obj.vm
       },
       switchDataForm(state,obj){
         state.showDataForm = obj.show
