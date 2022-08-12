@@ -139,3 +139,8 @@ type LuaRunReq struct {
 	Keys   []string `form:"keys" label:"keys" json:"keys" binding:"required"`
 	Argv   []string `form:"argv" label:"argv" json:"argv" binding:"required"`
 }
+
+type SettingReq struct {
+	Tree      bool   `form:"tree" label:"tree" json:"tree" default:"true"`
+	Separator string `form:"separator" label:"separator" json:"separator" binding:"required"`
+}

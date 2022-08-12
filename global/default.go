@@ -22,6 +22,8 @@ var GlobalClients map[string]*redis.Client
 type GlobalConfig struct {
 	Accounts      map[string]string
 	RedisServices map[string]RedisService
+	Separator     string
+	Tree          bool
 }
 
 type RedisService struct {
@@ -34,6 +36,8 @@ type RedisService struct {
 var GlobalConf = GlobalConfig{
 	Accounts:      make(map[string]string),
 	RedisServices: make(map[string]RedisService),
+	Separator:     ":",
+	Tree:          true,
 }
 
 func init() {

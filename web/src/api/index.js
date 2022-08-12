@@ -55,3 +55,18 @@ export const luaRun = data => {
         data
     });
 }
+
+export const setting = data => {
+    return request({
+        url: 'api/index/setting',
+        method: 'post',
+        data
+    });
+}
+
+export const getSetting = () => {
+    return request({
+        url: 'api/index/setting',
+        method: 'get'
+    });
+};

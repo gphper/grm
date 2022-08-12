@@ -6,7 +6,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"grm/common"
 	"grm/global"
 	"grm/model"
@@ -52,8 +51,6 @@ func (con connController) Add(c *gin.Context) {
 	m := md5.New()
 	m.Write([]byte(conf.ServiceName))
 	key := hex.EncodeToString(m.Sum(nil))
-
-	fmt.Println(global.GlobalConf)
 
 	global.GlobalConf.RedisServices[key] = global.RedisService{
 		RedisService: conf.ServiceName,

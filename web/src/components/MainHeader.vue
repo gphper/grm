@@ -30,6 +30,7 @@ import ConnForm from "@/components/index/ConnForm.vue"
 import { useRouter } from "vue-router";
 import { onMounted } from "@vue/runtime-core";
 import { useStore } from "vuex";
+import { getSetting } from "@/api/index.js"
 
 export default({
     name:"MainHeader",
@@ -59,11 +60,17 @@ export default({
         }
 
         const setting = () => {
-            store.commit("switchSettingForm");
+            getSetting().then((res)=>{
+                store.commit("switchSettingForm",{
+                    visiable:true,
+                    tree:res.data.tree,
+                    separator:res.data.separator
+                });
+            })
+           
         }
 
         const handleCommand = (command)=>{
-            console.log(command)
             switch(command){
                 case "logout":
                     logout();

@@ -8,6 +8,8 @@ export default createStore({
       globalTree:{},
       showDataForm: false,
       showSettingForm: false,
+      tree:true,
+      separator:":",
       loadReq:false,
       sk:'',
       db:0,
@@ -28,8 +30,14 @@ export default createStore({
         state.root = obj.root
         state.pre = obj.pre
       },
-      switchSettingForm(state){
-        state.showSettingForm = !state.showSettingForm
+      switchSettingForm(state,obj){
+        state.showSettingForm = obj.visiable
+        if(Object.hasOwn(obj,"tree")){
+          state.tree = obj.tree
+        }
+        if(Object.hasOwn(obj,"separator")){
+          state.separator = obj.separator
+        }
       },
       delTagsItem(state,indexx) {
 

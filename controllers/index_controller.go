@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"grm/common"
 	"grm/global"
@@ -106,12 +108,18 @@ func (con indexController) Open(c *gin.Context) {
 // 获取所有keys
 func (con indexController) GetKeys(c *gin.Context) {
 	var req model.GetKeysReq
+	var err error
+	var cursor uint64
 
-	err := con.FormBind(c, &req)
+	result := make(map[string]interface{})
+	keys := make([]string, 0)
+
+	err = con.FormBind(c, &req)
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
+	cursor = uint64(req.Cursor)
 
 	dbInfo := strings.Split(req.Index, "-")
 	index, _ := strconv.Atoi(dbInfo[0])
@@ -126,24 +134,35 @@ func (con indexController) GetKeys(c *gin.Context) {
 		return
 	}
 
-	keys, cursor, err := client.Scan(ctx, uint64(req.Cursor), req.Match, 1000).Result()
-	if err != nil {
-		con.Error(c, err.Error())
-		return
+	for {
+		var tmp []string
+		tmp, cursor, err = client.Scan(ctx, cursor, req.Match, 10000).Result()
+		if err != nil {
+			con.Error(c, err.Error())
+			return
+		}
+
+		keys = append(keys, tmp...)
+
+		if len(keys) > 9000 || cursor == 0 {
+			break
+		}
 	}
 
 	gen := common.NewTrie()
-
 	for _, v := range keys {
-		stringSlice := strings.Split(v, ":")
+		stringSlice := make([]string, 0)
+		if global.GlobalConf.Tree {
+			stringSlice = strings.Split(v, global.GlobalConf.Separator)
+		} else {
+			stringSlice = append(stringSlice, v)
+		}
 		gen.Insert(stringSlice, v)
 	}
-
-	con.Success(c, http.StatusOK, gin.H{
-		"data":   common.GetOne(gen.Root.Children, "", dbInfo[1], index),
-		"count":  len(keys),
-		"cursor": cursor,
-	})
+	result["data"] = common.GetOne(gen.Root.Children, "", dbInfo[1], index)
+	result["count"] = len(keys)
+	result["cursor"] = cursor
+	con.Success(c, http.StatusOK, result)
 }
 
 // 查看key值详情
@@ -329,4 +348,40 @@ func (con indexController) LuaRun(c *gin.Context) {
 	con.Success(c, http.StatusOK, gin.H{
 		"data": resultPut,
 	})
+}
+
+// 系统设置
+func (con indexController) Setting(c *gin.Context) {
+
+	if c.Request.Method == "GET" {
+		con.Success(c, http.StatusOK, gin.H{
+			"tree":      global.GlobalConf.Tree,
+			"separator": global.GlobalConf.Separator,
+		})
+	} else {
+		var req model.SettingReq
+		err := con.FormBind(c, &req)
+		if err != nil {
+			con.Error(c, err.Error())
+			return
+		}
+
+		global.GlobalConf.Separator = req.Separator
+		global.GlobalConf.Tree = req.Tree
+
+		buffer := &bytes.Buffer{}
+		encoder := json.NewEncoder(buffer)
+		err = encoder.Encode(global.GlobalConf)
+		if err != nil {
+			con.Error(c, err.Error())
+			return
+		}
+
+		common.WriteData(buffer.Bytes())
+
+		con.Success(c, http.StatusOK, gin.H{
+			"data": "",
+		})
+	}
+
 }

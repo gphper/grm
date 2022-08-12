@@ -46,6 +46,7 @@ func Init() *gin.Engine {
 		indexRouter.POST("/ttlkey", controllers.Ic.TtlKey)
 		indexRouter.POST("/serinfo", controllers.Ic.SerInfo)
 		indexRouter.POST("/luarun", controllers.Ic.LuaRun)
+		indexRouter.Any("/setting", controllers.Ic.Setting)
 	}
 
 	stringRouter := app.Group("/string")
