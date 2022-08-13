@@ -113,7 +113,11 @@ export default createStore({
       },
       addConn(state,data){
           state.connList.push(data)
-      }
+      },
+      delConn(state,data){
+        let index = state.connList.findIndex((d) => d.key === data)
+        state.connList.splice(index, 1)
+      },
   },
   actions: {},
   modules: {}

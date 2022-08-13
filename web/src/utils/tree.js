@@ -18,7 +18,7 @@ const genNode = function(id,dataS){
             ElTreeV2,
             {
                 data:this.data,
-                height:360,
+                height:260,
             },
             {
                 default: ({node,data})=>h(MenuTreeSolt,

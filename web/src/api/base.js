@@ -8,6 +8,14 @@ export const getConnList = query => {
     });
 };
 
+export const delConn = data => {
+    return request({
+        url: 'api/conn/del',
+        method: 'post',
+        data
+    });
+};
+
 export const addConn = data => {
     return request({
         url: 'api/conn/add',

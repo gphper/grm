@@ -29,6 +29,12 @@
                                 <el-button @click.stop="infoServe(item.key)" type="primary" circle><i class="iconfont icon-info"></i></el-button>
                             </template>
                         </el-popover>
+
+                        <el-popover trigger="hover" content="删除服务">
+                            <template #reference>
+                                <el-button @click.stop="delServe(item.key)" type="danger" circle><i class="iconfont icon-shanchu"></i></el-button>
+                            </template>
+                        </el-popover>
                     </el-row>
                 </template>
                 <div :id="'sub#'+key+'_'+item.key"></div>
@@ -39,10 +45,10 @@
 
 <script>
 import { computed, createApp,h, onMounted, ref } from '@vue/runtime-dom'
-import { ElButton,ElMenu, ElRow, ElIcon,ElPopover, ElSubMenu,ElDialog,ElInput,ElForm,ElFormItem,ElCol } from 'element-plus'
+import { ElButton,ElMenu, ElRow, ElIcon,ElPopover, ElSubMenu,ElDialog,ElInput,ElForm,ElFormItem,ElCol, ElMessageBox } from 'element-plus'
 import {NewShell} from '@/utils/terminal.js'
 import SubMenu from "@/components/index/SubMenu.vue"
-import {getConnList} from "@/api/base.js"
+import {getConnList,delConn} from "@/api/base.js"
 import {openDb,serInfo} from "@/api/index.js"
 import { useStore } from 'vuex'
 
@@ -93,10 +99,30 @@ export default{
         const infoServe = function(connec_id){
             serInfo({key:connec_id}).then((res)=>{
                 context.emit("info",res.data.name,res.data.info);
-            })
-            
+            }) 
         };
     
+        const delServe = function(connec_id){
+            ElMessageBox.confirm(
+                '确定删除该服务信息吗？',
+                '操作提示',
+                {
+                confirmButtonText: '是的',
+                cancelButtonText: '再想想',
+                type: 'warning',
+                }
+            ).then(() => {
+                delConn({
+                    "service_name":connec_id
+                }).then((res)=>{
+                    console.log(res)
+                    if(res.status == 200){
+                        store.commit("delConn",res.data.data)
+                    }
+                })
+            })
+        }
+
         const genSubMenu = function(id,dataS){
 
             const vdomx = createApp({
@@ -133,6 +159,7 @@ export default{
             closeDb,
             terminalDb,
             infoServe,
+            delServe,
             genSubMenu,
             connMenu,
             connetions

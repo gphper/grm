@@ -85,6 +85,33 @@ func (con connController) Add(c *gin.Context) {
 	})
 }
 
+// 删除连接信息
+func (con connController) Del(c *gin.Context) {
+	var req model.DelServiceReq
+	err := con.FormBind(c, &req)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	delete(global.GlobalConf.RedisServices, req.ServiceName)
+
+	//存储
+	buffer := &bytes.Buffer{}
+	encoder := json.NewEncoder(buffer)
+	err = encoder.Encode(global.GlobalConf)
+	if err != nil {
+		con.Error(c, err.Error())
+		return
+	}
+
+	common.WriteData(buffer.Bytes())
+
+	con.Success(c, http.StatusOK, gin.H{
+		"data": req.ServiceName,
+	})
+}
+
 // 测试连接
 func (con connController) TestConn(c *gin.Context) {
 	var req model.ServiceConfigReq

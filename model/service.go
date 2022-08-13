@@ -14,6 +14,10 @@ type ServiceConfigReq struct {
 	SSHConfig
 }
 
+type DelServiceReq struct {
+	ServiceName string `form:"service_name" label:"连接名称" json:"service_name" binding:"required"`
+}
+
 type ServiceSwitchReq struct {
 	Service string `form:"service" label:"连接名称" json:"service" binding:"required"`
 	Db      int    `form:"db" label:"数据库名" json:"db" default:"0"`
