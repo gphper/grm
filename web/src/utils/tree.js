@@ -6,6 +6,13 @@ import {getKeys} from '@/api/index.js'
 import store from '@/store/index.js'
 
 
+ElTreeV2.setup1 = ElTreeV2.setup;
+ElTreeV2.setup = (props, ctx) => {
+    const obj = ElTreeV2.setup1(props, ctx);
+    obj['itemSize'] = 38
+    return obj;
+};
+
 const genNode = function(id,dataS){
     const vdom = createApp({    
     setup() {

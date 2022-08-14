@@ -3,11 +3,11 @@
         <i v-if="data.children && data.children.length > 0" class="iconfont icon-folder-close"></i>
         <i v-else class="iconfont icon-key"></i>
         <span>&nbsp;{{ node.label }}</span>
-        <span v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
+        <span class="tree-node" v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
             <el-button text @click.stop="append(data.sk,data.db,false,data.id)" type="success">添加</el-button>
             <el-button text @click.stop="remove(data.id)" type="danger">删除</el-button>
         </span>
-        <span v-else style="margin-left:20%;width: 15px;">
+        <span class="tree-node" v-else style="margin-left:20%;width: 15px;">
             <el-button text @click.stop="remove(data.id)" type="danger">删除</el-button>
             <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db)" type="primary">查看</el-button>
         </span>
@@ -88,3 +88,9 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+.tree-node{
+    height: 38px;
+}
+</style>
