@@ -54,7 +54,8 @@
 ![add](https://user-images.githubusercontent.com/18718299/179389065-98829c30-6098-44de-8471-5ba24be6aab1.gif)
 ### LUA脚本
 ![lua](https://user-images.githubusercontent.com/18718299/183094603-533e7f6f-8f20-4f3d-9f0d-27508936f8fe.gif)
-
+### 系统设置
+![tree](https://user-images.githubusercontent.com/18718299/184534033-9c6cf55c-9752-4293-8baf-e5fd874f2959.gif)
 ## 支持作者
 如果觉得这个项目对你有帮助的话，请留下一颗star ⭐⭐鼓励一下！
 If the project is helpful to you, please give a star to encourage me
