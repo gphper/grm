@@ -20,6 +20,13 @@ type KeyReq struct {
 	Db int    `form:"db" label:"db" json:"db"`
 }
 
+type DelKeysReq struct {
+	Id     string `form:"id" label:"id" json:"id" binding:"required"`
+	Sk     string `form:"sk" label:"sk" json:"sk" binding:"required"`
+	Db     int    `form:"db" label:"db" json:"db"`
+	Single int    `form:"single" label:"single" json:"single"`
+}
+
 type TtlKeyReq struct {
 	Id  string `form:"id" label:"id" json:"id" binding:"required"`
 	Sk  string `form:"sk" label:"sk" json:"sk" binding:"required"`

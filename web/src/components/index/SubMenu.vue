@@ -130,7 +130,7 @@ export default {
         }
 
         const reload = (index,db)=>{
-            dbKeysList(db+'-'+index,"*",0)
+            dbKeysList(db+'-'+index,searchForm.match,0)
         }
 
         const lua = (sk,db)=>{

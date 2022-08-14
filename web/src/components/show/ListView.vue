@@ -20,7 +20,7 @@
                         </el-tooltip>
                         &nbsp;&nbsp;
 
-                        <el-button type="danger" text bg @click="delKey(props.sk+props.db+props.xkey)">删除</el-button>
+                        <el-button type="danger" text bg @click="delKey(props.sk+props.db)">删除</el-button>
                     </el-col>
                 </el-row>
             </template>
@@ -137,7 +137,7 @@ export default {
         OneDetail,
         TtlForm
     },
-    setup(props,{emit}) {
+    setup(props) {
         
         let limit = 4;
         let ttl = ref(0);
@@ -190,14 +190,13 @@ export default {
                 if(res.data.status == 1){
                     //删除成功
                     ElMessage({
-                        message: "删除成功",
+                        message: "删除成功,请手动刷新列表更新",
                         type: 'success',
                     })
                 }
             })
 
             store.commit("delTagsItem",key)
-            emit("del",key)
         }
 
         const reload = ()=>{

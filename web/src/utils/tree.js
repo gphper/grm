@@ -31,7 +31,7 @@ const genNode = function(id,dataS){
                 default: ({node,data})=>h(MenuTreeSolt,
                 {
                     node,
-                    data
+                    data,
                 })
             }
         )

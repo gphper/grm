@@ -198,7 +198,9 @@ func (con indexController) GetKeyType(c *gin.Context) {
 
 // 删除key值
 func (con indexController) DelKey(c *gin.Context) {
-	var req model.KeyReq
+	var req model.DelKeysReq
+	keys := make([]string, 0)
+
 	err := con.FormBind(c, &req)
 	if err != nil {
 		con.Error(c, err.Error())
@@ -216,7 +218,17 @@ func (con indexController) DelKey(c *gin.Context) {
 		return
 	}
 
-	_, err = client.Del(ctx, req.Id).Result()
+	if req.Single > 0 {
+		keys, _, err = client.Scan(ctx, 0, req.Id+"*", 10000).Result()
+		if err != nil {
+			con.Error(c, err.Error())
+			return
+		}
+	} else {
+		keys = append(keys, req.Id)
+	}
+
+	_, err = client.Del(ctx, keys...).Result()
 	if err != nil {
 		con.Error(c, err.Error())
 		return

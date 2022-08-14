@@ -8,7 +8,7 @@ import { ElButton, ElCard, ElCol, ElDialog, ElDivider, ElForm, ElInput, ElMessag
 import { createApp, h } from 'vue';
 import { useStore } from 'vuex';
 
-const ShowString = (key,id,sk,db,func)=>{
+const ShowString = (key,id,sk,db)=>{
         const store = useStore()
         const vdom = createApp({
             setup() {
@@ -21,7 +21,6 @@ const ShowString = (key,id,sk,db,func)=>{
                         xkey:key,
                         sk:sk,
                         db:db,
-                        onDel:func
                     },
                     null
                 )
@@ -35,7 +34,7 @@ const ShowString = (key,id,sk,db,func)=>{
 }
 
 
-const ShowList = (key,id,sk,db,func)=>{
+const ShowList = (key,id,sk,db)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -46,8 +45,7 @@ const ShowList = (key,id,sk,db,func)=>{
                 {
                     xkey:key,
                     sk:sk,
-                    db:db,
-                    onDel:func
+                    db:db
                 },
                 null
             )
@@ -62,7 +60,7 @@ const ShowList = (key,id,sk,db,func)=>{
 }
 
 
-const ShowHash = (key,id,sk,db,func)=>{
+const ShowHash = (key,id,sk,db)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -74,7 +72,6 @@ const ShowHash = (key,id,sk,db,func)=>{
                     xkey:key,
                     sk:sk,
                     db:db,
-                    onDel:func
                 },
                 null
             )
@@ -88,7 +85,7 @@ const ShowHash = (key,id,sk,db,func)=>{
         },500);
 }
 
-const ShowSet = (key,id,sk,db,func)=>{
+const ShowSet = (key,id,sk,db)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -99,8 +96,7 @@ const ShowSet = (key,id,sk,db,func)=>{
                 {
                     xkey:key,
                     sk:sk,
-                    db:db,
-                    onDel:func
+                    db:db
                 },
                 null
             )
@@ -114,7 +110,7 @@ const ShowSet = (key,id,sk,db,func)=>{
         },500);
 }
 
-const ShowZset = (key,id,sk,db,func)=>{
+const ShowZset = (key,id,sk,db)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -125,8 +121,7 @@ const ShowZset = (key,id,sk,db,func)=>{
                 {
                     xkey:key,
                     sk:sk,
-                    db:db,
-                    onDel:func
+                    db:db
                 },
                 null
             )
@@ -140,7 +135,7 @@ const ShowZset = (key,id,sk,db,func)=>{
         },500);
 }
 
-const ShowStream = (key,id,sk,db,func)=>{
+const ShowStream = (key,id,sk,db)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -151,8 +146,7 @@ const ShowStream = (key,id,sk,db,func)=>{
                 {
                     xkey:key,
                     sk:sk,
-                    db:db,
-                    onDel:func
+                    db:db
                 },
                 null
             )
