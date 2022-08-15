@@ -40,6 +40,20 @@
 ## 运行项目
   * 执行 `grm run -H ip地址 -p ip端口`  
   * 访问地址 http://ip地址:ip端口/static/#/
+## Nginx反向代理
+  ```
+  server {
+        listen       80;
+        server_name  www.xxx.com;
+
+        location / {
+        	  proxy_pass http://host:port;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+        }
+  }
+```
 
 ## 持续更新中。。。
 ### 登录
