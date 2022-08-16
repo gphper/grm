@@ -11,7 +11,7 @@
             <el-tab-pane
                 v-for="item in tagData"
                 :key="item.name"
-                :label="item.title"
+                :label="item.title.substr(0,10)"
                 :name="item.name"
             >
                <span v-if="item.content">{{ item.content }}</span>

@@ -1,8 +1,10 @@
 <template>
     <div>
-        <i v-if="data.children && data.children.length > 0" class="iconfont icon-folder-close"></i>
-        <i v-else class="iconfont icon-key"></i>
-        <span>&nbsp;{{ node.label }}</span>
+        <span :title="node.label" class="showname">
+        <i v-if="data.children && data.children.length > 0" class="iconfont icon-folder-close icon-style"></i>
+        <i v-else class="iconfont icon-key icon-style"></i>
+        &nbsp;{{ node.label }}
+        </span>
         <span class="tree-node" v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
             <el-button text @click.stop="append(data.sk,data.db,false,data.id)" type="success">添加</el-button>
             <el-button text @click.stop="remove(data.id,data.sk,data.db,1)" type="danger">删除</el-button>
@@ -140,4 +142,14 @@ export default {
 .tree-node{
     height: 38px;
 }
+
+.showname{
+    width: 170px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align:middle;
+}
+
 </style>
