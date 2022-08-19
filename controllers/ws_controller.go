@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"grm/common"
 	"grm/global"
 	"grm/service"
 	"log"
@@ -163,20 +164,12 @@ func (con wsController) Ws(c *gin.Context) {
 
 		var resultPut string
 		switch val := result.(type) {
-		case string:
-			resultPut = val
-		case int:
-			resultPut = strconv.Itoa(val)
 		case []interface{}:
 			for _, v := range val {
-				resultPut += fmt.Sprintf("%s \r\n", v.(string))
+				resultPut += fmt.Sprintf("%s \r\n", common.InterfaceToString(v))
 			}
-		case bool:
-			if val {
-				resultPut = "True"
-			} else {
-				resultPut = "False"
-			}
+		default:
+			resultPut = common.InterfaceToString(val)
 		}
 
 		err = ws.WriteMessage(mt, ReturnResp(resultPut, 1, uint8(cmd.Db)))
