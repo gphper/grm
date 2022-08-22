@@ -55,12 +55,7 @@ func (con wsController) Ws(c *gin.Context) {
 	LOOP:
 		mt, message, err := ws.ReadMessage()
 		if err != nil {
-			err = ws.WriteMessage(mt, ReturnResp(err.Error(), 0, 0))
-			if err != nil {
-				log.Println("write:", err)
-				break
-			}
-			goto LOOP
+			break
 		}
 
 		var cmd Cmd
@@ -109,10 +104,18 @@ func (con wsController) Ws(c *gin.Context) {
 		}
 
 		var username string = uInfo["user"].(string)
+		//判断是不是心跳信息
+		if cmd.Sk == "ping" {
+			err = ws.WriteMessage(mt, ReturnResp("ping", 1, uint8(cmd.Db)))
+			if err != nil {
+				log.Println("write:", err)
+				break
+			}
+			goto LOOP
+		}
+
 		ctx := context.WithValue(context.Background(), "username", username)
-
 		var client *redis.Client
-
 		client = global.GlobalClients[cmd.Sk]
 		if client == nil {
 			redisServer := global.GlobalConf.RedisServices[cmd.Sk]

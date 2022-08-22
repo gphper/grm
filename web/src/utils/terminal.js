@@ -119,6 +119,26 @@ const NewShell = (id,sk,db,name)=>{
         
     });
 
+    let timeoutObj = null
+    const resetHeart = () => {
+        // 连接成功后 58s发送一次心跳
+        timeoutObj = setTimeout(function(){
+            let auth = sessionStorage.getItem('auth')
+            if (auth == null) { 
+                router.push('/login')
+            }
+            let obj = JSON.parse(auth)
+            socket.send(
+                JSON.stringify({
+                    sk:"ping",
+                    db:0,
+                    cmd:"",
+                    jwt:obj.jwt,
+                })
+            )
+        }, 58*1000)
+    }
+
     let socket = new WebSocket('ws://'+wsUrl+"/ws/cmd")
     socket.onopen = () => {
         // 连接成功后
@@ -126,22 +146,27 @@ const NewShell = (id,sk,db,name)=>{
         term.open(document.getElementById(id));
         fitAddon.fit();
         term.focus();
+        resetHeart();
         term.writeln("\x1b[38:5:29m连接中...\x1b[0m");
         term.write('\x1b[32m'+name+':'+db+'> \x1b[0m');
     }
     socket.onmessage = (event) => {
         // 接收推送的消息
         let data = Buffer.from(event.data)
-        if(data[0] == 1){
-            //成功
-            db = data[1];
-            term.writeln(data.slice(2,data.length).toString());
-        }else{
-            //错误输出
-            term.writeln('\x1b[35m'+data.slice(2,data.length).toString()+'\x1b[0m');
+        let resp = data.slice(2,data.length).toString()
+        if(resp != "ping"){
+            if(data[0] == 1){
+                //成功
+                db = data[1];
+                term.writeln(resp);
+            }else{
+                //错误输出
+                term.writeln('\x1b[35m'+resp+'\x1b[0m');
+            }
+            term.write('\x1b[32m'+name+':'+db+'> \x1b[0m');
         }
-
-        term.write('\x1b[32m'+name+':'+db+'> \x1b[0m');
+        clearTimeout(timeoutObj);
+        resetHeart();
     }
     socket.onclose = () => {
         console.log('close socket')
