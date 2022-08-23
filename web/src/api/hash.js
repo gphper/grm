@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export const showHash = data => {
     return request({
-        url: 'api/hash/show',
+        url: 'grmapix/hash/show',
         method: 'post',
         data
     });
@@ -10,7 +10,7 @@ export const showHash = data => {
 
 export const delHash = data => {
     return request({
-        url: 'api/hash/del',
+        url: 'grmapix/hash/del',
         method: 'post',
         data
     });
@@ -18,7 +18,7 @@ export const delHash = data => {
 
 export const addHash = data => {
     return request({
-        url: 'api/hash/add',
+        url: 'grmapix/hash/add',
         method: 'post',
         data
     });

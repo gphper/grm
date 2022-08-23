@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export const openDb = data => {
     return request({
-        url: 'api/index/open',
+        url: 'grmapix/index/open',
         method: 'post',
         data
     });
@@ -10,7 +10,7 @@ export const openDb = data => {
 
 export const getKeys = data => {
     return request({
-        url: 'api/index/getkeys',
+        url: 'grmapix/index/getkeys',
         method: 'post',
         data
     });
@@ -18,7 +18,7 @@ export const getKeys = data => {
 
 export const getKeyType = data => {
     return request({
-        url: 'api/index/getkeytype',
+        url: 'grmapix/index/getkeytype',
         method: 'post',
         data
     });
@@ -26,7 +26,7 @@ export const getKeyType = data => {
 
 export const delKeys = data => {
     return request({
-        url: 'api/index/delkey',
+        url: 'grmapix/index/delkey',
         method: 'post',
         data
     });
@@ -34,7 +34,7 @@ export const delKeys = data => {
 
 export const ttlKey = data => {
     return request({
-        url: 'api/index/ttlkey',
+        url: 'grmapix/index/ttlkey',
         method: 'post',
         data
     });
@@ -42,7 +42,7 @@ export const ttlKey = data => {
 
 export const serInfo = data => {
     return request({
-        url: 'api/index/serinfo',
+        url: 'grmapix/index/serinfo',
         method: 'post',
         data
     });
@@ -50,7 +50,7 @@ export const serInfo = data => {
 
 export const luaRun = data => {
     return request({
-        url: 'api/index/luarun',
+        url: 'grmapix/index/luarun',
         method: 'post',
         data
     });
@@ -58,7 +58,7 @@ export const luaRun = data => {
 
 export const setting = data => {
     return request({
-        url: 'api/index/setting',
+        url: 'grmapix/index/setting',
         method: 'post',
         data
     });
@@ -66,7 +66,7 @@ export const setting = data => {
 
 export const getSetting = () => {
     return request({
-        url: 'api/index/setting',
+        url: 'grmapix/index/setting',
         method: 'get'
     });
 };

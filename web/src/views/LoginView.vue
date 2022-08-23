@@ -76,6 +76,7 @@ export default {
     const formRef = ref(null)
 
     onMounted(()=>{
+      document.title = "go redis manager";
       top.value = document.documentElement.clientHeight/2-100 + 'px';
     })
 

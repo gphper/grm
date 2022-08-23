@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export const showZset = data => {
     return request({
-        url: 'api/zset/show',
+        url: 'grmapix/zset/show',
         method: 'post',
         data
     });
@@ -10,7 +10,7 @@ export const showZset = data => {
 
 export const delZset = data => {
     return request({
-        url: 'api/zset/del',
+        url: 'grmapix/zset/del',
         method: 'post',
         data
     });
@@ -18,7 +18,7 @@ export const delZset = data => {
 
 export const addZset = data => {
     return request({
-        url: 'api/zset/add',
+        url: 'grmapix/zset/add',
         method: 'post',
         data
     });

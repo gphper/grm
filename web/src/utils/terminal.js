@@ -139,7 +139,7 @@ const NewShell = (id,sk,db,name)=>{
         }, 58*1000)
     }
 
-    let socket = new WebSocket('ws://'+wsUrl+"/ws/cmd")
+    let socket = new WebSocket('ws://'+wsUrl+"/grmapix/ws/cmd")
     socket.onopen = () => {
         // 连接成功后
         term.loadAddon(fitAddon)

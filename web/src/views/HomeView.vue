@@ -15,7 +15,7 @@ import MainHeader from "@/components/MainHeader.vue";
 import MainIndex from "@/components/MainIndex.vue";
 import { ref } from '@vue/reactivity';
 import { useStore } from "vuex";
-import { watch } from '@vue/runtime-core';
+import { onMounted, watch } from '@vue/runtime-core';
 export default {
   name: "HomeView",
   components: {
@@ -25,15 +25,17 @@ export default {
   setup(){
     let loading = ref(false);
     const store = useStore();
-
-    document.title = "go redis manager";
-
+    
      watch(
           () => store.state.loadReq,
           (value) => {
               loading.value = value
           }
       )
+
+    onMounted(()=>{
+      document.title = "go redis manager";
+    })  
 
     return {
       loading

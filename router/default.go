@@ -8,6 +8,7 @@ package router
 import (
 	"grm/controllers"
 	"grm/middleware"
+	"net/http"
 
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-contrib/sessions"
@@ -21,7 +22,11 @@ func Init() *gin.Engine {
 	store := cookie.NewStore([]byte("goredismanagerphper"))
 	router.Use(middleware.StaticCache(), gzip.Gzip(gzip.DefaultCompression), sessions.Sessions("goredismanager", store))
 
-	app := router.Group("/api")
+	router.NoRoute(func(ctx *gin.Context) {
+		ctx.Redirect(http.StatusMovedPermanently, "/static/#")
+	})
+
+	app := router.Group("/grmapix")
 
 	userRouter := app.Group("/user")
 	{
@@ -97,7 +102,7 @@ func Init() *gin.Engine {
 		streamRouter.POST("/add", controllers.Stc.AddItem)
 	}
 
-	wsapp := router.Group("/ws")
+	wsapp := app.Group("/ws")
 	{
 		wsapp.GET("/cmd", controllers.Wsc.Ws)
 	}

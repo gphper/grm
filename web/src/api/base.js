@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export const getConnList = query => {
     return request({
-        url: 'api/conn/list',
+        url: 'grmapix/conn/list',
         method: 'get',
         params: query
     });
@@ -10,7 +10,7 @@ export const getConnList = query => {
 
 export const delConn = data => {
     return request({
-        url: 'api/conn/del',
+        url: 'grmapix/conn/del',
         method: 'post',
         data
     });
@@ -18,7 +18,7 @@ export const delConn = data => {
 
 export const addConn = data => {
     return request({
-        url: 'api/conn/add',
+        url: 'grmapix/conn/add',
         method: 'post',
         data
     });
@@ -26,7 +26,7 @@ export const addConn = data => {
 
 export const testConn = data => {
     return request({
-        url: 'api/conn/test',
+        url: 'grmapix/conn/test',
         method: 'post',
         data
     });

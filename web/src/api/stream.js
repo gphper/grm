@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export const showStream = data => {
     return request({
-        url: 'api/stream/show',
+        url: 'grmapix/stream/show',
         method: 'post',
         data
     });
@@ -10,7 +10,7 @@ export const showStream = data => {
 
 export const delStream = data => {
     return request({
-        url: 'api/stream/del',
+        url: 'grmapix/stream/del',
         method: 'post',
         data
     });
@@ -18,7 +18,7 @@ export const delStream = data => {
 
 export const addStream = data => {
     return request({
-        url: 'api/stream/add',
+        url: 'grmapix/stream/add',
         method: 'post',
         data
     });

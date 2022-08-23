@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export const showString = data => {
     return request({
-        url: 'api/string/show',
+        url: 'grmapix/string/show',
         method: 'post',
         data
     });
@@ -10,7 +10,7 @@ export const showString = data => {
 
 export const addString = data => {
     return request({
-        url: 'api/string/add',
+        url: 'grmapix/string/add',
         method: 'post',
         data
     });
