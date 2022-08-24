@@ -215,7 +215,15 @@ func GetOutBoundIP() (ip string, err error) {
 // 输出LOGO
 func ShowLogo(host, port string) {
 
+	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, "  _____ _____  __  __ ", 0x1B)
+	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, " / ____|  __ \\|  \\/  | ", 0x1B)
+	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, "| |  __| |__) | \\  / | ", 0x1B)
+	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, "| | |_ |  _  /| |\\/| | ", 0x1B)
+	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, "| |__| | | \\ \\| |  | | ", 0x1B)
+	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, " \\_____|_|  \\_\\_|  |_|", 0x1B)
+	fmt.Println("")
 	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, "Go Redis Manage", 0x1B)
+
 	fmt.Println("App running at:")
 	if host == "0.0.0.0" {
 		ip, err := GetOutBoundIP()
