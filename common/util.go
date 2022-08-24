@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"net"
 	"os"
 	"path"
 	"path/filepath"
@@ -197,4 +198,33 @@ func InterfaceToString(value interface{}) (s string) {
 	}
 
 	return key
+}
+
+// 获取局域网ip
+func GetOutBoundIP() (ip string, err error) {
+	conn, err := net.Dial("udp", "8.8.8.8:53")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	ip = strings.Split(localAddr.String(), ":")[0]
+	return
+}
+
+// 输出LOGO
+func ShowLogo(host, port string) {
+
+	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, "Go Redis Manage", 0x1B)
+	fmt.Println("App running at:")
+	if host == "0.0.0.0" {
+		ip, err := GetOutBoundIP()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("- Local:   %c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 34, "http://127.0.0.1:"+port, 0x1B)
+		fmt.Printf("- Network: %c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 34, "http://"+ip+":"+port, 0x1B)
+	} else {
+		fmt.Println("- Network: http://" + host + ":" + port)
+	}
 }

@@ -2,6 +2,7 @@ package run
 
 import (
 	"context"
+	"grm/common"
 	"grm/router"
 	"grm/web"
 	"io/ioutil"
@@ -28,7 +29,7 @@ var (
 )
 
 func init() {
-	CmdRun.Flags().StringVarP(&host, "host", "H", "127.0.0.1", "input hostname")
+	CmdRun.Flags().StringVarP(&host, "host", "H", "0.0.0.0", "input hostname")
 	CmdRun.Flags().StringVarP(&port, "port", "p", "8088", "input port")
 }
 
@@ -50,12 +51,14 @@ func runFunction(cmd *cobra.Command, args []string) {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)
 		}
-
 	}()
 
 	quit := make(chan os.Signal)
 
 	signal.Notify(quit, os.Interrupt)
+
+	//输出LOGO
+	common.ShowLogo(host, port)
 
 	<-quit
 
