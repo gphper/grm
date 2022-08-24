@@ -225,6 +225,6 @@ func ShowLogo(host, port string) {
 		fmt.Printf("- Local:   %c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 34, "http://127.0.0.1:"+port, 0x1B)
 		fmt.Printf("- Network: %c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 34, "http://"+ip+":"+port, 0x1B)
 	} else {
-		fmt.Println("- Network: http://" + host + ":" + port)
+		fmt.Printf("- Local:   %c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 34, "http://"+host+":"+port, 0x1B)
 	}
 }
