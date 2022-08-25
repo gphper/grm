@@ -79,7 +79,7 @@
 <script>
 
 import store from '@/store/index.js'
-import {dbKeysList} from "@/utils/tree.js"
+import {genNode} from "@/utils/tree.js"
 import { reactive, ref } from '@vue/reactivity'
 import {showLua} from '@/utils/lua.js'
 import CryptoJS from "crypto-js";
@@ -108,7 +108,7 @@ export default {
         }
 
         const handleOpen = function(index){
-            dbKeysList(index,"*",0)
+            genNode(index)
         };
 
         const handleClose = function(){
