@@ -9,16 +9,19 @@
       <template #default="{ node, data }">
         <span :title="node.label" class="showname">
         <i v-if="data.children && data.children.length > 0" class="iconfont icon-folder-close icon-style"></i>
-        <i v-else class="iconfont icon-key icon-style"></i>
+        <i v-else-if="data.id != 'nextpagegrmtag'" class="iconfont icon-key icon-style"></i>
         &nbsp;{{ node.label }}
         </span>
         <span v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
             <el-button text @click.stop="append(data)" type="success">添加</el-button>
             <el-button text @click.stop="remove(data.id,data.sk,data.db,1,node, data)" type="danger">删除</el-button>
         </span>
-        <span v-else style="margin-left:20%;width: 15px;">
+        <span v-else-if="data.id != 'nextpagegrmtag'" style="margin-left:20%;width: 15px;">
             <el-button text @click.stop="remove(data.id,data.sk,data.db,0,node, data)" type="danger">删除</el-button>
             <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db)" type="primary">查看</el-button>
+        </span>
+        <span v-else>
+            <el-button @click="loadMore()">加载更多</el-button>
         </span>
       </template>
     </el-tree-v2>
@@ -38,12 +41,20 @@ export default {
     props:{
       index:{
         type:String
+      },
+      match:{
+        type:String
+      },
+      cursor:{
+        type:Number
       }
     },
     setup(props) {
 
       let datas = ref([]);
       const store = useStore()
+      let cursor = ref(0)
+      let count = ref(0)
 
       const append = (data) => {
             let newChild = { id: 30, label: 'testtest', children: [] }
@@ -154,30 +165,30 @@ export default {
             })
         }
 
+        const loadMore = ()=>{
+          console.log("load more ...")
+          getKeys({"index":props.index,"match":props.match,"cursor":cursor.value}).then((res) => {
+            datas.value.pop()
+            datas.value.push(...res.data.data)
+            datas.value = [...datas.value]
+            count.value += res.data.count
+            document.getElementById("dbnum#"+props.index).innerHTML = count.value;
+          })
+        }
 
-        getKeys({"index":props.index,"match":"*","cursor":0}).then((res) => {
+
+        getKeys({"index":props.index,"match":props.match,"cursor":props.cursor}).then((res) => {
           document.getElementById("menu#"+props.index).nextElementSibling.setAttribute("style","display:flex")
           datas.value = res.data.data
           if(res.data.cursor != 0){
+              cursor.value = res.data.cursor
               document.getElementById("page#"+props.index).style.display="block"
           }else{
               document.getElementById("page#"+props.index).style.display="none"
           }
-          document.getElementById("dbnum#"+props.index).innerHTML = res.data.count;
+          count.value += res.data.count
+          document.getElementById("dbnum#"+props.index).innerHTML = count.value;
         })
-
-
-      // onMounted(()=>{
-      //   getKeys({"index":props.index,"match":"*","cursor":0}).then((res) => {
-      //     document.getElementById("menu#"+props.index).nextElementSibling.setAttribute("style","display:flex")
-      //     datas.value = res.data.data
-      //     if(res.data.cursor != 0){
-      //         document.getElementById("page#"+props.index).style.display="block"
-      //     }else{
-      //         document.getElementById("page#"+props.index).style.display="none"
-      //     }
-      //     document.getElementById("dbnum#"+props.index).innerHTML = res.data.count;
-      // });
 
       
 
@@ -185,6 +196,7 @@ export default {
         append,
         remove,
         detail,
+        loadMore,
         datas
       }
     },

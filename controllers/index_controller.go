@@ -150,6 +150,7 @@ func (con indexController) GetKeys(c *gin.Context) {
 	}
 
 	gen := common.NewTrie()
+
 	for _, v := range keys {
 		stringSlice := make([]string, 0)
 		if global.GlobalConf.Tree {
@@ -159,7 +160,19 @@ func (con indexController) GetKeys(c *gin.Context) {
 		}
 		gen.Insert(stringSlice, v)
 	}
-	result["data"] = common.GetOne(gen.Root.Children, "", dbInfo[1], index)
+
+	commonNode := common.GetOne(gen.Root.Children, "", dbInfo[1], index)
+	if cursor > 0 {
+		commonNode = append(commonNode, common.Node{
+			Title:      "",
+			All:        "nextpagegrmtag",
+			ServiceKey: "",
+			Db:         0,
+			Children:   []common.Node{},
+		})
+	}
+
+	result["data"] = commonNode
 	result["count"] = len(keys)
 	result["cursor"] = cursor
 	con.Success(c, http.StatusOK, result)
