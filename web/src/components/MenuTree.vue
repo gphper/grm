@@ -14,10 +14,10 @@
         </span>
         <span v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
             <el-button text @click.stop="append(data)" type="success">添加</el-button>
-            <el-button text @click.stop="remove(data.id,data.sk,data.db,1,node, data)" type="danger">删除</el-button>
+            <el-button text @click.stop="removeData(data.id,data.sk,data.db,1,node, data)" type="danger">删除</el-button>
         </span>
         <span v-else-if="data.id != 'nextpagegrmtag'" style="margin-left:20%;width: 15px;">
-            <el-button text @click.stop="remove(data.id,data.sk,data.db,0,node, data)" type="danger">删除</el-button>
+            <el-button text @click.stop="removeData(data.id,data.sk,data.db,0,node, data)" type="danger">删除</el-button>
             <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db)" type="primary">查看</el-button>
         </span>
         <span v-else>
@@ -65,7 +65,36 @@ export default {
             datas.value = [...datas.value]
       };
 
-      const remove = (key,sk,db,single,node, data)=>{
+      const remove = (node,data) => {
+          let parent = node.parent
+          if(!parent){
+            parent = datas.value
+            let index = parent.findIndex((d) => d.id === data.id)
+            parent.splice(index, 1)
+          }else{
+            //只有一个层目录时
+            while(parent.children.length == 1){
+                if(!parent.parent){
+                  data = parent.data
+                  parent = datas.value
+                  break
+                }
+                data = parent.data
+                parent = parent.parent
+            }
+            if(parent.isLeaf == undefined){
+              let index = parent.findIndex((d) => d.id === data.id)
+              parent.splice(index, 1)
+            }else{
+              let children = parent.data.children || parent.data
+              let index = children.findIndex((d) => d.id === data.id)
+              children.splice(index, 1)
+            }
+          }
+          datas.value = [...datas.value]
+      }
+
+      const removeData = (key,sk,db,single,node, data)=>{
           delKeys({
                 id:key,
                 sk:sk,
@@ -79,20 +108,10 @@ export default {
                       type: 'success',
                   })
 
-                  let parent = node.parent
-                  if(!parent){
-                    parent = datas.value
-                    let index = parent.findIndex((d) => d.id === data.id)
-                    parent.splice(index, 1)
-                  }else{
-                    let children = parent.data.children || parent.data
-                    let index = children.findIndex((d) => d.id === data.id)
-                    children.splice(index, 1)
-                  }
-                  datas.value = [...datas.value]
+                  remove(node,data)
+                  store.commit("delTagsItem",sk+db)
               }
           })
-          store.commit("delTagsItem",sk+db)
       };
 
       const detail = (key,idk,sk,db)=>{
@@ -166,7 +185,6 @@ export default {
         }
 
         const loadMore = ()=>{
-          console.log("load more ...")
           getKeys({"index":props.index,"match":props.match,"cursor":cursor.value}).then((res) => {
             datas.value.pop()
             datas.value.push(...res.data.data)
@@ -182,11 +200,9 @@ export default {
           datas.value = res.data.data
           if(res.data.cursor != 0){
               cursor.value = res.data.cursor
-              document.getElementById("page#"+props.index).style.display="block"
-          }else{
-              document.getElementById("page#"+props.index).style.display="none"
           }
           count.value += res.data.count
+          console.log(count.value)
           document.getElementById("dbnum#"+props.index).innerHTML = count.value;
         })
 
@@ -195,6 +211,7 @@ export default {
       return {
         append,
         remove,
+        removeData,
         detail,
         loadMore,
         datas
