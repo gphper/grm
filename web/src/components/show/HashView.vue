@@ -134,13 +134,16 @@ export default {
         },
         db:{
             type:Number
+        },
+        node:{
+            type:Object
         }
     },
     components:{
         OneDetail,
         TtlForm
     },
-    setup(props) {
+    setup(props,{emit}) {
         
         let ttl = ref(0);
         let cursor = ref(0);
@@ -198,6 +201,8 @@ export default {
                         message: "删除成功",
                         type: 'success',
                     })
+                    emit("del",props.node,props.node.data)
+                    store.commit("delTagsItem",key)
                 }
             })
 

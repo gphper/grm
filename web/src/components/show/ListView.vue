@@ -131,13 +131,16 @@ export default {
         },
         db:{
             type:Number
+        },
+        node:{
+            type:Object
         }
     },
     components:{
         OneDetail,
         TtlForm
     },
-    setup(props) {
+    setup(props,{emit}) {
         
         let limit = 4;
         let ttl = ref(0);
@@ -190,9 +193,11 @@ export default {
                 if(res.data.status == 1){
                     //删除成功
                     ElMessage({
-                        message: "删除成功,请手动刷新列表更新",
+                        message: "删除成功",
                         type: 'success',
                     })
+                    emit("del",props.node,props.node.data)
+                    store.commit("delTagsItem",key)
                 }
             })
 

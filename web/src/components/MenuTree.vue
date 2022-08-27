@@ -17,8 +17,8 @@
             <el-button text @click.stop="removeData(data.id,data.sk,data.db,1,node, data)" type="danger">删除</el-button>
         </span>
         <span v-else-if="data.id != 'nextpagegrmtag'" style="margin-left:20%;width: 15px;">
-            <el-button text @click.stop="removeData(data.id,data.sk,data.db,0,node, data)" type="danger">删除</el-button>
-            <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db)" type="primary">查看</el-button>
+            <el-button text @click.stop="removeData(data.id,data.sk,data.db,0,node,data)" type="danger">删除</el-button>
+            <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db,node)" type="primary">查看</el-button>
         </span>
         <span v-else>
             <el-button @click="loadMore()">加载更多</el-button>
@@ -114,14 +114,14 @@ export default {
           })
       };
 
-      const detail = (key,idk,sk,db)=>{
+      const detail = (key,idk,sk,db,node)=>{
             let unionid = sk+db
             let id = CryptoJS.MD5(unionid).toString();
             
             getKeyType({"id":idk,"sk":sk,"db":db}).then((res)=>{
                 switch(res.data.types){
                     case "string":
-                        ShowString(idk,id,sk,db);
+                        ShowString(idk,id,sk,db,node,remove);
                         store.commit("setTagsItem", {
                             title: key,
                             name: unionid,
@@ -130,7 +130,7 @@ export default {
                         store.commit("setCurrentTag", unionid);
                         break;
                     case "list":
-                        ShowList(idk,id,sk,db);
+                        ShowList(idk,id,sk,db,node,remove);
                         store.commit("setTagsItem", {
                             title: key,
                             name: unionid,
@@ -139,7 +139,7 @@ export default {
                         store.commit("setCurrentTag", unionid);
                         break;
                     case "hash":
-                        ShowHash(idk,id,sk,db);
+                        ShowHash(idk,id,sk,db,node,remove);
                         store.commit("setTagsItem", {
                             title: key,
                             name: unionid,
@@ -148,7 +148,7 @@ export default {
                         store.commit("setCurrentTag", unionid);
                         break;
                     case "set":
-                        ShowSet(idk,id,sk,db);
+                        ShowSet(idk,id,sk,db,node,remove);
                         store.commit("setTagsItem", {
                             title: key,
                             name: unionid,
@@ -157,7 +157,7 @@ export default {
                         store.commit("setCurrentTag", unionid);
                         break;
                     case "zset":
-                        ShowZset(idk,id,sk,db);
+                        ShowZset(idk,id,sk,db,node,remove);
                         store.commit("setTagsItem", {
                             title: key,
                             name: unionid,
@@ -166,7 +166,7 @@ export default {
                         store.commit("setCurrentTag", unionid);
                         break;
                     case "stream":
-                        ShowStream(idk,id,sk,db);
+                        ShowStream(idk,id,sk,db,node,remove);
                         store.commit("setTagsItem", {
                             title: key,
                             name: unionid,

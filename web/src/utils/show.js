@@ -8,7 +8,7 @@ import { ElButton, ElCard, ElCol, ElDialog, ElDivider, ElForm, ElInput, ElMessag
 import { createApp, h } from 'vue';
 import { useStore } from 'vuex';
 
-const ShowString = (key,id,sk,db)=>{
+const ShowString = (key,id,sk,db,node,func)=>{
         const store = useStore()
         const vdom = createApp({
             setup() {
@@ -21,6 +21,8 @@ const ShowString = (key,id,sk,db)=>{
                         xkey:key,
                         sk:sk,
                         db:db,
+                        node:node,
+                        onDel:func
                     },
                     null
                 )
@@ -34,7 +36,7 @@ const ShowString = (key,id,sk,db)=>{
 }
 
 
-const ShowList = (key,id,sk,db)=>{
+const ShowList = (key,id,sk,db,node,func)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -45,7 +47,9 @@ const ShowList = (key,id,sk,db)=>{
                 {
                     xkey:key,
                     sk:sk,
-                    db:db
+                    db:db,
+                    node:node,
+                    onDel:func
                 },
                 null
             )
@@ -60,7 +64,7 @@ const ShowList = (key,id,sk,db)=>{
 }
 
 
-const ShowHash = (key,id,sk,db)=>{
+const ShowHash = (key,id,sk,db,node,func)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -72,6 +76,8 @@ const ShowHash = (key,id,sk,db)=>{
                     xkey:key,
                     sk:sk,
                     db:db,
+                    node:node,
+                    onDel:func
                 },
                 null
             )
@@ -85,7 +91,7 @@ const ShowHash = (key,id,sk,db)=>{
         },500);
 }
 
-const ShowSet = (key,id,sk,db)=>{
+const ShowSet = (key,id,sk,db,node,func)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -96,7 +102,9 @@ const ShowSet = (key,id,sk,db)=>{
                 {
                     xkey:key,
                     sk:sk,
-                    db:db
+                    db:db,
+                    node:node,
+                    onDel:func
                 },
                 null
             )
@@ -110,7 +118,7 @@ const ShowSet = (key,id,sk,db)=>{
         },500);
 }
 
-const ShowZset = (key,id,sk,db)=>{
+const ShowZset = (key,id,sk,db,node,func)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -121,7 +129,9 @@ const ShowZset = (key,id,sk,db)=>{
                 {
                     xkey:key,
                     sk:sk,
-                    db:db
+                    db:db,
+                    node:node,
+                    onDel:func
                 },
                 null
             )
@@ -135,7 +145,7 @@ const ShowZset = (key,id,sk,db)=>{
         },500);
 }
 
-const ShowStream = (key,id,sk,db)=>{
+const ShowStream = (key,id,sk,db,node,func)=>{
     const vdom = createApp({    
         setup() {
         },
@@ -146,7 +156,9 @@ const ShowStream = (key,id,sk,db)=>{
                 {
                     xkey:key,
                     sk:sk,
-                    db:db
+                    db:db,
+                    node:node,
+                    onDel:func
                 },
                 null
             )
