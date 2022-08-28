@@ -11,19 +11,25 @@ ElTreeV2.setup = (props, ctx) => {
     return obj;
 };
 
-const genNode = function(index){
+const genNode = function(indexs,matchs,cursors){
     const vdom = createApp({
     setup() {
-        let inde = index;
+        let index = indexs;
+        let match = matchs;
+        let cursor = cursors;
         return {
-            inde
+            index,
+            match,
+            cursor,
         }
     },
     render() {
         return h(
             MenuTree,
             {
-                index:this.inde
+                index:this.index,
+                match:this.match,
+                cursor:this.cursor
             },
             null
         )
@@ -31,17 +37,13 @@ const genNode = function(index){
     
     });
     
-    if(store.state.globalTree["tree#"+index]){
-        store.state.globalTree["tree#"+index].unmount();
+    if(store.state.globalTree["tree#"+indexs]){
+        store.state.globalTree["tree#"+indexs].unmount();
     }
-    store.commit("setGlobalTree",{key:"tree#"+index,vm:vdom})
-    const parent = document.getElementById("tree#"+index)
+    store.commit("setGlobalTree",{key:"tree#"+indexs,vm:vdom})
+    const parent = document.getElementById("tree#"+indexs)
     vdom.use(store).use(ElTree).use(ElButton).use(ElDialog).use(ElInput).use(ElOption).use(ElForm).use(ElSelect).use(ElTreeV2).mount(parent)
 };
 
 
-const dbKeysList = (index)=>{
-
-}
-
-export {dbKeysList,genNode}
+export {genNode}

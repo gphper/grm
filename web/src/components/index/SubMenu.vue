@@ -40,8 +40,8 @@
                         </el-row>
                     </template>
                     
-                    <div :id="'page#'+key+'-'+item.servicekey"></div>
                     <div :id="'tree#'+key+'-'+item.servicekey"></div>
+
             </el-sub-menu>
         </el-menu>
 
@@ -108,7 +108,7 @@ export default {
         }
 
         const handleOpen = function(index){
-            genNode(index)
+            genNode(index,"*",0)
         };
 
         const handleClose = function(){
@@ -125,12 +125,12 @@ export default {
         }
 
         const onSubmit = ()=>{
-            dbKeysList(searchForm.db+'-'+searchForm.sk,searchForm.match,0)
+            genNode(searchForm.db+'-'+searchForm.sk,searchForm.match,0)
             searchVisiable.value = false
         }
 
         const reload = (index,db)=>{
-            dbKeysList(db+'-'+index,searchForm.match,0)
+            genNode(db+'-'+index,searchForm.match,0)
         }
 
         const lua = (sk,db)=>{

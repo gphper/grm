@@ -1,35 +1,44 @@
 <template>
 
-    <el-tree-v2
+    <div>
+
+      <el-tree-v2
       :data="datas"
       node-key="id"
       default-expand-all
       :expand-on-click-node="false"
     >
-      <template #default="{ node, data }">
-        <span :title="node.label" class="showname">
-        <i v-if="data.children && data.children.length > 0" class="iconfont icon-folder-close icon-style"></i>
-        <i v-else-if="data.id != 'nextpagegrmtag'" class="iconfont icon-key icon-style"></i>
-        &nbsp;{{ node.label }}
-        </span>
-        <span v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
-            <el-button text @click.stop="append(data)" type="success">添加</el-button>
-            <el-button text @click.stop="removeData(data.id,data.sk,data.db,1,node, data)" type="danger">删除</el-button>
-        </span>
-        <span v-else-if="data.id != 'nextpagegrmtag'" style="margin-left:20%;width: 15px;">
-            <el-button text @click.stop="removeData(data.id,data.sk,data.db,0,node,data)" type="danger">删除</el-button>
-            <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db,node)" type="primary">查看</el-button>
-        </span>
-        <span v-else>
-            <el-button @click="loadMore()">加载更多</el-button>
-        </span>
-      </template>
-    </el-tree-v2>
+        <template #default="{ node, data }">
+          <span :title="node.label" class="showname">
+          <i v-if="data.children && data.children.length > 0" class="iconfont icon-folder-close icon-style"></i>
+          <i v-else-if="data.id != 'nextpagegrmtag'" class="iconfont icon-key icon-style"></i>
+          &nbsp;{{ node.label }}
+          </span>
+          <span v-if="data.children && data.children.length > 0" style="margin-left:20%;width: 15px;">
+              <el-button text @click.stop="appendData(data)" type="success">添加</el-button>
+              <el-button text @click.stop="removeData(data.id,data.sk,data.db,1,node, data)" type="danger">删除</el-button>
+          </span>
+          <span v-else-if="data.id != 'nextpagegrmtag'" style="margin-left:20%;width: 15px;">
+              <el-button text @click.stop="removeData(data.id,data.sk,data.db,0,node,data)" type="danger">删除</el-button>
+              <el-button text @click.stop="detail(node.label,data.id,data.sk,data.db,node)" type="primary">查看</el-button>
+          </span>
+          <span v-else>
+              <el-button @click="loadMore()">加载更多</el-button>
+          </span>
+        </template>
+      </el-tree-v2>
+
+      <!-- 添加字段 -->
+      <TreeDataForm :sk="sk" :db="db" :prefix="prefix" :data="treeData" :show="show" @reset="reset" @append="append"></TreeDataForm>
+
+    </div>
+
 </template>
 
 <script>
 import { ref } from '@vue/reactivity'
 import { getKeys,delKeys } from '@/api/index.js'
+import TreeDataForm from '@/components/index/TreeDataForm.vue'
 import { useStore } from 'vuex'
 import { ShowHash, ShowList, ShowSet, ShowString,ShowZset,ShowStream } from '@/utils/show.js'
 import { getKeyType } from "@/api/index.js"
@@ -38,6 +47,9 @@ import { ElMessage } from 'element-plus';
 
 export default {
     name:"MenuTree",
+    components:{
+      TreeDataForm
+    },
     props:{
       index:{
         type:String
@@ -51,70 +63,92 @@ export default {
     },
     setup(props) {
 
-      let datas = ref([]);
-      const store = useStore()
-      let cursor = ref(0)
-      let count = ref(0)
+        // 表单
+        let sk = ref('')
+        let db = ref('')
+        let prefix = ref('')
+        let show = ref(false)
+        let treeData = ref(null)
 
-      const append = (data) => {
-            let newChild = { id: 30, label: 'testtest', children: [] }
-            if (!data.children) {
-              data.children = []
-            }
-            data.children.push(newChild)
-            datas.value = [...datas.value]
-      };
+        let datas = ref([]);
+        const store = useStore()
+        let cursor = ref(0)
+        let count = ref(0)
 
-      const remove = (node,data) => {
-          let parent = node.parent
-          if(!parent){
-            parent = datas.value
-            let index = parent.findIndex((d) => d.id === data.id)
-            parent.splice(index, 1)
-          }else{
-            //只有一个层目录时
-            while(parent.children.length == 1){
-                if(!parent.parent){
-                  data = parent.data
-                  parent = datas.value
-                  break
-                }
-                data = parent.data
-                parent = parent.parent
-            }
-            if(parent.isLeaf == undefined){
+        const appendData = (data) => {
+              show.value = !show.value
+              prefix.value = data.id
+              sk.value = data.sk
+              db.value = data.db
+              treeData.value = data
+        };
+
+        const append = (data,label) => {
+              let newChild = { id: data.id+':'+label, sk:data.sk, db:data.db, label: label, children: [] }
+              if (!data.children) {
+                data.children = []
+              }
+              data.children.push(newChild)
+              datas.value = [...datas.value]
+
+              document.getElementById("dbnum#"+data.db+'-'+data.sk).innerHTML = Number(document.getElementById("dbnum#"+data.db+'-'+data.sk).innerHTML) + 1
+        }
+
+        const reset = () => {
+            show.value = false
+        }
+
+        const remove = (node,data) => {
+            let parent = node.parent
+            if(!parent){
+              parent = datas.value
               let index = parent.findIndex((d) => d.id === data.id)
               parent.splice(index, 1)
             }else{
-              let children = parent.data.children || parent.data
-              let index = children.findIndex((d) => d.id === data.id)
-              children.splice(index, 1)
-            }
-          }
-          datas.value = [...datas.value]
-      }
-
-      const removeData = (key,sk,db,single,node, data)=>{
-          delKeys({
-                id:key,
-                sk:sk,
-                db:db,
-                single:single
-          }).then((res)=>{
-              if(res.data.status == 1){
-                  //删除成功
-                  ElMessage({
-                      message: "删除成功",
-                      type: 'success',
-                  })
-
-                  remove(node,data)
-                  store.commit("delTagsItem",sk+db)
+              //只有一个层目录时
+              while(parent.children.length == 1){
+                  if(!parent.parent){
+                    data = parent.data
+                    parent = datas.value
+                    break
+                  }
+                  data = parent.data
+                  parent = parent.parent
               }
-          })
-      };
+              if(parent.isLeaf == undefined){
+                let index = parent.findIndex((d) => d.id === data.id)
+                parent.splice(index, 1)
+              }else{
+                let children = parent.data.children || parent.data
+                let index = children.findIndex((d) => d.id === data.id)
+                children.splice(index, 1)
+              }
+            }
+            datas.value = [...datas.value]
+        }
 
-      const detail = (key,idk,sk,db,node)=>{
+        const removeData = (key,sk,db,single,node, data)=>{
+            delKeys({
+                  id:key,
+                  sk:sk,
+                  db:db,
+                  single:single
+            }).then((res)=>{
+                if(res.data.status == 1){
+                    //删除成功
+                    ElMessage({
+                        message: "删除成功",
+                        type: 'success',
+                    })
+
+                    remove(node,data)
+                    store.commit("delTagsItem",sk+db)
+                }
+            })
+        };
+
+        const detail = (key,idk,sk,db,node)=>{
+
             let unionid = sk+db
             let id = CryptoJS.MD5(unionid).toString();
             
@@ -206,10 +240,17 @@ export default {
           document.getElementById("dbnum#"+props.index).innerHTML = count.value;
         })
 
-      
+        
 
       return {
+        sk,
+        db,
+        show,
+        prefix,
+        treeData,
+        reset,
         append,
+        appendData,
         remove,
         removeData,
         detail,

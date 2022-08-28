@@ -9,9 +9,7 @@
             destroy-on-close
         >
             <el-form-item label="键名" prop="key">
-                <el-input v-if="root == true" v-model="ruleForm.key" placeholder="键名"/>
-
-                <el-input v-if="root == false" v-model="ruleForm.key" placeholder="键名">
+                <el-input v-model="ruleForm.key" placeholder="键名">
                     <template #prepend>{{pre}}:</template>
                 </el-input>
             </el-form-item>
@@ -61,27 +59,38 @@
 
 <script>
 import { reactive, ref } from '@vue/reactivity';
-import { computed } from '@vue/runtime-core';
-import { useStore } from 'vuex';
-import { genNode } from "@/utils/tree.js"
 import { addHash } from '@/api/hash.js';
 import { addList } from '@/api/list.js';
 import { addSet } from '@/api/set.js';
 import { addZset } from '@/api/zset.js';
 import { addStream } from '@/api/stream.js';
 import { addString } from '@/api/string.js';
+import { watch } from '@vue/runtime-core';
 import { ElMessage } from 'element-plus';
 
 export default {
-    name:"DataForm",
-    setup() {
-        const store = useStore()
-        const dialogFormVisible = computed(() => store.state.showDataForm)
-        const sk = computed(() => store.state.sk)
-        const db = computed(() => store.state.db)
-        const root = computed(()=>store.state.root)
-        const pre = computed(()=>store.state.pre)
+    name:"TreeDataForm",
+    props:{
+        sk:{
+            type:String
+        },
+        db:{
+            type:Number
+        },
+        prefix:{
+            type:String
+        },
+        show:{
+            type:Boolean
+        },
+        data:{
+            type:Object
+        }
+    },
+    setup(props,{emit}) {
 
+        let dialogFormVisible = ref(props.show)
+        let pre = ref(props.prefix)
         let ruleFormRef = ref(null);
         let ruleForm = reactive({
             key: '',
@@ -89,9 +98,7 @@ export default {
             hkey: '',
             id:'*',
             score: 0,
-            value: '',
-            sk:sk,
-            db:db
+            value: ''
         })
         let rules = {
             key:[
@@ -129,64 +136,71 @@ export default {
             },
         ])
 
-    
+
+        watch(
+            ()=> [props.show,props.prefix],
+            (value) => {
+                dialogFormVisible.value = value[0]
+                pre.value = value[1]
+            }
+        )
+
+
         const onSubmit = ()=>{
 
-            if(root.value == false){
-                ruleForm.key = pre.value+':'+ruleForm.key
-            }
+            let all_key = pre.value+':'+ruleForm.key
             
             switch(ruleForm.type){
                 case "string":
                     addString({
-                        id:ruleForm.key,
-                        sk:ruleForm.sk,
-                        db:ruleForm.db,
+                        id:all_key,
+                        sk:props.sk,
+                        db:props.db,
                         item:ruleForm.value,
                     }).then(()=>{
                         ElMessage({
                             message: "添加成功",
                             type: 'success',
                         });
-                        genNode(ruleForm.db+'-'+ruleForm.sk,"*",0)
+                        emit("append",props.data,ruleForm.key)
                         onReset()
                     });
                     break;
                 case "list":
                     addList({
-                        id:ruleForm.key,
-                        sk:ruleForm.sk,
-                        db:ruleForm.db,
+                        id:all_key,
+                        sk:props.sk,
+                        db:props.db,
                         item:ruleForm.value,
                     }).then(()=>{
                         ElMessage({
                             message: "添加成功",
                             type: 'success',
                         });
-                        genNode(ruleForm.db+'-'+ruleForm.sk,"*",0)
+                        emit("append",props.data,ruleForm.key)
                         onReset()
                     });
                     break;
                 case "set":
                     addSet({
-                        id:ruleForm.key,
-                        sk:ruleForm.sk,
-                        db:ruleForm.db,
+                        id:all_key,
+                        sk:props.sk,
+                        db:props.db,
                         item:ruleForm.value,
                     }).then(()=>{
                         ElMessage({
                             message: "添加成功",
                             type: 'success',
                         });
-                        genNode(ruleForm.db+'-'+ruleForm.sk,"*",0)
+                        emit("append",props.data,ruleForm.key)
                         onReset()
                     });
                     break;   
                 case "zset":
                     addZset({
-                        id:ruleForm.key,
-                        sk:ruleForm.sk,
-                        db:ruleForm.db,
+                        id:all_key,
+                        sk:props.sk,
+                        db:props.db,
                         score:ruleForm.score,
                         item:ruleForm.value,
                     }).then(()=>{
@@ -194,15 +208,15 @@ export default {
                             message: "添加成功",
                             type: 'success',
                         });
-                        genNode(ruleForm.db+'-'+ruleForm.sk,"*",0)
+                        emit("append",props.data,ruleForm.key)
                         onReset()
                     });
                     break;    
                 case "hash":
                     addHash({
-                        id:ruleForm.key,
-                        sk:ruleForm.sk,
-                        db:ruleForm.db,
+                        id:all_key,
+                        sk:props.sk,
+                        db:props.db,
                         itemk:ruleForm.hkey,
                         itemv:ruleForm.value
                     }).then(()=>{
@@ -210,15 +224,15 @@ export default {
                             message: "添加成功",
                             type: 'success',
                         });
-                        genNode(ruleForm.db+'-'+ruleForm.sk,"*",0)
+                        emit("append",props.data,ruleForm.key)
                         onReset()
                     });
                     break;    
                 case "stream":
                     addStream({
-                        id:ruleForm.key,
-                        sk:ruleForm.sk,
-                        db:ruleForm.db,
+                        id:all_key,
+                        sk:props.sk,
+                        db:props.db,
                         idx:ruleForm.id,
                         item:ruleForm.value,
                     }).then(()=>{
@@ -226,7 +240,7 @@ export default {
                             message: "添加成功",
                             type: 'success',
                         });
-                        genNode(ruleForm.db+'-'+ruleForm.sk,"*",0)
+                        emit("append",props.data,ruleForm.key)
                         onReset()
                     });
                     break;
@@ -235,13 +249,12 @@ export default {
         }
 
         const onReset = ()=>{
-            store.commit("switchDataForm",{sk:"",db:0,show:false})
+            emit('reset')
             ruleFormRef.value.resetFields();
         }
 
         return{
             pre,
-            root,
             rules,
             options,
             ruleForm,
