@@ -315,8 +315,10 @@ func (con indexController) SerInfo(c *gin.Context) {
 		return
 	}
 
+	info := common.ParseInfo(result)
+
 	con.Success(c, http.StatusOK, gin.H{
-		"info": result,
+		"info": info,
 		"name": redisServer.RedisService,
 	})
 }
