@@ -13,6 +13,7 @@ import (
 	"grm/model"
 	"io"
 	"os"
+	"sync"
 
 	"github.com/go-redis/redis"
 )
@@ -20,10 +21,11 @@ import (
 var GlobalClients map[string]*redis.Client
 
 type GlobalConfig struct {
-	Accounts      map[string]string
-	RedisServices map[string]RedisService
-	Separator     string
-	Tree          bool
+	Accounts        map[string]string
+	RedisServicesCp map[string]RedisService
+	RedisServices   sync.Map
+	Separator       string
+	Tree            bool
 }
 
 type RedisService struct {
@@ -35,7 +37,7 @@ type RedisService struct {
 
 var GlobalConf = GlobalConfig{
 	Accounts:      make(map[string]string),
-	RedisServices: make(map[string]RedisService),
+	RedisServices: sync.Map{},
 	Separator:     ":",
 	Tree:          true,
 }
@@ -52,6 +54,11 @@ func init() {
 
 	decoder := json.NewDecoder(bytes.NewBuffer(data))
 	err = decoder.Decode(&GlobalConf)
+
+	for k, v := range GlobalConf.RedisServicesCp {
+		GlobalConf.RedisServices.Store(k, v)
+	}
+
 	if err != nil && err != io.EOF {
 		fmt.Println(err)
 		os.Exit(0)

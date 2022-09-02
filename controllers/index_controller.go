@@ -42,14 +42,14 @@ func (con indexController) Open(c *gin.Context) {
 	}
 
 	keys := strings.Split(req.Index, "_")
-	redisServer := global.GlobalConf.RedisServices[keys[1]]
-	client, err := service.NewRedisClient(redisServer)
+	redisServer, _ := global.GlobalConf.RedisServices.Load(keys[1])
+	client, err := service.NewRedisClient(redisServer.(global.RedisService))
 	if err != nil {
 		con.Error(c, err.Error())
 		return
 	}
 	global.GlobalClients[keys[1]] = client
-	global.GlobalConf.RedisServices[keys[1]] = redisServer
+	global.GlobalConf.RedisServices.Store(keys[1], redisServer)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
@@ -298,9 +298,12 @@ func (con indexController) SerInfo(c *gin.Context) {
 		return
 	}
 
-	redisServer := global.GlobalConf.RedisServices[req.Key]
-
-	client, err := service.NewRedisClient(redisServer)
+	redisServer, ok := global.GlobalConf.RedisServices.Load(req.Key)
+	if !ok {
+		fmt.Println(ok)
+	}
+	redisServers := redisServer.(global.RedisService)
+	client, err := service.NewRedisClient(redisServers)
 	if err != nil {
 		con.Error(c, err.Error())
 		return
@@ -319,7 +322,8 @@ func (con indexController) SerInfo(c *gin.Context) {
 
 	con.Success(c, http.StatusOK, gin.H{
 		"info": info,
-		"name": redisServer.RedisService,
+		"time": time.Now().Format("15:04:05"),
+		"name": redisServers.RedisService,
 	})
 }
 

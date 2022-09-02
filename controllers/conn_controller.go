@@ -30,12 +30,14 @@ func (con connController) List(c *gin.Context) {
 	}
 	conns := make([]ConnItem, 0)
 
-	for k, v := range global.GlobalConf.RedisServices {
+	global.GlobalConf.RedisServices.Range(func(k, v interface{}) bool {
 		conns = append(conns, ConnItem{
-			Key:  k,
-			Name: v.RedisService,
+			Key:  k.(string),
+			Name: v.(global.RedisService).RedisService,
 		})
-	}
+		return true
+	})
+
 	con.Success(c, http.StatusOK, conns)
 }
 
@@ -52,7 +54,7 @@ func (con connController) Add(c *gin.Context) {
 	m.Write([]byte(conf.ServiceName))
 	key := hex.EncodeToString(m.Sum(nil))
 
-	global.GlobalConf.RedisServices[key] = global.RedisService{
+	tmp := global.RedisService{
 		RedisService: conf.ServiceName,
 		Config: model.RedisConfig{
 			Addr:     net.JoinHostPort(conf.Host, conf.Port),
@@ -67,6 +69,14 @@ func (con connController) Add(c *gin.Context) {
 			SshPassword: conf.SshPassword,
 		},
 	}
+	global.GlobalConf.RedisServices.Store(key, tmp)
+
+	tmpRedisServicesCp := make(map[string]global.RedisService)
+	global.GlobalConf.RedisServices.Range(func(k, v interface{}) bool {
+		tmpRedisServicesCp[k.(string)] = v.(global.RedisService)
+		return true
+	})
+	global.GlobalConf.RedisServicesCp = tmpRedisServicesCp
 
 	//存储
 	buffer := &bytes.Buffer{}
@@ -94,7 +104,14 @@ func (con connController) Del(c *gin.Context) {
 		return
 	}
 
-	delete(global.GlobalConf.RedisServices, req.ServiceName)
+	global.GlobalConf.RedisServices.Delete(req.ServiceName)
+
+	tmpRedisServicesCp := make(map[string]global.RedisService)
+	global.GlobalConf.RedisServices.Range(func(k, v interface{}) bool {
+		tmpRedisServicesCp[k.(string)] = v.(global.RedisService)
+		return true
+	})
+	global.GlobalConf.RedisServicesCp = tmpRedisServicesCp
 
 	//存储
 	buffer := &bytes.Buffer{}
