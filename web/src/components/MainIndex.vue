@@ -10,7 +10,6 @@
     <MainSection :tagData="tabs"></MainSection>
     </div>
 
-    <ConnInfo :drawer="drawer" :info="infos" :title="title" @close="close"></ConnInfo>
     <DataForm></DataForm>
     <SettingFrom></SettingFrom>
 </div>
@@ -20,7 +19,6 @@
 import { reactive, ref } from '@vue/reactivity'
 import MainSection from '@/components/MainSection.vue'
 import MenuSection from '@/components/MenuSection.vue'
-import ConnInfo from "@/components/index/ConnInfo.vue"
 import DataForm from "@/components/index/DataForm.vue"
 import SettingFrom from "@/components/index/SettingForm.vue"
 
@@ -29,7 +27,6 @@ export default {
     components:{
         MainSection,
         MenuSection,
-        ConnInfo,
         DataForm,
         SettingFrom
     },
@@ -39,7 +36,6 @@ export default {
     let mid = ref(null);
     let box = ref(null);
     let resize = ref(null);
-    let drawer = ref(false);
     let title = ref("");
     let infos = ref("");
 
@@ -74,15 +70,8 @@ export default {
     }
 
     const showInfo = (connec_id,info)=>{
-      drawer.value = true;
       title.value = '【' + connec_id + '】服务信息';
       infos.value = info.replace(/\r\n/gm, "<br/>")
-    }
-
-    const close = ()=>{
-      drawer.value = false;
-      title.value = '';
-      infos.value = '';
     }
 
     return{
@@ -91,12 +80,9 @@ export default {
       box,
       resize,
       tabs,
-      drawer,
       title,
-      infos,
       resizeMouse,
       showInfo,
-      close
     }
   },
 }
