@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis"
 )
 
 type indexController struct {
@@ -291,6 +292,8 @@ func (con indexController) TtlKey(c *gin.Context) {
 
 func (con indexController) SerInfo(c *gin.Context) {
 	var req model.InfoReq
+	var client *redis.Client
+	var ok bool
 
 	err := con.FormBind(c, &req)
 	if err != nil {
@@ -298,15 +301,17 @@ func (con indexController) SerInfo(c *gin.Context) {
 		return
 	}
 
-	redisServer, ok := global.GlobalConf.RedisServices.Load(req.Key)
-	if !ok {
-		fmt.Println(ok)
-	}
+	redisServer, _ := global.GlobalConf.RedisServices.Load(req.Key)
 	redisServers := redisServer.(global.RedisService)
-	client, err := service.NewRedisClient(redisServers)
-	if err != nil {
-		con.Error(c, err.Error())
-		return
+
+	client, ok = global.GlobalClients[req.Key]
+	if !ok {
+		client, err = service.NewRedisClient(redisServers)
+		if err != nil {
+			con.Error(c, err.Error())
+			return
+		}
+		global.GlobalClients[req.Key] = client
 	}
 
 	val, _ := c.Get("username")

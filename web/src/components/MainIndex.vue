@@ -1,7 +1,7 @@
 <template>
 <div class="box" ref="box">
     <div class="left" ref="left">
-    <MenuSection @info="showInfo"></MenuSection>
+    <MenuSection></MenuSection>
     </div>
     <div class="resize" ref="resize" @mousedown="resizeMouse($event)" title="收缩侧边栏">
     ⋮
@@ -37,7 +37,6 @@ export default {
     let box = ref(null);
     let resize = ref(null);
     let title = ref("");
-    let infos = ref("");
 
     let tabs = reactive([
       {
@@ -69,11 +68,6 @@ export default {
       }
     }
 
-    const showInfo = (connec_id,info)=>{
-      title.value = '【' + connec_id + '】服务信息';
-      infos.value = info.replace(/\r\n/gm, "<br/>")
-    }
-
     return{
       left,
       mid,
@@ -82,7 +76,6 @@ export default {
       tabs,
       title,
       resizeMouse,
-      showInfo,
     }
   },
 }

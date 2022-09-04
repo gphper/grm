@@ -16,6 +16,9 @@
             >
                <span v-if="item.content">{{ item.content }}</span>
                <span v-if="item.id"><div :id="item.id"></div></span>
+               <span v-if="item.view">
+                    <router-view :key="$route.fullPath"></router-view>
+               </span>
             </el-tab-pane>
             </el-tabs>
         </el-main>
@@ -35,7 +38,7 @@ export default{
         const activeIndex = computed(() => store.state.activeTag);
 
         const handleClick = (tab) => {
-            console.log('click '+ tab)
+            store.commit("setCurrentTag", tab.props.name);
         };
 
         const removeTag = (index) => {

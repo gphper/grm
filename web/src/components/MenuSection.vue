@@ -26,7 +26,7 @@
 
                         <el-popover trigger="hover" content="服务信息">
                             <template #reference>
-                                <el-button @click.stop="infoServe(item.key)" type="primary" circle><i class="iconfont icon-info"></i></el-button>
+                                <el-button @click.stop="infoServe(item.key,item.name)" type="primary" circle><i class="iconfont icon-info"></i></el-button>
                             </template>
                         </el-popover>
 
@@ -49,16 +49,19 @@ import { ElButton,ElMenu, ElRow, ElIcon,ElPopover, ElSubMenu,ElDialog,ElInput,El
 import {NewShell} from '@/utils/terminal.js'
 import SubMenu from "@/components/index/SubMenu.vue"
 import {getConnList,delConn} from "@/api/base.js"
-import {openDb,serInfo} from "@/api/index.js"
+import {openDb} from "@/api/index.js"
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+
 
 export default{
     name:"MenuSection",
-    setup(props,context){
+    setup(){
 
         let connMenu = ref(null);
         
         const store = useStore()
+        const router = useRouter()
 
         const connetions = computed(() => store.state.connList);
 
@@ -96,10 +99,16 @@ export default{
             
         };
 
-        const infoServe = function(connec_id){
-            serInfo({key:connec_id}).then((res)=>{
-                context.emit("info",res.data.name,res.data.info);
-            }) 
+        const infoServe = function(sk,name){
+            store.commit("setTagsItem", {
+                title: name+"-监控",
+                name: "grmmonitor",
+                content: "",
+                view: true
+            });
+            store.commit("setCurrentTag", "grmmonitor");
+            
+            router.push({name:'monitor', params:{ sk }})
         };
     
         const delServe = function(connec_id){

@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <el-row style="margin-top:15px;">
-            <el-col :span="8">
+            <el-col :span="6">
                 <el-switch
                     v-model="showswitch"
                     class="mb-2"
@@ -25,7 +25,7 @@
                 </el-form-item>
             </el-col>
 
-            <el-col :span="3">
+            <el-col :span="5">
                 <el-form-item label="更新间隔">
                     <el-select @change="intervalChange" v-model="interval" placeholder="间隔">
                         <el-option label="5s" value="5" />
@@ -38,7 +38,7 @@
             </el-col>
 
             <el-col :span="2" :offset="1">
-                <el-button type="success" title="重载" circle><i class="iconfont icon-zhongqi"></i></el-button>
+                <el-button type="success" title="重载" @click="getInfo" circle><i class="iconfont icon-zhongqi"></i></el-button>
             </el-col>
 
         </el-row>
@@ -46,23 +46,23 @@
       <el-main>
             <div v-show="!showswitch">
                 <el-row>
-                    <el-col :span="8" style="height:350px;">
-                        <div style="width:100%;height:100%" id="chart1"></div>
+                    <el-col :span="8">
+                        <div style="width:350px;height:350px" id="chart1"></div>
                     </el-col>
-                    <el-col :span="8" style="height:350px;">
-                        <div style="width:100%;height:100%" id="chart2"></div>
+                    <el-col :span="8">
+                        <div style="width:350px;height:350px" id="chart2"></div>
                     </el-col>
-                    <el-col :span="8" style="height:350px;">
-                        <div style="width:100%;height:100%" id="chart3"></div>
+                    <el-col :span="8">
+                        <div style="width:350px;height:350px" id="chart3"></div>
                     </el-col>
-                    <el-col :span="8" style="height:350px;">
-                        <div style="width:100%;height:100%" id="chart4"></div>
+                    <el-col :span="8">
+                        <div style="width:350px;height:350px" id="chart4"></div>
                     </el-col>
-                    <el-col :span="8" style="height:350px;">
-                        <div style="width:100%;height:100%" id="chart5"></div>
+                    <el-col :span="8">
+                        <div style="width:350px;height:350px" id="chart5"></div>
                     </el-col>
-                    <el-col :span="8" style="height:350px;">
-                        <div style="width:100%;height:100%" id="chart6"></div>
+                    <el-col :span="8">
+                        <div style="width:350px;height:350px" id="chart6"></div>
                     </el-col>
                 </el-row>
             
@@ -141,14 +141,23 @@
 </template>
 
 <script>
-import { computed, onMounted, onUnmounted, ref } from '@vue/runtime-core'
+import { computed, onMounted, onUnmounted, ref, watch } from '@vue/runtime-core'
 import { useRoute } from 'vue-router'
 import { serInfo } from "@/api/index.js"
 import * as echarts from "echarts";
+import { useStore } from 'vuex';
 export default {
     name:"MonitorView",
+    props:{
+        sk:{
+            type:String
+        }
+    },
     setup() {
-        const route = new useRoute()
+
+        const store = useStore()
+        const route = useRoute()
+
         let timer = null
         let xtime = []
         //内存
@@ -370,6 +379,7 @@ export default {
 
 
         const trans = (size) => {
+            console.log(size)
             let kb = 1024
             let unit = ['B','KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
             let i = Math.floor(Math.log(size) / Math.log(kb))
@@ -377,13 +387,11 @@ export default {
                 return (size / Math.pow(kb, i)).toPrecision(3) + ' ' + unit[i];
             }else{
                 return '0B'
-            } 
+            }
         }
 
-        
-
         const getInfo = ()=>{
-            serInfo({key:"95afe1c8e615908df0b6f3c4755547c9"}).then((res)=>{
+            serInfo({key:route.params.sk}).then((res)=>{
                 if(xtime.length < 100){
                     xtime.push(res.data.time)
                 }else{
@@ -420,12 +428,35 @@ export default {
             })
         }
 
+
+        watch(
+            () => store.state.activeTag,
+            (value) => {
+                if(value != "grmmonitor"){
+                    clearInterval(timer)
+                    timer = null
+                }else{
+                    timer = setInterval(()=>{
+                        getInfo()
+                    },interval.value * 1000)
+                }
+            }
+        )
+
+
         const intervalChange = (val)=>{
-            clearInterval(timer)
-            timer = setInterval(()=>{
-                getInfo()
-            },val * 1000)
+            if(autoupdate.value){
+                clearInterval(timer)
+                timer = setInterval(()=>{
+                    getInfo()
+                },val * 1000)
+            }
         }
+
+        onUnmounted(()=>{
+            clearInterval(timer)
+            timer = null
+        })
 
         const autoChange = (val) => {
             if(val == false){
@@ -450,14 +481,14 @@ export default {
        }
 
        onMounted(() => {
-            // 打印
-            console.log(route.params.sk)
             xtime = []
-            
             memChart = echarts.init(document.getElementById('chart1'));
             memChartOption = {
                 title: {
                     text: 'Redis内存使用'
+                },
+                grid:{
+                    left:50,// 调整这个属性
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -496,7 +527,7 @@ export default {
                 tooltip: {
                     trigger: 'axis',
                     formatter:(params)=>{
-                        return params[0].axisValueLabel+":"+ params[0].data + "kbps";
+                        return params[0].axisValueLabel+":"+ params[0].data +" kbps";
                     },
                 },
                 xAxis: {
@@ -504,12 +535,7 @@ export default {
                     data: []
                 },
                 yAxis: {
-                    type: 'value',
-                    axisLabel:{
-                        formatter:(value) => {
-                            return value + "kbps"
-                        }
-                    }
+                    type: 'value'
                 },
                 series: [
                     {
@@ -529,7 +555,7 @@ export default {
                 tooltip: {
                     trigger: 'axis',
                     formatter:(params)=>{
-                        return params[0].axisValueLabel+":"+ params[0].data + "kbps";
+                        return params[0].axisValueLabel+":"+ params[0].data +" kbps";
                     },
                 },
                 xAxis: {
@@ -537,12 +563,7 @@ export default {
                     data: []
                 },
                 yAxis: {
-                    type: 'value',
-                    axisLabel:{
-                        formatter:(value) => {
-                            return value + "kbps"
-                        }
-                    }
+                    type: 'value'
                 },
                 series: [
                     {
@@ -629,10 +650,6 @@ export default {
                 ]
             };
             keysChart.setOption(keysChartOption);
-       }) 
-
-       onUnmounted(()=>{
-            clearInterval(timer)
        })
 
        return {
@@ -648,6 +665,7 @@ export default {
             repData,
             persData,
             keyspaceData,
+            getInfo,
             autoChange,
             intervalChange
        }
