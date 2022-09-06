@@ -31,7 +31,7 @@ func (con listController) Show(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
+	client := global.GetClient(req.Sk)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
@@ -92,7 +92,7 @@ func (con listController) Del(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
+	client := global.GetClient(req.Sk)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
@@ -124,7 +124,7 @@ func (con listController) AddItem(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
+	client := global.GetClient(req.Sk)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)

@@ -49,7 +49,7 @@ func (con indexController) Open(c *gin.Context) {
 		con.Error(c, err.Error())
 		return
 	}
-	global.GlobalClients[keys[1]] = client
+	global.SetClient(keys[1], client)
 	global.GlobalConf.RedisServices.Store(keys[1], redisServer)
 
 	val, _ := c.Get("username")
@@ -124,7 +124,7 @@ func (con indexController) GetKeys(c *gin.Context) {
 
 	dbInfo := strings.Split(req.Index, "-")
 	index, _ := strconv.Atoi(dbInfo[0])
-	client := global.GlobalClients[dbInfo[1]]
+	client := global.GetClient(dbInfo[1])
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
@@ -188,7 +188,7 @@ func (con indexController) GetKeyType(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
+	client := global.GetClient(req.Sk)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
@@ -221,7 +221,7 @@ func (con indexController) DelKey(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
+	client := global.GetClient(req.Sk)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
@@ -263,7 +263,7 @@ func (con indexController) TtlKey(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
+	client := global.GetClient(req.Sk)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
@@ -293,7 +293,6 @@ func (con indexController) TtlKey(c *gin.Context) {
 func (con indexController) SerInfo(c *gin.Context) {
 	var req model.InfoReq
 	var client *redis.Client
-	var ok bool
 
 	err := con.FormBind(c, &req)
 	if err != nil {
@@ -304,14 +303,14 @@ func (con indexController) SerInfo(c *gin.Context) {
 	redisServer, _ := global.GlobalConf.RedisServices.Load(req.Key)
 	redisServers := redisServer.(global.RedisService)
 
-	client, ok = global.GlobalClients[req.Key]
-	if !ok {
+	client = global.GetClient(req.Key)
+	if client == nil {
 		client, err = service.NewRedisClient(redisServers)
 		if err != nil {
 			con.Error(c, err.Error())
 			return
 		}
-		global.GlobalClients[req.Key] = client
+		global.SetClient(req.Key, client)
 	}
 
 	val, _ := c.Get("username")
@@ -341,7 +340,7 @@ func (con indexController) LuaRun(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
+	client := global.GetClient(req.Sk)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)

@@ -37,8 +37,7 @@ func (con streamController) Show(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
-
+	client := global.GetClient(req.Sk)
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
 
@@ -125,8 +124,7 @@ func (con streamController) Del(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
-
+	client := global.GetClient(req.Sk)
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
 
@@ -157,8 +155,7 @@ func (con streamController) AddItem(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
-
+	client := global.GetClient(req.Sk)
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
 

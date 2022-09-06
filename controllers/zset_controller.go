@@ -34,8 +34,7 @@ func (con zsetController) Show(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
-
+	client := global.GetClient(req.Sk)
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
 
@@ -96,8 +95,7 @@ func (con zsetController) Del(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
-
+	client := global.GetClient(req.Sk)
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
 
@@ -128,8 +126,7 @@ func (con zsetController) AddItem(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
-
+	client := global.GetClient(req.Sk)
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
 

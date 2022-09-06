@@ -18,7 +18,19 @@ import (
 	"github.com/go-redis/redis"
 )
 
-var GlobalClients map[string]*redis.Client
+var globalClients sync.Map
+
+func SetClient(key string, client *redis.Client) {
+	globalClients.Store(key, client)
+}
+
+func GetClient(key string) *redis.Client {
+	client, ok := globalClients.Load(key)
+	if !ok {
+		return nil
+	}
+	return client.(*redis.Client)
+}
 
 type GlobalConfig struct {
 	Accounts        map[string]string
@@ -43,8 +55,6 @@ var GlobalConf = GlobalConfig{
 }
 
 func init() {
-
-	GlobalClients = make(map[string]*redis.Client)
 
 	data, err := common.ReadData()
 	if err != nil && err != io.EOF {

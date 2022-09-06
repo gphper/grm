@@ -116,7 +116,8 @@ func (con wsController) Ws(c *gin.Context) {
 
 		ctx := context.WithValue(context.Background(), "username", username)
 		var client *redis.Client
-		client = global.GlobalClients[cmd.Sk]
+
+		client = global.GetClient(cmd.Sk)
 		if client == nil {
 			redisServer, _ := global.GlobalConf.RedisServices.Load(cmd.Sk)
 			client, err = service.NewRedisClient(redisServer.(global.RedisService))
@@ -128,7 +129,8 @@ func (con wsController) Ws(c *gin.Context) {
 				}
 				goto LOOP
 			}
-			global.GlobalClients[cmd.Sk] = client
+
+			global.SetClient(cmd.Sk, client)
 			global.GlobalConf.RedisServices.Store(cmd.Sk, redisServer)
 		}
 		err = client.Do(ctx, "select", cmd.Db).Err()

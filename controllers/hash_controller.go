@@ -31,7 +31,7 @@ func (con hashController) Show(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
+	client := global.GetClient(req.Sk)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
@@ -93,7 +93,7 @@ func (con hashController) Del(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
+	client := global.GetClient(req.Sk)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
@@ -125,7 +125,7 @@ func (con hashController) AddItem(c *gin.Context) {
 		return
 	}
 
-	client := global.GlobalClients[req.Sk]
+	client := global.GetClient(req.Sk)
 
 	val, _ := c.Get("username")
 	ctx := context.WithValue(context.Background(), "username", val)
