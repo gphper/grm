@@ -55,6 +55,24 @@
   }
 ```
 
+## 使用已有域名的Nginx配置
+  ```
+  listen       80;
+  server_name  www.xxx.com;
+
+  location /grmapix/ {
+      proxy_pass http://host:port;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "Upgrade";
+  }
+
+  location ~ ^/grm/(.*) {
+      proxy_pass http://host:port/$1;
+  }
+  ```
+* 访问地址  http://www.xxx.com/grm/static/#/
+
 ## 持续更新中。。。
 ### 登录
 ![login](https://user-images.githubusercontent.com/18718299/180608188-9d7a3d97-3c4c-40ea-bcfe-444ed0fc2900.gif)
