@@ -26,6 +26,8 @@
 
 - :white_check_mark: 支持LUA脚本
 
+- :white_check_mark: Redis监控
+
 ## 编译代码
 + web目录下
   `npm run build`
@@ -88,6 +90,9 @@
 ![lua](https://user-images.githubusercontent.com/18718299/183094603-533e7f6f-8f20-4f3d-9f0d-27508936f8fe.gif)
 ### 系统设置
 ![tree](https://user-images.githubusercontent.com/18718299/184534033-9c6cf55c-9752-4293-8baf-e5fd874f2959.gif)
+### REDIS监控
+![moni](https://user-images.githubusercontent.com/18718299/189467120-1ad4a4fc-1a89-4ed3-a84b-1b83f48d5c10.gif)
+
 ## 支持作者
 如果觉得这个项目对你有帮助的话，请留下一颗star ⭐⭐鼓励一下！
 If the project is helpful to you, please give a star to encourage me
