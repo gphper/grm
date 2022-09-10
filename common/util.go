@@ -204,8 +204,7 @@ func InterfaceToString(value interface{}) (s string) {
 func GetOutBoundIP() (ip string, err error) {
 	conn, err := net.Dial("udp", "8.8.8.8:53")
 	if err != nil {
-		fmt.Println(err)
-		return
+		return "", err
 	}
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
 	ip = strings.Split(localAddr.String(), ":")[0]
@@ -226,12 +225,11 @@ func ShowLogo(host, port string) {
 
 	fmt.Println("App running at:")
 	if host == "0.0.0.0" {
-		ip, err := GetOutBoundIP()
-		if err != nil {
-			panic(err)
-		}
 		fmt.Printf("- Local:   %c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 34, "http://127.0.0.1:"+port, 0x1B)
-		fmt.Printf("- Network: %c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 34, "http://"+ip+":"+port, 0x1B)
+		ip, err := GetOutBoundIP()
+		if err == nil {
+			fmt.Printf("- Network: %c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 34, "http://"+ip+":"+port, 0x1B)
+		}
 	} else {
 		fmt.Printf("- Local:   %c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 34, "http://"+host+":"+port, 0x1B)
 	}
