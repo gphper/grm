@@ -37,6 +37,8 @@ type GlobalConfig struct {
 	RedisServicesCp map[string]RedisService
 	RedisServices   sync.Map
 	Separator       string
+	Host            string
+	Port            string
 	Tree            bool
 }
 
@@ -51,6 +53,8 @@ var GlobalConf = GlobalConfig{
 	Accounts:      make(map[string]string),
 	RedisServices: sync.Map{},
 	Separator:     ":",
+	Host:          "0.0.0.0",
+	Port:          "8088",
 	Tree:          true,
 }
 
