@@ -6,10 +6,11 @@
 package common
 
 import (
-	"fmt"
+	"log"
 	"net"
 	"time"
 
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -28,14 +29,14 @@ func GetSSHClient(user, pass, addr string) (*ssh.Client, error) {
 
 	sshConn, err := net.Dial("tcp", addr)
 	if nil != err {
-		fmt.Println("net dial err: ", err)
+		log.Printf("%+v", errors.WithStack(err))
 		return nil, err
 	}
 
 	clientConn, chans, reqs, err := ssh.NewClientConn(sshConn, addr, config)
 	if nil != err {
 		sshConn.Close()
-		fmt.Println("ssh client conn err: ", err)
+		log.Printf("%+v", errors.WithStack(err))
 		return nil, err
 	}
 

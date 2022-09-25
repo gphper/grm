@@ -37,7 +37,13 @@ func aesDecrypt(cipherText []byte) []byte {
 }
 
 func WriteData(data []byte) error {
-	file, err := os.OpenFile("storage.grm", os.O_CREATE|os.O_RDWR, 0644)
+
+	path, err := RootPath()
+	if err != nil {
+		return err
+	}
+
+	file, err := os.OpenFile(path+"/storage.grm", os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return err
 	}
@@ -54,7 +60,12 @@ func WriteData(data []byte) error {
 
 func ReadData() ([]byte, error) {
 
-	file, err := os.OpenFile("storage.grm", os.O_CREATE|os.O_RDWR, 0644)
+	path, err := RootPath()
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.OpenFile(path+"/storage.grm", os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return nil, err
 	}

@@ -2,23 +2,13 @@ package run
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"grm/common"
 	"grm/global"
-	"grm/router"
-	"grm/web"
-	"io/ioutil"
-	"log"
-	"net"
-	"net/http"
 	"os"
-	"os/signal"
 	"strings"
-	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
 
@@ -29,28 +19,40 @@ var CmdRun = &cobra.Command{
 }
 
 var (
-	host    string
-	port    string
-	confirm string
+	host      string
+	port      string
+	confirm   string
+	stop      bool
+	start     bool
+	install   bool
+	uninstall bool
+	daemon    bool
 )
 
 func init() {
-	confirm = "n"
+	confirm = "y"
 	CmdRun.Flags().StringVarP(&host, "host", "H", global.GlobalConf.Host, "input hostname")
 	CmdRun.Flags().StringVarP(&port, "port", "p", global.GlobalConf.Port, "input port")
+	CmdRun.PersistentFlags().BoolVarP(&install, "install", "i", false, "install service")
+	CmdRun.PersistentFlags().BoolVarP(&uninstall, "uninstall", "u", false, "uninstall service")
+	CmdRun.PersistentFlags().BoolVarP(&start, "start", "", false, "start service")
+	CmdRun.PersistentFlags().BoolVarP(&stop, "stop", "", false, "stop service")
+	CmdRun.PersistentFlags().BoolVarP(&daemon, "daemon", "", false, "daemon service")
 }
 
 func runFunction(cmd *cobra.Command, args []string) {
 
-	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 33, "================", 0x1B)
-	fmt.Printf("%c[%d;%d;%dm  Host:%s%c[0m \n", 0x1B, 0, 40, 33, host, 0x1B)
-	fmt.Printf("%c[%d;%d;%dm  Port:%s%c[0m \n", 0x1B, 0, 40, 33, port, 0x1B)
-	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 33, "================", 0x1B)
-	fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 33, "Do you want to run the app at this address? Y/N", 0x1B)
-	fmt.Scan(&confirm)
+	if !uninstall && !start && !stop && !daemon {
+		fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 33, "================", 0x1B)
+		fmt.Printf("%c[%d;%d;%dm  Host:%s%c[0m \n", 0x1B, 0, 40, 33, host, 0x1B)
+		fmt.Printf("%c[%d;%d;%dm  Port:%s%c[0m \n", 0x1B, 0, 40, 33, port, 0x1B)
+		fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 33, "================", 0x1B)
+		fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 33, "Do you want to run the app at this address? Y/N", 0x1B)
+		fmt.Scan(&confirm)
 
-	if strings.ToUpper(confirm) == "N" {
-		os.Exit(0)
+		if strings.ToUpper(confirm) == "N" {
+			os.Exit(0)
+		}
 	}
 
 	//保存host和port信息
@@ -60,48 +62,57 @@ func runFunction(cmd *cobra.Command, args []string) {
 	global.GlobalConf.Port = port
 	err := encoder.Encode(global.GlobalConf)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
+		os.Exit(0)
 	}
 	if err = common.WriteData(buffer.Bytes()); err != nil {
-		fmt.Println(err)
+		fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
+		os.Exit(0)
 	}
 
-	gin.SetMode(gin.ReleaseMode)
-	gin.DefaultWriter = ioutil.Discard
+	s := GetSrv()
 
-	router := router.Init()
-
-	router.StaticFS("/static", web.StaticsFs)
-
-	srv := &http.Server{
-		Addr:    net.JoinHostPort(host, port),
-		Handler: router,
-	}
-
-	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
+	if install || uninstall || start || stop {
+		if install {
+			if err := s.Install(); err != nil {
+				fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
+				return
+			}
+			fmt.Printf("服务已安装")
+			return
 		}
-	}()
 
-	quit := make(chan os.Signal)
+		if uninstall {
+			if err := s.Uninstall(); err != nil {
+				fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
+				return
+			}
+			fmt.Printf("服务已卸载")
+			return
+		}
 
-	signal.Notify(quit, os.Interrupt)
+		if start {
+			if err := s.Start(); err != nil {
+				fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
+				return
+			}
+			fmt.Printf("服务已启动")
+			return
+		}
 
-	//输出LOGO
-	common.ShowLogo(host, port)
-
-	<-quit
-
-	log.Println("Shutdown Server ...")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-
-	defer cancel()
-
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server Shutdown:", err)
+		if stop {
+			if err := s.Stop(); err != nil {
+				fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
+				return
+			}
+			fmt.Printf("服务已关闭")
+			return
+		}
 	}
 
-	log.Println("Server exiting")
+	err = s.Run()
+	if err != nil {
+		fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
+	}
+
 }

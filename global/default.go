@@ -8,14 +8,15 @@ package global
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"grm/common"
 	"grm/model"
 	"io"
+	"log"
 	"os"
 	"sync"
 
 	"github.com/go-redis/redis"
+	"github.com/pkg/errors"
 )
 
 var globalClients sync.Map
@@ -62,7 +63,7 @@ func init() {
 
 	data, err := common.ReadData()
 	if err != nil && err != io.EOF {
-		fmt.Println(err)
+		log.Printf("%+v", errors.WithStack(err))
 		os.Exit(0)
 	}
 
@@ -74,7 +75,7 @@ func init() {
 	}
 
 	if err != nil && err != io.EOF {
-		fmt.Println(err)
+		log.Printf("%+v", errors.WithStack(err))
 		os.Exit(0)
 	}
 }

@@ -10,6 +10,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"log"
 	"math/rand"
 	"net"
@@ -233,4 +234,34 @@ func ShowLogo(host, port string) {
 	} else {
 		fmt.Printf("- Local:   %c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 34, "http://"+host+":"+port, 0x1B)
 	}
+}
+
+/**
+* 创建文件
+ */
+/**
+* 打开文件句柄
+**/
+func OpenFile(filepath string) (file *os.File, err error) {
+
+	file, err = os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE, 0666)
+	if err == nil {
+		return
+	}
+
+	dir := path.Dir(filepath)
+	_, err = os.Stat(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = os.MkdirAll(dir, fs.FileMode(os.O_CREATE))
+			if err != nil {
+				return
+			}
+		}
+	}
+	file, err = os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		return
+	}
+	return
 }
