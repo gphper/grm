@@ -8,10 +8,10 @@ package global
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"grm/common"
 	"grm/model"
 	"io"
-	"log"
 	"os"
 	"sync"
 
@@ -63,7 +63,7 @@ func init() {
 
 	data, err := common.ReadData()
 	if err != nil && err != io.EOF {
-		log.Printf("%+v", errors.WithStack(err))
+		fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, errors.WithStack(err), 0x1B)
 		os.Exit(0)
 	}
 
@@ -75,7 +75,7 @@ func init() {
 	}
 
 	if err != nil && err != io.EOF {
-		log.Printf("%+v", errors.WithStack(err))
+		fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, errors.WithStack(err), 0x1B)
 		os.Exit(0)
 	}
 }

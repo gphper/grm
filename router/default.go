@@ -21,7 +21,7 @@ func Init() *gin.Engine {
 
 	store := cookie.NewStore([]byte("goredismanagerphper"))
 	router.Use(middleware.StaticCache(), gzip.Gzip(gzip.DefaultCompression), sessions.Sessions("goredismanager", store))
-
+	router.Use(gin.Logger(), gin.Recovery())
 	router.NoRoute(func(ctx *gin.Context) {
 		ctx.Redirect(http.StatusMovedPermanently, "/static/#")
 	})

@@ -95,13 +95,13 @@ func (srv *Services) StarServer() {
 	}
 
 	// 创建记录日志的文件
-	f, err := common.OpenFile(path + "/log/grm.log")
+	f, err := common.OpenFile(path + "/log/grm_error.log")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
 	}
-
-	gin.DefaultWriter = io.MultiWriter(f)
+	gin.DefaultErrorWriter = io.MultiWriter(f)
+	gin.DefaultWriter = io.Discard
 
 	router := router.Init()
 
