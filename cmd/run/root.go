@@ -78,7 +78,7 @@ func runFunction(cmd *cobra.Command, args []string) {
 				fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
 				return
 			}
-			fmt.Printf("服务已安装")
+			fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, "install success!", 0x1B)
 			return
 		}
 
@@ -87,7 +87,7 @@ func runFunction(cmd *cobra.Command, args []string) {
 				fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
 				return
 			}
-			fmt.Printf("服务已卸载")
+			fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, "uninstall success!", 0x1B)
 			return
 		}
 
@@ -96,7 +96,7 @@ func runFunction(cmd *cobra.Command, args []string) {
 				fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
 				return
 			}
-			fmt.Printf("服务已启动")
+			fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, "start success!", 0x1B)
 			return
 		}
 
@@ -105,7 +105,7 @@ func runFunction(cmd *cobra.Command, args []string) {
 				fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 31, err.Error(), 0x1B)
 				return
 			}
-			fmt.Printf("服务已关闭")
+			fmt.Printf("%c[%d;%d;%dm%s%c[0m \n", 0x1B, 0, 40, 32, "stop success!", 0x1B)
 			return
 		}
 	}
