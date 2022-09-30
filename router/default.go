@@ -7,6 +7,7 @@ package router
 
 import (
 	"grm/controllers"
+	"grm/glog"
 	"grm/middleware"
 	"net/http"
 
@@ -17,11 +18,11 @@ import (
 )
 
 func Init() *gin.Engine {
-	router := gin.Default()
+	router := gin.New()
 
 	store := cookie.NewStore([]byte("goredismanagerphper"))
 	router.Use(middleware.StaticCache(), gzip.Gzip(gzip.DefaultCompression), sessions.Sessions("goredismanager", store))
-	router.Use(gin.Logger(), gin.Recovery())
+	router.Use(gin.Logger(), middleware.GinRecovery(glog.NewLogger("gin_error.log"), true))
 	router.NoRoute(func(ctx *gin.Context) {
 		ctx.Redirect(http.StatusMovedPermanently, "/static/#")
 	})

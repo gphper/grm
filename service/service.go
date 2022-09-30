@@ -9,6 +9,7 @@ import (
 	"context"
 	"grm/common"
 	"grm/global"
+	"grm/glog"
 	"net"
 	"time"
 
@@ -40,7 +41,7 @@ func NewRedisClient(conf global.RedisService) (*redis.Client, error) {
 	client := redis.NewClient(optConf)
 
 	client.AddHook(common.RedisLog{
-		Logger: common.NewLogger(conf.RedisService),
+		Logger: glog.NewLogger(conf.RedisService + "/redis.log"),
 	})
 
 	_, err := client.Ping(ctx).Result()

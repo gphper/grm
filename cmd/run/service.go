@@ -5,18 +5,21 @@ import (
 	"fmt"
 	"grm/common"
 	"grm/global"
+	"grm/glog"
 	"grm/router"
 	"grm/web"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/kardianos/service"
+	"go.uber.org/zap"
 )
 
 type Services struct {
@@ -28,21 +31,6 @@ type Services struct {
 // 获取 service 对象
 func GetSrv() service.Service {
 
-	path, err := common.RootPath()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(0)
-	}
-
-	File, err := common.OpenFile(path + "/log/service.log")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(0)
-	}
-	defer File.Close()
-
-	log.SetOutput(File)
-
 	s := &Services{
 		Cfg: &service.Config{
 			Name:        "grm",
@@ -52,11 +40,15 @@ func GetSrv() service.Service {
 		}}
 	serv, err := service.New(s, s.Cfg)
 	if err != nil {
-		log.Printf("Set logger error:%s\n", err.Error())
+		errMsg := fmt.Sprintf("%+v", errors.WithStack(err))
+		glog.Logger.Error(errMsg, zap.Error(err))
+		os.Exit(0)
 	}
 	s.Log, err = serv.SystemLogger(nil)
 	if err != nil {
-		log.Printf("Set logger error:%s\n", err.Error())
+		errMsg := fmt.Sprintf("%+v", errors.WithStack(err))
+		glog.Logger.Error(errMsg, zap.Error(err))
+		os.Exit(0)
 	}
 
 	return serv
@@ -78,7 +70,6 @@ func (srv *Services) Stop(s service.Service) error {
 	if srv.Log != nil {
 		srv.Log.Info("Start stop http server")
 	}
-	log.Println("Server exiting")
 	return srv.Srv.Shutdown(context.Background())
 }
 
@@ -88,19 +79,21 @@ func (srv *Services) StarServer() {
 	gin.DisableConsoleColor()
 	gin.SetMode(gin.ReleaseMode)
 
-	path, err := common.RootPath()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(0)
-	}
+	// path, err := common.RootPath()
+	// if err != nil {
+	// 	errMsg := fmt.Sprintf("%+v", errors.WithStack(err))
+	// 	glog.Logger.Error(errMsg, zap.Error(err))
+	// 	os.Exit(0)
+	// }
 
 	// 创建记录日志的文件
-	f, err := common.OpenFile(path + "/log/grm_error.log")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(0)
-	}
-	gin.DefaultErrorWriter = io.MultiWriter(f)
+	// f, err := common.OpenFile(path + "/log/grm_error.log")
+	// if err != nil {
+	// 	errMsg := fmt.Sprintf("%+v", errors.WithStack(err))
+	// 	glog.Logger.Error(errMsg, zap.Error(err))
+	// 	os.Exit(0)
+	// }
+	// gin.DefaultErrorWriter = io.MultiWriter(f)
 	gin.DefaultWriter = io.Discard
 
 	router := router.Init()
@@ -114,7 +107,8 @@ func (srv *Services) StarServer() {
 
 	go func() {
 		if err := srv.Srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
+			errMsg := fmt.Sprintf("%+v", errors.WithStack(err))
+			glog.Logger.Error(errMsg, zap.Error(err))
 		}
 	}()
 
@@ -127,15 +121,16 @@ func (srv *Services) StarServer() {
 
 	<-quit
 
-	log.Println("Shutdown Server ...")
+	glog.Logger.Info("Shutdown Server ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 	defer cancel()
 
 	if err := srv.Srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server Shutdown:", err)
+		errMsg := fmt.Sprintf("%+v", errors.WithStack(err))
+		glog.Logger.Error(errMsg, zap.Error(err))
 	}
 
-	log.Println("Server exiting")
+	glog.Logger.Info("Server exiting")
 }
