@@ -62,6 +62,7 @@ func (srv *Services) Start(s service.Service) error {
 	}
 
 	go srv.StarServer()
+
 	return nil
 }
 
@@ -79,25 +80,9 @@ func (srv *Services) StarServer() {
 	gin.DisableConsoleColor()
 	gin.SetMode(gin.ReleaseMode)
 
-	// path, err := common.RootPath()
-	// if err != nil {
-	// 	errMsg := fmt.Sprintf("%+v", errors.WithStack(err))
-	// 	glog.Logger.Error(errMsg, zap.Error(err))
-	// 	os.Exit(0)
-	// }
-
-	// 创建记录日志的文件
-	// f, err := common.OpenFile(path + "/log/grm_error.log")
-	// if err != nil {
-	// 	errMsg := fmt.Sprintf("%+v", errors.WithStack(err))
-	// 	glog.Logger.Error(errMsg, zap.Error(err))
-	// 	os.Exit(0)
-	// }
-	// gin.DefaultErrorWriter = io.MultiWriter(f)
 	gin.DefaultWriter = io.Discard
 
 	router := router.Init()
-
 	router.StaticFS("/static", web.StaticsFs)
 
 	srv.Srv = &http.Server{
