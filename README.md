@@ -40,12 +40,16 @@
   * 添加用户 `grm user add`
   * 删除用户 `grm user delete`
 ## 运行项目
-  * 执行 `grm run -H ip地址 -p ip端口`  
-  * 安装服务 `grm run --install`
-  * 卸载服务 `grm run --uninstall`
-  * 运行服务 `grm run --start`
-  * 停止服务 `grm run --stop`
-  * 访问地址 http://ip地址:ip端口/static/#/
+
+  ### 方式一 【推荐】
+    * 执行 `grm srv run [-H 指定host] [-p 指定端口]`
+  ### 方式二
+    * 执行 `grm run -H ip地址 -p ip端口`  
+    * 安装服务 `grm run --install`
+    * 卸载服务 `grm run --uninstall`
+    * 运行服务 `grm run --start`
+    * 停止服务 `grm run --stop`
+  访问地址 http://ip地址:ip端口/static/#/
 ## Nginx反向代理
   ```
   server {

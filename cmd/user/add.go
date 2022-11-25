@@ -21,14 +21,22 @@ var cmdUserAdd = &cobra.Command{
 	Run:   userAddFunc,
 }
 
+func init() {
+	cmdUserAdd.Flags().StringVarP(&username, "username", "u", "", "input username")
+	cmdUserAdd.Flags().StringVarP(&password, "password", "p", "", "input password")
+}
+
 func userAddFunc(cmd *cobra.Command, args []string) {
 
-	fmt.Println("Please input username:")
-	fmt.Scan(&username)
-	fmt.Println("Please input password:")
-	fmt.Scan(&password)
+	if username == "" {
+		fmt.Println("Please input username:")
+		fmt.Scan(&username)
+	}
 
-	fmt.Println("success!")
+	if password == "" {
+		fmt.Println("Please input password:")
+		fmt.Scan(&password)
+	}
 
 	user := global.GlobalConf.Accounts
 	user[username] = password
@@ -41,4 +49,6 @@ func userAddFunc(cmd *cobra.Command, args []string) {
 		fmt.Println(err)
 	}
 	common.WriteData(buffer.Bytes())
+
+	fmt.Println("success!")
 }
