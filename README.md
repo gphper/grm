@@ -44,6 +44,11 @@
   ### 方式一 【推荐】
     * 执行 `grm srv run [-H 指定host] [-p 指定端口]`
   ### 方式二
+    * 项目根目录执行
+      `docker build -t grmdocker:v1 .`
+    * 运行容器
+      `docker run -d -p 宿主机端口:8088 grmdocker:v1`  
+  ### 方式三
     * 执行 `grm run -H ip地址 -p ip端口`  
     * 安装服务 `grm run --install`
     * 卸载服务 `grm run --uninstall`
