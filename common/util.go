@@ -31,7 +31,7 @@ func RootPath() (path string, err error) {
 	if strings.Contains(path, getTmpDir()) {
 		path = getCurrentAbPathByCaller()
 	}
-	path = strings.Replace(path, "/pkg/comment", "", 1)
+	path = strings.Replace(path, "/common", "", 1)
 	return
 }
 
