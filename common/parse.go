@@ -55,15 +55,15 @@ func ParseInfo(infoString string) (result map[string]map[string]interface{}) {
 
 		} else {
 			floatValue, err := strconv.ParseFloat(strings.TrimSpace(items[1]), 10)
-			var vlaue interface{} = strings.TrimSpace(items[1])
+			var value interface{} = strings.TrimSpace(items[1])
 			if err == nil {
-				vlaue = floatValue
+				value = floatValue
 			}
 			if _, ok := result[section]; ok {
-				result[section][items[0]] = vlaue
+				result[section][items[0]] = value
 			} else {
 				result[section] = map[string]interface{}{
-					items[0]: vlaue,
+					items[0]: value,
 				}
 			}
 		}
